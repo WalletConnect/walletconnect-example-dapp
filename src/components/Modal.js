@@ -3,9 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Column from "../components/Column";
 import Card from "../components/Card";
-import Loader from "../components/Loader";
 import QRCodeDisplay from "../components/QRCodeDisplay";
-import Button from "../components/Button";
 import { colors, transitions } from "../styles";
 
 const StyledLightbox = styled.div`
@@ -45,10 +43,6 @@ const StyledCard = styled(Card)`
   max-height: 500px;
 `;
 
-const StyledCardContainer = styled.div`
-  padding: 0 0 16px;
-`;
-
 const StyledQRCodeWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -69,7 +63,7 @@ class Modal extends Component {
   };
 
   render = () => {
-    const { uri, showModal, toggleModal } = this.props;
+    const { uri, showModal, closeModal } = this.props;
 
     const body = document.body || document.getElementsByTagName("body")[0];
 
@@ -82,29 +76,20 @@ class Modal extends Component {
     return (
       <StyledLightbox show={showModal}>
         <StyledContainer>
-          <StyledHitbox onClick={toggleModal} />
+          <StyledHitbox onClick={closeModal} />
           <Column center>
             <StyledCard
-              maxWidth={window.innerWidth < 530 ? 305 : 427}
+              maxWidth={window.innerWidth < 530 ? 300 : 400}
               background="white"
             >
-              <StyledCardContainer>
-                <StyledQRCodeWrapper>
-                  {uri ? (
-                    <StyledQRCodeDisplay
-                      data={uri}
-                      scale={this.isSmallScreen ? 5 : 7}
-                    />
-                  ) : (
-                    <Loader color="dark" background="white" />
-                  )}
-                </StyledQRCodeWrapper>
-                <StyledCenter>
-                  <Button color="walletconnect" onClick={toggleModal}>
-                    {"Close"}
-                  </Button>
-                </StyledCenter>
-              </StyledCardContainer>
+              <StyledQRCodeWrapper>
+                {uri && (
+                  <StyledQRCodeDisplay
+                    data={uri}
+                    scale={this.isSmallScreen ? 5 : 7}
+                  />
+                )}
+              </StyledQRCodeWrapper>
             </StyledCard>
           </Column>
         </StyledContainer>
@@ -115,7 +100,7 @@ class Modal extends Component {
 
 Modal.propTypes = {
   showModal: PropTypes.bool.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
   uri: PropTypes.string.isRequired
 };
 

@@ -37,8 +37,13 @@ class App extends Component {
     uri: "",
     accounts: []
   };
-  toggleModal = () => {
+  openModal = () => this.setState({ showModal: true });
+  closeModal = () => {
     this.setState({ showModal: !this.state.showModal });
+    console.log(this.state);
+    if (this.state.uri) {
+      this.setState({ uri: "" });
+    }
   };
   _walletConnectInit = async () => {
     const session = await walletConnectInitSession(); // Initiate session
@@ -47,7 +52,7 @@ class App extends Component {
       if (session.new) {
         const { uri } = session; // Display QR code with URI string
         this.setState({ uri });
-        this.toggleModal();
+        this.openModal();
       } else {
         const session = await walletConnectListenSessionStatus(); // Listen to session status
         const { accounts } = session; // Get wallet accounts
@@ -61,7 +66,7 @@ class App extends Component {
     <BaseLayout
       uri={this.state.uri}
       showModal={this.state.showModal}
-      toggleModal={this.toggleModal}
+      closeModal={this.closeModal}
     >
       <StyledLanding>
         <h1>WalletConnect Example Dapp</h1>
