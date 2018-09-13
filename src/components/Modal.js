@@ -53,10 +53,6 @@ const StyledQRCodeDisplay = styled(QRCodeDisplay)`
   margin: 0 auto;
 `;
 
-const StyledCenter = styled.div`
-  text-align: center;
-`;
-
 class Modal extends Component {
   state = {
     fetching: false
