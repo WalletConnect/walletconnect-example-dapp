@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import BaseLayout from "./components/BaseLayout";
+import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import { fonts } from "./styles";
@@ -9,6 +10,8 @@ import {
   walletConnectListenSessionStatus,
   walletConnectRemoveSession
 } from "./helpers/walletconnect";
+import { apiGetAccountBalances } from "./helpers/api";
+import { parseAccountBalances } from "./helpers/parsers";
 
 const StyledLanding = styled.div`
   width: 100%;
@@ -32,11 +35,18 @@ const StyledConnectButton = styled(Button)`
   margin: 12px 0;
 `;
 
+const StyledAssetList = styled.div`
+  display: flex;
+`;
+
 class App extends Component {
   state = {
+    network: "mainnet",
     showModal: false,
     uri: "",
-    accounts: []
+    accounts: [],
+    address: "",
+    assets: []
   };
   openModal = () => {
     this.setState({ showModal: true });
@@ -63,28 +73,42 @@ class App extends Component {
         const session = await walletConnectListenSessionStatus(); // Listen to session status
         const { accounts } = session; // Get wallet accounts
         this.setState({ accounts });
+        this._getAccountBalances();
       }
     } else {
       console.log("FAILED TO CONNECT");
     }
   };
+  _getAccountBalances = async () => {
+    const { address, network } = this.state;
+    const { data } = await apiGetAccountBalances(address, network);
+    const assets = parseAccountBalances(data);
+    this.setState({ assets });
+  };
   render = () => (
     <BaseLayout
+      address={this.state.address}
       uri={this.state.uri}
       showModal={this.state.showModal}
       closeModal={this.closeModal}
     >
       <StyledLanding>
         <h1>WalletConnect Example Dapp</h1>
-        <StyledButtonContainer>
-          <StyledConnectButton
-            left
-            color="walletconnect"
-            onClick={this._walletConnectInit}
-          >
-            {"Connect to WalletConnect"}
-          </StyledConnectButton>
-        </StyledButtonContainer>
+        {!this.state.address && !this.state.assets.length ? (
+          <StyledButtonContainer>
+            <StyledConnectButton
+              left
+              color="walletconnect"
+              onClick={this._walletConnectInit}
+            >
+              {"Connect to WalletConnect"}
+            </StyledConnectButton>
+          </StyledButtonContainer>
+        ) : (
+          <StyledAssetList>
+            {this.state.assets.map(asset => <AssetRow asset={asset} />)}
+          </StyledAssetList>
+        )}
       </StyledLanding>
     </BaseLayout>
   );
