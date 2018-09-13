@@ -1,0 +1,82 @@
+import WalletConnect from "walletconnect";
+
+export const webConnector = new WalletConnect({
+  bridgeUrl: "https://walletconnect.balance.io",
+  dappName: "Example Dapp"
+});
+
+/**
+ * @desc Initiate WalletConnect Session
+ * @return {Object}
+ */
+export const walletConnectInitSession = async () => {
+  try {
+    const session = await webConnector.initSession();
+    console.log("webConnector", webConnector);
+    return session;
+  } catch (error) {
+    console.log("webConnector", webConnector);
+    console.error(error);
+    return null;
+  }
+};
+
+/**
+ * @desc Listen to WalletConnect Session Status
+ * @return {Object}
+ */
+export const walletConnectListenSessionStatus = async () => {
+  try {
+    const sessionStatus = await webConnector.listenSessionStatus(); // Listen to session status
+
+    const accounts = sessionStatus.data; // Get wallet accounts
+    return { accounts };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+/**
+ * @desc WalletConnect sign transaction
+ * @param  {Object}  transaction { from, to, data, value, gasPrice, gasLimit }
+ * @return {String}
+ */
+export const walletConnectSignTransaction = async transaction => {
+  try {
+    const transactionId = await webConnector.createTransaction(transaction);
+    const data = await walletConnectListenTransactionStatus(
+      webConnector,
+      transactionId.transactionId
+    );
+    if (data) {
+      const transactionSentSuccess = data.success;
+      if (transactionSentSuccess) {
+        const transactionHash = data.txHash;
+        return transactionHash;
+      } else {
+        return null;
+      }
+    }
+    return null;
+  } catch (error) {
+    // TODO: error handling
+  }
+};
+
+/**
+ * @desc Listen to Transation Status Request
+ * @return {String}
+ */
+export const walletConnectListenTransactionStatus = async transactionId => {
+  const transactionStatus = await webConnector.listenTransactionStatus(
+    transactionId
+  );
+
+  if (transactionStatus.success) {
+    const { txHash } = transactionStatus; // Get transaction hash
+    return txHash;
+  } else {
+    return "";
+  }
+};
