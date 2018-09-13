@@ -1,7 +1,7 @@
 import WalletConnect from "walletconnect";
 
 export const webConnector = new WalletConnect({
-  bridgeUrl: "https://walletconnect.balance.io",
+  bridgeUrl: "https://bridge.walletconnect.org",
   dappName: "Example Dapp"
 });
 
