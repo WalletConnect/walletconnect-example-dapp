@@ -1,9 +1,11 @@
 import WalletConnect from "walletconnect";
 
-export const webConnector = new WalletConnect({
+const defaultConfig = {
   bridgeUrl: "https://bridge.walletconnect.org",
   dappName: "Example Dapp"
-});
+};
+
+export let webConnector = new WalletConnect(defaultConfig);
 
 /**
  * @desc Initiate WalletConnect Session
@@ -79,4 +81,13 @@ export const walletConnectListenTransactionStatus = async transactionId => {
   } else {
     return "";
   }
+};
+
+/**
+ * @desc Initiate WalletConnect Session
+ * @return {Object}
+ */
+export const walletConnectRemoveSession = async () => {
+  webConnector = new WalletConnect(defaultConfig);
+  return webConnector;
 };

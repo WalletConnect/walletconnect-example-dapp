@@ -6,7 +6,8 @@ import Column from "./components/Column";
 import { fonts } from "./styles";
 import {
   walletConnectInitSession,
-  walletConnectListenSessionStatus
+  walletConnectListenSessionStatus,
+  walletConnectRemoveSession
 } from "./helpers/walletconnect";
 
 const StyledLanding = styled.div`
@@ -37,7 +38,12 @@ class App extends Component {
     uri: "",
     accounts: []
   };
-  openModal = () => this.setState({ showModal: true });
+  openModal = () => {
+    this.setState({ showModal: true });
+    if (!this.state.accounts.length) {
+      walletConnectRemoveSession();
+    }
+  };
   closeModal = () => {
     this.setState({ showModal: !this.state.showModal });
     console.log(this.state);
