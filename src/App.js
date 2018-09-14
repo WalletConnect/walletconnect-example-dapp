@@ -7,7 +7,7 @@ import Column from "./components/Column";
 import { fonts } from "./styles";
 import {
   walletConnectInitSession,
-  walletConnectListenSessionStatus,
+  walletConnectGetAccounts,
   walletConnectRemoveSession
 } from "./helpers/walletconnect";
 import { apiGetAccountBalances } from "./helpers/api";
@@ -61,22 +61,32 @@ class App extends Component {
       this.setState({ uri: "" });
     }
   };
+  _handleAccounts = accounts => {
+    if (accounts && accounts.length) {
+      this._getAccountBalances();
+      this.setState({ accounts });
+    } else {
+      console.log("FAILED TO GET ACCOUNTS");
+    }
+  };
   _walletConnectInit = async () => {
     const session = await walletConnectInitSession(); // Initiate session
     console.log("session", session);
     if (session) {
       if (session.new) {
         const { uri } = session; // Display QR code with URI string
+
         this.setState({ uri });
         this.openModal();
+
+        const accounts = await walletConnectGetAccounts(); // Get wallet accounts
+        console.log("accounts new", accounts);
+        this._handleAccounts(accounts);
       } else {
-        const session = await walletConnectListenSessionStatus(); // Listen to session status
-        const { accounts } = session; // Get wallet accounts
-        this.setState({ accounts });
-        this._getAccountBalances();
+        const accounts = session.accounts; // Get wallet accounts
+        console.log("accounts old", accounts);
+        this._handleAccounts(accounts);
       }
-    } else {
-      console.log("FAILED TO CONNECT");
     }
   };
   _getAccountBalances = async () => {
