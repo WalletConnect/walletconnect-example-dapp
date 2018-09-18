@@ -41,6 +41,7 @@ const StyledAssetList = styled.div`
 
 class App extends Component {
   state = {
+    fetching: false,
     network: "mainnet",
     showModal: false,
     uri: "",
@@ -70,7 +71,9 @@ class App extends Component {
     }
   };
   _walletConnectInit = async () => {
+    this.setState({ fetching: true });
     const session = await walletConnectInitSession(); // Initiate session
+    this.setState({ fetching: false });
     console.log("session", session);
     if (session) {
       if (session.new) {
@@ -110,6 +113,7 @@ class App extends Component {
               left
               color="walletconnect"
               onClick={this._walletConnectInit}
+              fetching={this.state.fetching}
             >
               {"Connect to WalletConnect"}
             </StyledConnectButton>
