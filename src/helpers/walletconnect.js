@@ -29,6 +29,7 @@ export const walletConnectInitSession = async () => {
  */
 export const walletConnectGetAccounts = async () => {
   try {
+    console.log("walletConnectGetAccounts");
     const sessionStatus = await webConnector.listenSessionStatus(); // Listen to session status
     console.log("sessionStatus", sessionStatus);
     const accounts = sessionStatus.data; // Get wallet accounts
