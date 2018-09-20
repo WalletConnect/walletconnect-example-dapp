@@ -19,7 +19,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "clean-install": "rm -rf node_modules yarn.lock package-lock.json && npm install"
+    "clean-install": "rm -rf node_modules yarn.lock package-lock.json && npm install",
+    "update-tokens": "cd public/tokens && git pull && cd ../.. && git status"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
