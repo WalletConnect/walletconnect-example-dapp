@@ -12,7 +12,7 @@
     "styled-components": "^3.4.2",
     "qrcode": "^1.2.2",
     "web3": "^1.0.0-beta.35",
-    "walletconnect": "^0.6.19"
+    "walletconnect": "^0.6.20"
   },
   "scripts": {
     "start": "react-scripts start",
