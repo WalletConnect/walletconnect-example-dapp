@@ -59,7 +59,7 @@ class Modal extends Component {
   };
 
   render = () => {
-    const { uri, showModal, closeModal } = this.props;
+    const { uri, showModal, toggleModal } = this.props;
 
     const body = document.body || document.getElementsByTagName("body")[0];
 
@@ -72,7 +72,7 @@ class Modal extends Component {
     return (
       <StyledLightbox show={showModal}>
         <StyledContainer>
-          <StyledHitbox onClick={closeModal} />
+          <StyledHitbox onClick={toggleModal} />
           <Column center>
             <StyledCard
               maxWidth={window.innerWidth < 530 ? 300 : 400}
@@ -96,7 +96,7 @@ class Modal extends Component {
 
 Modal.propTypes = {
   showModal: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
   uri: PropTypes.string.isRequired
 };
 

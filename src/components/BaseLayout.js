@@ -59,7 +59,7 @@ const BaseLayout = ({
   children,
   address,
   showModal,
-  closeModal,
+  toggleModal,
   uri,
   ...props
 }) => {
@@ -80,7 +80,7 @@ const BaseLayout = ({
         <StyledContent>{children}</StyledContent>
       </Column>
       {/* <Notification /> */}
-      <Modal uri={uri} showModal={showModal} closeModal={closeModal} />
+      <Modal uri={uri} showModal={showModal} toggleModal={toggleModal} />
     </StyledLayout>
   );
 };
@@ -89,7 +89,7 @@ BaseLayout.propTypes = {
   children: PropTypes.node.isRequired,
   address: PropTypes.string,
   showModal: PropTypes.bool,
-  closeModal: PropTypes.func,
+  toggleModal: PropTypes.func,
   uri: PropTypes.string
 };
 

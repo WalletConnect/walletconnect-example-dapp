@@ -8,7 +8,7 @@ import { fonts } from "./styles";
 import {
   walletConnectInitSession,
   walletConnectGetAccounts,
-  walletConnectRemoveSession
+  walletConnectResetSession
 } from "./helpers/walletconnect";
 import { apiGetAccountBalances } from "./helpers/api";
 import { parseAccountBalances } from "./helpers/parsers";
@@ -49,61 +49,61 @@ class App extends Component {
     address: "",
     assets: []
   };
-  openModal = () => {
-    this.setState({ showModal: true });
-    if (!this.state.accounts.length) {
-      walletConnectRemoveSession();
+
+  toggleModal = async () => {
+    await this.setState({ showModal: !this.state.showModal });
+
+    if (!this.state.showModal) {
+      if (this.state.uri) {
+        await this.setState({ uri: "" });
+      }
+      if (!this.state.accounts.length) {
+        walletConnectResetSession();
+      }
     }
   };
-  closeModal = () => {
-    this.setState({ showModal: !this.state.showModal });
-    console.log(this.state);
-    if (this.state.uri) {
-      this.setState({ uri: "" });
-    }
-  };
-  _handleAccounts = accounts => {
-    if (accounts && accounts.length) {
-      this._getAccountBalances();
-      this.setState({ accounts });
-    } else {
-      console.log("FAILED TO GET ACCOUNTS");
-    }
-  };
+
   _walletConnectInit = async () => {
-    this.setState({ fetching: true });
+    await this.setState({ fetching: true });
+
     const session = await walletConnectInitSession(); // Initiate session
-    this.setState({ fetching: false });
-    console.log("session", session);
+
+    await this.setState({ fetching: false });
+
+    let accounts = null;
+
     if (session) {
       if (session.new) {
         const { uri } = session; // Display QR code with URI string
 
-        this.setState({ uri });
-        this.openModal();
-
-        const accounts = await walletConnectGetAccounts(); // Get wallet accounts
-        console.log("accounts new", accounts);
-        this._handleAccounts(accounts);
+        await this.setState({ uri });
+        this.toggleModal();
+        const result = await walletConnectGetAccounts(); // Get wallet accounts
+        if (result) {
+          accounts = result.accounts;
+        }
       } else {
-        const accounts = session.accounts; // Get wallet accounts
-        console.log("accounts old", accounts);
-        this._handleAccounts(accounts);
+        accounts = session.accounts; // Get wallet accounts
       }
     }
+
+    if (accounts && accounts.length) {
+      this.toggleModal();
+      const { network } = this.state;
+      const address = accounts[0];
+      const { data } = await apiGetAccountBalances(address, network);
+      const assets = parseAccountBalances(data);
+      await this.setState({ accounts, address, assets });
+    } else {
+    }
   };
-  _getAccountBalances = async () => {
-    const { address, network } = this.state;
-    const { data } = await apiGetAccountBalances(address, network);
-    const assets = parseAccountBalances(data);
-    this.setState({ assets });
-  };
+
   render = () => (
     <BaseLayout
       address={this.state.address}
       uri={this.state.uri}
       showModal={this.state.showModal}
-      closeModal={this.closeModal}
+      toggleModal={this.toggleModal}
     >
       <StyledLanding>
         <h1>WalletConnect Example Dapp</h1>
