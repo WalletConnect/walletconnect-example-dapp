@@ -102,7 +102,7 @@ class App extends Component {
     >
       {!this.state.address && !this.state.assets.length ? (
         <StyledLanding center>
-          <h1>WalletConnect Example Dapp</h1>
+          <h2>Check your Ether & Token balances</h2>
           <StyledButtonContainer>
             <StyledConnectButton
               left
