@@ -47,11 +47,8 @@ class App extends Component {
 
   toggleModal = async () => {
     await this.setState({ showModal: !this.state.showModal });
-
     if (!this.state.showModal) {
-      if (this.state.uri) {
-        await this.setState({ uri: "" });
-      }
+      await this.setState({ uri: "" });
       if (!this.state.accounts.length) {
         walletConnectResetSession();
       }
@@ -83,7 +80,9 @@ class App extends Component {
     }
 
     if (accounts && accounts.length) {
-      this.toggleModal();
+      if (this.state.showModal) {
+        this.toggleModal();
+      }
       const { network } = this.state;
       const address = accounts[0];
       const { data } = await apiGetAccountBalances(address, network);
@@ -119,7 +118,7 @@ class App extends Component {
           <h3>Balances</h3>
           <Column center>
             {this.state.assets.map(asset => (
-              <AssetRow key={asset.symbole} asset={asset} />
+              <AssetRow key={asset.symbol} asset={asset} />
             ))}
           </Column>
         </StyledBalances>

@@ -14,7 +14,6 @@ export let webConnector = new WalletConnect(defaultConfig);
 export async function walletConnectInitSession() {
   try {
     const session = await webConnector.initSession();
-    console.log("webConnector", webConnector);
     return session;
   } catch (error) {
     console.error(error);
