@@ -4,13 +4,17 @@ import AssetIcon from "./AssetIcon";
 import { handleSignificantDecimals } from "../helpers/bignumber";
 
 const StyledAssetRow = styled.div`
+  width: 100%;
+  padding: 20px;
   display: flex;
+  justify-content: space-between;
 `;
 const StyledAssetRowLeft = styled.div`
   display: flex;
 `;
 const StyledAssetName = styled.div`
   display: flex;
+  margin-left: 10px;
 `;
 const StyledAssetRowRight = styled.div`
   display: flex;

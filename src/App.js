@@ -13,13 +13,8 @@ import {
 import { apiGetAccountBalances } from "./helpers/api";
 import { parseAccountBalances } from "./helpers/parsers";
 
-const StyledLanding = styled.div`
-  width: 100%;
+const StyledLanding = styled(Column)`
   height: 600px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const StyledButtonContainer = styled(Column)`
@@ -35,8 +30,8 @@ const StyledConnectButton = styled(Button)`
   margin: 12px 0;
 `;
 
-const StyledAssetList = styled.div`
-  display: flex;
+const StyledBalances = styled(StyledLanding)`
+  padding-top: 60px;
 `;
 
 class App extends Component {
@@ -105,9 +100,9 @@ class App extends Component {
       showModal={this.state.showModal}
       toggleModal={this.toggleModal}
     >
-      <StyledLanding>
-        <h1>WalletConnect Example Dapp</h1>
-        {!this.state.address && !this.state.assets.length ? (
+      {!this.state.address && !this.state.assets.length ? (
+        <StyledLanding center>
+          <h1>WalletConnect Example Dapp</h1>
           <StyledButtonContainer>
             <StyledConnectButton
               left
@@ -118,12 +113,17 @@ class App extends Component {
               {"Connect to WalletConnect"}
             </StyledConnectButton>
           </StyledButtonContainer>
-        ) : (
-          <StyledAssetList>
-            {this.state.assets.map(asset => <AssetRow asset={asset} />)}
-          </StyledAssetList>
-        )}
-      </StyledLanding>
+        </StyledLanding>
+      ) : (
+        <StyledBalances>
+          <h3>Balances</h3>
+          <Column center>
+            {this.state.assets.map(asset => (
+              <AssetRow key={asset.symbole} asset={asset} />
+            ))}
+          </Column>
+        </StyledBalances>
+      )}
     </BaseLayout>
   );
 }
