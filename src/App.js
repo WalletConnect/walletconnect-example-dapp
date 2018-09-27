@@ -8,6 +8,8 @@ import { fonts } from "./styles";
 import {
   walletConnectInitSession,
   walletConnectGetAccounts,
+  walletConnectGetURI,
+  walletConnectListenSessionStatus,
   walletConnectResetSession
 } from "./helpers/walletconnect";
 import { apiGetAccountBalances } from "./helpers/api";
@@ -56,27 +58,36 @@ class App extends Component {
   };
 
   _walletConnectInit = async () => {
-    await this.setState({ fetching: true });
+    /**
+     *  Initiate WalletConnect session
+     */
+    const session = await walletConnectInitSession();
+    console.log("session", session);
 
-    const session = await walletConnectInitSession(); // Initiate session
+    /**
+     *  Get accounts (type: <Array>)
+     */
+    let accounts = walletConnectGetAccounts();
+    console.log("accounts before", accounts);
 
-    await this.setState({ fetching: false });
+    /**
+     *  Check if accounts is empty array
+     */
+    if (!accounts.length) {
+      await this.setState({ fetching: true });
+      // If there is no accounts, prompt the user to scan the QR code
+      const uri = walletConnectGetURI();
+      console.log("uri", uri);
+      this.setState({ uri });
+      this.toggleModal();
 
-    let accounts = null;
+      // Listen for session confirmation from wallet
+      await walletConnectListenSessionStatus();
 
-    if (session) {
-      if (session.new) {
-        const { uri } = session; // Display QR code with URI string
-
-        await this.setState({ uri });
-        this.toggleModal();
-        const result = await walletConnectGetAccounts(); // Get wallet accounts
-        if (result) {
-          accounts = result.accounts;
-        }
-      } else {
-        accounts = session.accounts; // Get wallet accounts
-      }
+      // Get accounts after session status is resolved
+      accounts = walletConnectGetAccounts();
+      console.log("accounts after", accounts);
+      await this.setState({ fetching: false });
     }
 
     if (accounts && accounts.length) {

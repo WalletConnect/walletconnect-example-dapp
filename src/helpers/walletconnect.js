@@ -1,7 +1,7 @@
 import WalletConnect from "walletconnect";
 
 const defaultConfig = {
-  bridgeUrl: "https://bridge.walletconnect.org",
+  bridgeUrl: "https://test-bridge.walletconnect.org",
   dappName: "Example Dapp"
 };
 
@@ -22,10 +22,26 @@ export async function walletConnectInitSession() {
 }
 
 /**
+ * @desc Get WalletConnect Accounts
+ * @return {Array}
+ */
+export function walletConnectGetAccounts() {
+  return webConnector.accounts;
+}
+
+/**
+ * @desc Get WalletConnect URI string
+ * @return {Strin}
+ */
+export function walletConnectGetURI() {
+  return webConnector.uri;
+}
+
+/**
  * @desc Listen to WalletConnect Session Status and Get Accounts
  * @return {Object}
  */
-export async function walletConnectGetAccounts() {
+export async function walletConnectListenSessionStatus() {
   try {
     const result = await webConnector.listenSessionStatus(); // Listen to session status
     return result;
