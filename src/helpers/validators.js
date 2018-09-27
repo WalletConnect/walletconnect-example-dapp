@@ -1,16 +1,6 @@
 import { toChecksumAddress } from "./web3";
 
 /**
- * @desc validate email
- * @param  {string}  email
- * @return {Boolean}
- */
-export const isValidEmail = email =>
-  !!email.match(
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  );
-
-/**
  * @desc validate ethereum address
  * @param  {Number} wei
  * @return {Boolean}

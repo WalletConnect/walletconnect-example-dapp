@@ -13,11 +13,9 @@ export let webConnector = new WalletConnect(defaultConfig);
  */
 export async function walletConnectInitSession() {
   try {
-    const session = await webConnector.initSession();
-    return session;
+    await webConnector.initSession();
   } catch (error) {
     console.error(error);
-    return null;
   }
 }
 
@@ -43,11 +41,9 @@ export function walletConnectGetURI() {
  */
 export async function walletConnectListenSessionStatus() {
   try {
-    const result = await webConnector.listenSessionStatus(); // Listen to session status
-    return result;
+    await webConnector.listenSessionStatus(); // Listen to session status
   } catch (error) {
     console.error(error);
-    return null;
   }
 }
 

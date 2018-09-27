@@ -48,10 +48,15 @@ class App extends Component {
   };
 
   toggleModal = async () => {
+    // toggle modal
     await this.setState({ showModal: !this.state.showModal });
+
     if (!this.state.showModal) {
+      // clear uri if closing modal
       await this.setState({ uri: "" });
+
       if (!this.state.accounts.length) {
+        // reset session if closing modal without accounts
         walletConnectResetSession();
       }
     }
@@ -61,23 +66,21 @@ class App extends Component {
     /**
      *  Initiate WalletConnect session
      */
-    const session = await walletConnectInitSession();
-    console.log("session", session);
+    await walletConnectInitSession();
 
     /**
      *  Get accounts (type: <Array>)
      */
     let accounts = walletConnectGetAccounts();
-    console.log("accounts before", accounts);
 
     /**
      *  Check if accounts is empty array
      */
     if (!accounts.length) {
       await this.setState({ fetching: true });
+
       // If there is no accounts, prompt the user to scan the QR code
       const uri = walletConnectGetURI();
-      console.log("uri", uri);
       this.setState({ uri });
       this.toggleModal();
 
@@ -86,18 +89,21 @@ class App extends Component {
 
       // Get accounts after session status is resolved
       accounts = walletConnectGetAccounts();
-      console.log("accounts after", accounts);
       await this.setState({ fetching: false });
     }
 
     if (accounts && accounts.length) {
+      // Close Modal if accounts are available
       if (this.state.showModal) {
         this.toggleModal();
       }
+
+      // Display account balances
       const { network } = this.state;
       const address = accounts[0];
       const { data } = await apiGetAccountBalances(address, network);
       const assets = parseAccountBalances(data);
+
       await this.setState({ accounts, address, assets });
     } else {
     }
