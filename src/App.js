@@ -10,7 +10,10 @@ import {
   walletConnectGetAccounts,
   walletConnectGetURI,
   walletConnectListenSessionStatus,
-  walletConnectResetSession
+  walletConnectResetSession,
+  walletConnectSendTransaction,
+  walletConnectSignMessage,
+  walletConnectSignTypedData
 } from "./helpers/walletconnect";
 import { apiGetAccountBalances } from "./helpers/api";
 import { parseAccountBalances } from "./helpers/parsers";
@@ -36,6 +39,20 @@ const StyledBalances = styled(StyledLanding)`
   padding-top: 60px;
 `;
 
+const StyledTestButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const StyledTestButton = styled(Button)`
+  border-radius: 8px;
+  font-size: ${fonts.size.medium};
+  height: 44px;
+  width: 100%;
+  margin: 12px 0;
+`;
+
 class App extends Component {
   state = {
     fetching: false,
@@ -44,19 +61,20 @@ class App extends Component {
     uri: "",
     accounts: [],
     address: "",
+    result: {},
     assets: []
   };
 
-  toggleModal = async () => {
+  toggleModal = async newState => {
     // toggle modal
-    await this.setState({ showModal: !this.state.showModal });
+    await this.setState({ showModal: !this.state.showModal, ...newState });
 
     if (!this.state.showModal) {
-      // clear uri if closing modal
-      await this.setState({ uri: "" });
+      // clear uri/result when closing modal
+      await this.setState({ uri: "", result: {} });
 
       if (!this.state.accounts.length) {
-        // reset session if closing modal without accounts
+        // reset session when closing modal without accounts
         walletConnectResetSession();
       }
     }
@@ -81,8 +99,9 @@ class App extends Component {
 
       // If there is no accounts, prompt the user to scan the QR code
       const uri = walletConnectGetURI();
-      this.setState({ uri });
-      this.toggleModal();
+
+      // Display QR Code
+      this.toggleModal({ uri });
 
       // Listen for session confirmation from wallet
       await walletConnectListenSessionStatus();
@@ -109,6 +128,56 @@ class App extends Component {
     }
   };
 
+  _testSendTransaction = async () => {
+    // test transaction
+    const tx = {
+      from: "0xab12...1cd",
+      to: "0x0",
+      nonce: 1,
+      gas: 100000,
+      value: 0,
+      data: "0x0"
+    };
+
+    // send transaction
+    const result = await walletConnectSendTransaction(tx);
+
+    // display result
+    this.toggleModal({ result });
+  };
+
+  _testSignMessage = async () => {
+    // test message
+    const msg = "My email is john@doe.com - 1537836206101";
+
+    // sign message
+    const result = await walletConnectSignMessage(msg);
+
+    // display result
+    this.toggleModal({ result });
+  };
+
+  _testSignTypedData = async () => {
+    // test typed data
+    const msgParams = [
+      {
+        type: "string",
+        name: "Message",
+        value: "My email is john@doe.com"
+      },
+      {
+        type: "uint32",
+        name: "A number",
+        value: "1537836206101"
+      }
+    ];
+    // sign typed data
+    const result = await walletConnectSignTypedData(msgParams);
+
+    // display result
+    this.toggleModal({ result });
+  };
+
   render = () => (
     <BaseLayout
       address={this.state.address}
@@ -133,6 +202,36 @@ class App extends Component {
       ) : (
         <StyledBalances>
           <h3>Balances</h3>
+          <Column center>
+            <StyledTestButtonContainer>
+              <StyledTestButton
+                left
+                color="walletconnect"
+                onClick={this._testSendTransaction}
+                fetching={this.state.fetching}
+              >
+                {"Send Test Transaction"}
+              </StyledTestButton>
+
+              <StyledTestButton
+                left
+                color="walletconnect"
+                onClick={this._testSignMessage}
+                fetching={this.state.fetching}
+              >
+                {"Sign Test Message"}
+              </StyledTestButton>
+
+              <StyledTestButton
+                left
+                color="walletconnect"
+                onClick={this._testSignTypedData}
+                fetching={this.state.fetching}
+              >
+                {"Sign Test Typed Data"}
+              </StyledTestButton>
+            </StyledTestButtonContainer>
+          </Column>
           <Column center>
             {this.state.assets.map(asset => (
               <AssetRow key={asset.symbol} asset={asset} />

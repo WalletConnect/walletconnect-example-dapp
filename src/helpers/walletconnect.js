@@ -29,7 +29,7 @@ export function walletConnectGetAccounts() {
 
 /**
  * @desc Get WalletConnect URI string
- * @return {Strin}
+ * @return {String}
  */
 export function walletConnectGetURI() {
   return webConnector.uri;
@@ -44,6 +44,54 @@ export async function walletConnectListenSessionStatus() {
     await webConnector.listenSessionStatus(); // Listen to session status
   } catch (error) {
     console.error(error);
+  }
+}
+
+/**
+ * @desc Send Transaction
+ * @return {Object}
+ */
+export async function walletConnectSendTransaction(tx) {
+  try {
+    // Submitted Transaction Hash
+    const result = await webConnector.sendTransaction(tx);
+    return result;
+  } catch (error) {
+    // Rejected Transaction
+    console.error(error);
+    return null;
+  }
+}
+
+/**
+ * @desc Sign Message
+ * @return {Object}
+ */
+export async function walletConnectSignMessage(msg) {
+  try {
+    // Submitted Transaction Hash
+    const result = await webConnector.signMessage(msg);
+    return result;
+  } catch (error) {
+    // Rejected Signing
+    console.error(error);
+    return null;
+  }
+}
+
+/**
+ * @desc Sign Typed Data
+ * @return {Object}
+ */
+export async function walletConnectSignTypedData(msgParams) {
+  try {
+    // Signed typed data
+    const result = await webConnector.signTypedData(msgParams);
+    return result;
+  } catch (error) {
+    // Rejected Signing
+    console.error(error);
+    return null;
   }
 }
 
