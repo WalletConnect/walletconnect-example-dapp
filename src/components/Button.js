@@ -75,7 +75,7 @@ const StyledButton = styled.button`
     transform: ${({ disabled }) => (!disabled ? "translateY(1px)" : "none")};
     box-shadow: ${({ outline }) => (outline ? "none" : `${shadows.soft}`)};
     color: ${({ outline, color }) =>
-      outline ? `rgb(${colors[color]})` : `rgba(${colors.whiteTransparent})`};
+      outline ? `rgb(${colors[color]})` : `rgba(${colors.white}, 0.24)`};
 
     & ${StyledIcon} {
       opacity: 0.8;

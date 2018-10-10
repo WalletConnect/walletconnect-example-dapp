@@ -142,6 +142,8 @@ class App extends Component {
     // send transaction
     const result = await walletConnectSendTransaction(tx);
 
+    console.log("walletConnectSendTransaction result", result);
+
     // display result
     this.toggleModal({ result });
   };
@@ -152,6 +154,8 @@ class App extends Component {
 
     // sign message
     const result = await walletConnectSignMessage(msg);
+
+    console.log("walletConnectSignMessage result", result);
 
     // display result
     this.toggleModal({ result });
@@ -173,6 +177,8 @@ class App extends Component {
     ];
     // sign typed data
     const result = await walletConnectSignTypedData(msgParams);
+
+    console.log("walletConnectSignTypedData result", result);
 
     // display result
     this.toggleModal({ result });
