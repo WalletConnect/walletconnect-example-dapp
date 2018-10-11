@@ -1,20 +1,11 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import WalletConnect from "walletconnect";
 import BaseLayout from "./components/BaseLayout";
 import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import { fonts } from "./styles";
-import {
-  walletConnectInitSession,
-  walletConnectGetAccounts,
-  walletConnectGetURI,
-  walletConnectListenSessionStatus,
-  walletConnectResetSession,
-  walletConnectSendTransaction,
-  walletConnectSignMessage,
-  walletConnectSignTypedData
-} from "./helpers/walletconnect";
 import { apiGetAccountBalances } from "./helpers/api";
 import { parseAccountBalances } from "./helpers/parsers";
 
@@ -40,6 +31,7 @@ const StyledBalances = styled(StyledLanding)`
 `;
 
 const StyledTestButtonContainer = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,8 +42,15 @@ const StyledTestButton = styled(Button)`
   font-size: ${fonts.size.medium};
   height: 44px;
   width: 100%;
-  margin: 12px 0;
+  margin: 12px;
 `;
+
+const defaultConfig = {
+  bridgeUrl: "https://test-bridge.walletconnect.org",
+  dappName: "Example Dapp"
+};
+
+let webConnector = new WalletConnect(defaultConfig);
 
 class App extends Component {
   state = {
@@ -75,21 +74,21 @@ class App extends Component {
 
       if (!this.state.accounts.length) {
         // reset session when closing modal without accounts
-        walletConnectResetSession();
+        webConnector = new WalletConnect(defaultConfig);
       }
     }
   };
 
-  _walletConnectInit = async () => {
+  walletConnectInit = async () => {
     /**
      *  Initiate WalletConnect session
      */
-    await walletConnectInitSession();
+    await webConnector.initSession();
 
     /**
      *  Get accounts (type: <Array>)
      */
-    let accounts = walletConnectGetAccounts();
+    let accounts = webConnector.accounts;
 
     /**
      *  Check if accounts is empty array
@@ -98,16 +97,16 @@ class App extends Component {
       await this.setState({ fetching: true });
 
       // If there is no accounts, prompt the user to scan the QR code
-      const uri = walletConnectGetURI();
+      const uri = webConnector.uri;
 
       // Display QR Code
       this.toggleModal({ uri });
 
       // Listen for session confirmation from wallet
-      await walletConnectListenSessionStatus();
+      await webConnector.listenSessionStatus();
 
       // Get accounts after session status is resolved
-      accounts = walletConnectGetAccounts();
+      accounts = webConnector.accounts;
       await this.setState({ fetching: false });
     }
 
@@ -124,11 +123,10 @@ class App extends Component {
       const assets = parseAccountBalances(data);
 
       await this.setState({ accounts, address, assets });
-    } else {
     }
   };
 
-  _testSendTransaction = async () => {
+  testSendTransaction = async () => {
     // test transaction
     const tx = {
       from: "0xab12...1cd",
@@ -140,28 +138,24 @@ class App extends Component {
     };
 
     // send transaction
-    const result = await walletConnectSendTransaction(tx);
-
-    console.log("walletConnectSendTransaction result", result);
+    const result = await webConnector.sendTransaction(tx);
 
     // display result
     this.toggleModal({ result });
   };
 
-  _testSignMessage = async () => {
+  testSignMessage = async () => {
     // test message
     const msg = "My email is john@doe.com - 1537836206101";
 
     // sign message
-    const result = await walletConnectSignMessage(msg);
-
-    console.log("walletConnectSignMessage result", result);
+    const result = await webConnector.signMessage(msg);
 
     // display result
     this.toggleModal({ result });
   };
 
-  _testSignTypedData = async () => {
+  testSignTypedData = async () => {
     // test typed data
     const msgParams = [
       {
@@ -176,9 +170,7 @@ class App extends Component {
       }
     ];
     // sign typed data
-    const result = await walletConnectSignTypedData(msgParams);
-
-    console.log("walletConnectSignTypedData result", result);
+    const result = await webConnector.signTypedData(msgParams);
 
     // display result
     this.toggleModal({ result });
@@ -198,7 +190,7 @@ class App extends Component {
             <StyledConnectButton
               left
               color="walletconnect"
-              onClick={this._walletConnectInit}
+              onClick={this.walletConnectInit}
               fetching={this.state.fetching}
             >
               {"Connect to WalletConnect"}
@@ -207,13 +199,13 @@ class App extends Component {
         </StyledLanding>
       ) : (
         <StyledBalances>
-          <h3>Balances</h3>
+          <h3>Actions</h3>
           <Column center>
             <StyledTestButtonContainer>
               <StyledTestButton
                 left
                 color="walletconnect"
-                onClick={this._testSendTransaction}
+                onClick={this.testSendTransaction}
                 fetching={this.state.fetching}
               >
                 {"Send Test Transaction"}
@@ -222,7 +214,7 @@ class App extends Component {
               <StyledTestButton
                 left
                 color="walletconnect"
-                onClick={this._testSignMessage}
+                onClick={this.testSignMessage}
                 fetching={this.state.fetching}
               >
                 {"Sign Test Message"}
@@ -231,13 +223,14 @@ class App extends Component {
               <StyledTestButton
                 left
                 color="walletconnect"
-                onClick={this._testSignTypedData}
+                onClick={this.testSignTypedData}
                 fetching={this.state.fetching}
               >
                 {"Sign Test Typed Data"}
               </StyledTestButton>
             </StyledTestButtonContainer>
           </Column>
+          <h3>Balances</h3>
           <Column center>
             {this.state.assets.map(asset => (
               <AssetRow key={asset.symbol} asset={asset} />
