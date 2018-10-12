@@ -45,15 +45,11 @@ const StyledTestButton = styled(Button)`
   margin: 12px;
 `;
 
-const defaultConfig = {
-  bridgeUrl: "https://test-bridge.walletconnect.org",
-  dappName: "Example Dapp"
-};
-
-window.webConnector = new WalletConnect(defaultConfig);
-
 class App extends Component {
   state = {
+    bridgeUrl: "https://test-bridge.walletconnect.org",
+    dappName: "Example Dapp",
+    webConnector: null,
     fetching: false,
     network: "mainnet",
     showModal: false,
@@ -63,6 +59,18 @@ class App extends Component {
     result: {},
     assets: []
   };
+
+  componentDidMount() {
+    this.createWebConnector();
+  }
+
+  createWebConnector() {
+    const { bridgeUrl, dappName } = this.state;
+
+    const webConnector = new WalletConnect({ bridgeUrl, dappName });
+
+    this.setState({ webConnector });
+  }
 
   toggleModal = async newState => {
     // toggle modal
@@ -74,21 +82,22 @@ class App extends Component {
 
       if (!this.state.accounts.length) {
         // reset session when closing modal without accounts
-        window.webConnector = new WalletConnect(defaultConfig);
+        this.createWebConnector();
       }
     }
   };
 
   walletConnectInit = async () => {
+    const { webConnector } = this.state;
     /**
      *  Initiate WalletConnect session
      */
-    await window.webConnector.initSession();
+    await webConnector.initSession();
 
     /**
      *  Get accounts (type: <Array>)
      */
-    let accounts = window.webConnector.accounts;
+    let accounts = webConnector.accounts;
 
     /**
      *  Check if accounts is empty array
@@ -97,16 +106,16 @@ class App extends Component {
       await this.setState({ fetching: true });
 
       // If there is no accounts, prompt the user to scan the QR code
-      const uri = window.webConnector.uri;
+      const uri = webConnector.uri;
 
       // Display QR Code
       this.toggleModal({ uri });
 
       // Listen for session confirmation from wallet
-      await window.webConnector.listenSessionStatus();
+      await webConnector.listenSessionStatus();
 
       // Get accounts after session status is resolved
-      accounts = window.webConnector.accounts;
+      accounts = webConnector.accounts;
       await this.setState({ fetching: false });
     }
 
@@ -124,9 +133,12 @@ class App extends Component {
 
       await this.setState({ accounts, address, assets });
     }
+
+    this.setState({ webConnector });
   };
 
   testSendTransaction = async () => {
+    const { webConnector } = this.state;
     // test transaction
     const tx = {
       from: "0xab12...1cd",
@@ -138,24 +150,30 @@ class App extends Component {
     };
 
     // send transaction
-    const result = await window.webConnector.sendTransaction(tx);
+    const result = await webConnector.sendTransaction(tx);
 
     // display result
     this.toggleModal({ result });
+
+    this.setState({ webConnector });
   };
 
   testSignMessage = async () => {
+    const { webConnector } = this.state;
     // test message
     const msg = "My email is john@doe.com - 1537836206101";
 
     // sign message
-    const result = await window.webConnector.signMessage(msg);
+    const result = await webConnector.signMessage(msg);
 
     // display result
     this.toggleModal({ result });
+
+    this.setState({ webConnector });
   };
 
   testSignTypedData = async () => {
+    const { webConnector } = this.state;
     // test typed data
     const msgParams = [
       {
@@ -170,10 +188,12 @@ class App extends Component {
       }
     ];
     // sign typed data
-    const result = await window.webConnector.signTypedData(msgParams);
+    const result = await webConnector.signTypedData(msgParams);
 
     // display result
     this.toggleModal({ result });
+
+    this.setState({ webConnector });
   };
 
   render = () => (
