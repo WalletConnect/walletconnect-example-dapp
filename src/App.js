@@ -78,7 +78,7 @@ class App extends Component {
 
     if (!this.state.showModal) {
       // clear uri/result when closing modal
-      await this.setState({ uri: "", result: {} });
+      await this.setState({ uri: "", result: {}, fetching: false });
 
       if (!this.state.accounts.length) {
         // reset session when closing modal without accounts
