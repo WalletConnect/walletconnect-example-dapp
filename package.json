@@ -5,13 +5,14 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "js-walletconnect-core": "^0.7.8",
     "prop-types": "^15.6.2",
     "qrcode": "^1.2.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.4",
     "styled-components": "^3.4.2",
-    "walletconnect": "^0.7.8",
+    "walletconnect": "^0.7.9",
     "web3": "^1.0.0-beta.35"
   },
   "scripts": {

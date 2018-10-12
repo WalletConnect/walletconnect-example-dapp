@@ -50,7 +50,7 @@ const defaultConfig = {
   dappName: "Example Dapp"
 };
 
-let webConnector = new WalletConnect(defaultConfig);
+window.webConnector = new WalletConnect(defaultConfig);
 
 class App extends Component {
   state = {
@@ -74,7 +74,7 @@ class App extends Component {
 
       if (!this.state.accounts.length) {
         // reset session when closing modal without accounts
-        webConnector = new WalletConnect(defaultConfig);
+        window.webConnector = new WalletConnect(defaultConfig);
       }
     }
   };
@@ -83,12 +83,12 @@ class App extends Component {
     /**
      *  Initiate WalletConnect session
      */
-    await webConnector.initSession();
+    await window.webConnector.initSession();
 
     /**
      *  Get accounts (type: <Array>)
      */
-    let accounts = webConnector.accounts;
+    let accounts = window.webConnector.accounts;
 
     /**
      *  Check if accounts is empty array
@@ -97,16 +97,16 @@ class App extends Component {
       await this.setState({ fetching: true });
 
       // If there is no accounts, prompt the user to scan the QR code
-      const uri = webConnector.uri;
+      const uri = window.webConnector.uri;
 
       // Display QR Code
       this.toggleModal({ uri });
 
       // Listen for session confirmation from wallet
-      await webConnector.listenSessionStatus();
+      await window.webConnector.listenSessionStatus();
 
       // Get accounts after session status is resolved
-      accounts = webConnector.accounts;
+      accounts = window.webConnector.accounts;
       await this.setState({ fetching: false });
     }
 
@@ -138,7 +138,7 @@ class App extends Component {
     };
 
     // send transaction
-    const result = await webConnector.sendTransaction(tx);
+    const result = await window.webConnector.sendTransaction(tx);
 
     // display result
     this.toggleModal({ result });
@@ -149,7 +149,7 @@ class App extends Component {
     const msg = "My email is john@doe.com - 1537836206101";
 
     // sign message
-    const result = await webConnector.signMessage(msg);
+    const result = await window.webConnector.signMessage(msg);
 
     // display result
     this.toggleModal({ result });
@@ -170,7 +170,7 @@ class App extends Component {
       }
     ];
     // sign typed data
-    const result = await webConnector.signTypedData(msgParams);
+    const result = await window.webConnector.signTypedData(msgParams);
 
     // display result
     this.toggleModal({ result });
