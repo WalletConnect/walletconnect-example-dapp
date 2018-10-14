@@ -110,7 +110,10 @@ class App extends Component {
       const uri = webConnector.uri;
 
       // Display QR Code
-      WalletConnectQRCodeModal.open(uri, webConnector.stopLastListener);
+      WalletConnectQRCodeModal.open(uri, () => {
+        webConnector.stopLastListener();
+        this.setState({ fetching: false });
+      });
 
       // Listen for session confirmation from wallet
       await webConnector.listenSessionStatus();
@@ -246,9 +249,12 @@ class App extends Component {
           </Column>
           <h3>Balances</h3>
           <Column center>
-            {this.state.assets.map(asset => (
-              <AssetRow key={asset.symbol} asset={asset} />
-            ))}
+            {this.state.assets
+              .filter(x => x.symbol.toLowerCase() === "eth")
+              .map(asset => <AssetRow key={asset.symbol} asset={asset} />)}
+            {this.state.assets
+              .filter(x => x.symbol.toLowerCase() !== "eth")
+              .map(asset => <AssetRow key={asset.symbol} asset={asset} />)}
           </Column>
         </StyledBalances>
       )}

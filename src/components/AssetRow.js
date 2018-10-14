@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import AssetIcon from "./AssetIcon";
+import ERC20Icon from "./ERC20Icon";
 import { handleSignificantDecimals } from "../helpers/bignumber";
+import eth from "../assets/eth.svg";
 
 const StyledAssetRow = styled.div`
   width: 100%;
@@ -26,7 +27,11 @@ const StyledAssetBalance = styled.div`
 const AssetRow = ({ asset, ...props }) => (
   <StyledAssetRow>
     <StyledAssetRowLeft>
-      <AssetIcon asset={asset.symbol} />
+      {asset.symbol.toLowerCase() === "eth" ? (
+        <img style={{ width: 20, height: 20 }} src={eth} alt="erc-20" />
+      ) : (
+        <ERC20Icon tokenAddress={asset.address} />
+      )}
       <StyledAssetName>{asset.name}</StyledAssetName>
     </StyledAssetRowLeft>
     <StyledAssetRowRight>

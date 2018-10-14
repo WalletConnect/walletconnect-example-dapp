@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Blockie } from "dapparatus";
 import styled from "styled-components";
 import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
-import Blockie from "../components/Blockie";
 import { ellipseAddress } from "../helpers/utilities";
 import branding from "../assets/walletconnect-branding.png";
 
