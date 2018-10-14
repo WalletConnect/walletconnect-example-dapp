@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import WalletConnect from "walletconnect";
+import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
 import BaseLayout from "./components/BaseLayout";
 import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
@@ -109,10 +110,13 @@ class App extends Component {
       const uri = webConnector.uri;
 
       // Display QR Code
-      this.toggleModal({ uri });
+      WalletConnectQRCodeModal.open(uri, webConnector.stopLastListener);
 
       // Listen for session confirmation from wallet
       await webConnector.listenSessionStatus();
+
+      // Close QR Code
+      WalletConnectQRCodeModal.close();
 
       // Get accounts after session status is resolved
       accounts = webConnector.accounts;
@@ -120,11 +124,6 @@ class App extends Component {
     }
 
     if (accounts && accounts.length) {
-      // Close Modal if accounts are available
-      if (this.state.showModal) {
-        this.toggleModal();
-      }
-
       // Display account balances
       const { network } = this.state;
       const address = accounts[0];
@@ -197,12 +196,7 @@ class App extends Component {
   };
 
   render = () => (
-    <BaseLayout
-      address={this.state.address}
-      uri={this.state.uri}
-      showModal={this.state.showModal}
-      toggleModal={this.toggleModal}
-    >
+    <BaseLayout address={this.state.address}>
       {!this.state.address && !this.state.assets.length ? (
         <StyledLanding center>
           <h2>Check your Ether & Token balances</h2>

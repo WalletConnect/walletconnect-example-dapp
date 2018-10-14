@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
-// import Notification from "../components/Notification";
-import Modal from "../components/Modal";
 import Blockie from "../components/Blockie";
 import { ellipseAddress } from "../helpers/utilities";
 import branding from "../assets/walletconnect-branding.png";
@@ -79,18 +77,13 @@ const BaseLayout = ({
         </StyledHeader>
         <StyledContent>{children}</StyledContent>
       </Column>
-      {/* <Notification /> */}
-      <Modal uri={uri} showModal={showModal} toggleModal={toggleModal} />
     </StyledLayout>
   );
 };
 
 BaseLayout.propTypes = {
   children: PropTypes.node.isRequired,
-  address: PropTypes.string,
-  showModal: PropTypes.bool,
-  toggleModal: PropTypes.func,
-  uri: PropTypes.string
+  address: PropTypes.string
 };
 
 export default BaseLayout;
