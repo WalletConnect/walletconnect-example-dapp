@@ -10,8 +10,8 @@
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.4",
     "styled-components": "^3.4.2",
-    "walletconnect": "^0.7.17",
-    "walletconnect-qrcode-modal": "^0.7.20",
+    "walletconnect": "^0.7.24",
+    "walletconnect-qrcode-modal": "^0.7.24",
     "web3": "^1.0.0-beta.35"
   },
   "scripts": {
