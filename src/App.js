@@ -28,7 +28,10 @@ const StyledConnectButton = styled(Button)`
 `;
 
 const StyledBalances = styled(StyledLanding)`
-  padding-top: 60px;
+  height: 100%;
+  & h3 {
+    padding-top: 30px;
+  }
 `;
 
 const StyledTestButtonContainer = styled.div`
@@ -124,16 +127,21 @@ class App extends Component {
     }
 
     if (accounts && accounts.length) {
-      // Display account balances
-      const { network } = this.state;
       const address = accounts[0];
-      const { data } = await apiGetAccountBalances(address, network);
-      const assets = parseAccountBalances(data);
-
-      await this.setState({ accounts, address, assets });
+      await this.setState({ accounts, address });
+      // Display account balances
+      await this.getAccountBalances();
     }
 
     this.setState({ webConnector });
+  };
+
+  getAccountBalances = async () => {
+    const { address, network } = this.state;
+    const { data } = await apiGetAccountBalances(address, network);
+    const assets = parseAccountBalances(data);
+
+    await this.setState({ address, assets });
   };
 
   testSendTransaction = async () => {
