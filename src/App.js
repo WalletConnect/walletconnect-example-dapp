@@ -28,7 +28,10 @@ const StyledConnectButton = styled(Button)`
 `;
 
 const StyledBalances = styled(StyledLanding)`
-  padding-top: 60px;
+  height: 100%;
+  & h3 {
+    padding-top: 30px;
+  }
 `;
 
 const StyledTestButtonContainer = styled.div`
@@ -56,15 +59,13 @@ class App extends Component {
     showModal: false,
     uri: "",
     accounts: [],
-    address: "0x9b7b2b4f7a391b6f14a81221ae0920a9735b67fb",
+    address: "",
     result: {},
     assets: []
   };
 
   componentDidMount() {
     this.createWebConnector();
-
-    this.getAccountBalances();
   }
 
   createWebConnector() {
