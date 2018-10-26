@@ -56,13 +56,15 @@ class App extends Component {
     showModal: false,
     uri: "",
     accounts: [],
-    address: "",
+    address: "0x9b7b2b4f7a391b6f14a81221ae0920a9735b67fb",
     result: {},
     assets: []
   };
 
   componentDidMount() {
     this.createWebConnector();
+
+    this.getAccountBalances();
   }
 
   createWebConnector() {
@@ -124,16 +126,21 @@ class App extends Component {
     }
 
     if (accounts && accounts.length) {
-      // Display account balances
-      const { network } = this.state;
       const address = accounts[0];
-      const { data } = await apiGetAccountBalances(address, network);
-      const assets = parseAccountBalances(data);
-
-      await this.setState({ accounts, address, assets });
+      await this.setState({ accounts, address });
+      // Display account balances
+      await this.getAccountBalances();
     }
 
     this.setState({ webConnector });
+  };
+
+  getAccountBalances = async () => {
+    const { address, network } = this.state;
+    const { data } = await apiGetAccountBalances(address, network);
+    const assets = parseAccountBalances(data);
+
+    await this.setState({ address, assets });
   };
 
   testSendTransaction = async () => {
