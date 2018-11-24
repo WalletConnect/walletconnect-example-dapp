@@ -4,7 +4,7 @@ import axios from "axios";
  * Configuration for balance api
  * @type axios instance
  */
-const api = axios.create({
+const balanceApi = axios.create({
   baseURL: "https://indexer.balance.io",
   timeout: 30000, // 30 secs
   headers: {
@@ -22,7 +22,7 @@ const api = axios.create({
 export const apiGetAccountBalances = async (
   address = "",
   network = "mainnet"
-) => api.get(`/get_balances/${network}/${address}`);
+) => balanceApi.get(`/get_balances/${network}/${address}`);
 
 /**
  * @desc get account transactions
@@ -35,7 +35,7 @@ export const apiGetAccountTransactions = (
   address = "",
   network = "mainnet",
   page = 1
-) => api.get(`/get_transactions/${network}/${address}/${page}`);
+) => balanceApi.get(`/get_transactions/${network}/${address}/${page}`);
 
 /**
  * @desc get transaction details
@@ -44,10 +44,25 @@ export const apiGetAccountTransactions = (
  * @return {Promise}
  */
 export const apiGetTransactionDetails = (txnHash = "", network = "mainnet") =>
-  api.get(`/get_transaction/${network}/${txnHash}`);
+  balanceApi.get(`/get_transaction/${network}/${txnHash}`);
 
 /**
  * @desc get ethereum gas prices
  * @return {Promise}
  */
-export const apiGetGasPrices = () => api.get(`/get_eth_gas_prices`);
+export const apiGetGasPrices = () =>
+  axios.get(`https://ethgasstation.info/json/ethgasAPI.json`);
+
+/**
+ * @desc get account nonce
+ * @param  {String}   [address = '']
+ * @param  {String}   [network = 'mainnet']
+ * @return {Promise}
+ */
+export const apiGetAccountNonce = (address = "", network = "mainnet") =>
+  axios.post(`https://${network}.infura.io/`, {
+    jsonrpc: "2.0",
+    id: Date.now(),
+    method: "eth_getTransactionCount",
+    params: [address, "pending"]
+  });

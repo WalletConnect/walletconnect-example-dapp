@@ -2,13 +2,45 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import WalletConnect from "walletconnect";
 import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
-import BaseLayout from "./components/BaseLayout";
 import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
 import Column from "./components/Column";
+import Wrapper from "./components/Wrapper";
+import Modal from "./components/Modal";
+import Header from "./components/Header";
+import Loader from "./components/Loader";
 import { fonts } from "./styles";
-import { apiGetAccountBalances } from "./helpers/api";
+import {
+  apiGetAccountBalances,
+  apiGetGasPrices,
+  apiGetAccountNonce
+} from "./helpers/api";
+import {
+  ecrecover,
+  fromRpcSig,
+  bufferToHex,
+  sanitizeHex
+} from "./helpers/utilities";
+import {
+  divide,
+  convertAmountToRawNumber,
+  convertStringToHex
+} from "./helpers/bignumber";
 import { parseAccountBalances } from "./helpers/parsers";
+
+const StyledLayout = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  text-align: center;
+`;
+
+const StyledContent = styled(Wrapper)`
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+`;
 
 const StyledLanding = styled(Column)`
   height: 600px;
@@ -27,11 +59,47 @@ const StyledConnectButton = styled(Button)`
   margin: 12px 0;
 `;
 
+const StyledContainer = styled.div`
+  height: 100%;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  word-break: break-word;
+`;
+
+const StyledModalTitle = styled.div`
+  margin: 1em 0;
+  font-size: 20px;
+  font-weight: 700;
+`;
+
 const StyledBalances = styled(StyledLanding)`
   height: 100%;
   & h3 {
     padding-top: 30px;
   }
+`;
+
+const StyledTable = styled(StyledContainer)`
+  flex-direction: column;
+  text-align: left;
+`;
+
+const StyledRow = styled.div`
+  width: 100%;
+  display: flex;
+  margin: 6px 0;
+`;
+
+const StyledKey = styled.div`
+  width: 30%;
+  font-weight: 700;
+`;
+
+const StyledValue = styled.div`
+  width: 70%;
+  font-family: monospace;
 `;
 
 const StyledTestButtonContainer = styled.div`
@@ -49,19 +117,24 @@ const StyledTestButton = styled(Button)`
   margin: 12px;
 `;
 
+const INITIAL_STATE = {
+  webConnector: null,
+  fetching: false,
+  network: "mainnet",
+  showModal: false,
+  pendingRequest: false,
+  uri: "",
+  accounts: [],
+  address: "",
+  result: null,
+  assets: []
+};
+
 class App extends Component {
   state = {
     bridgeUrl: "https://test-bridge.walletconnect.org",
     dappName: "Example Dapp",
-    webConnector: null,
-    fetching: false,
-    network: "mainnet",
-    showModal: false,
-    uri: "",
-    accounts: [],
-    address: "",
-    result: {},
-    assets: []
+    ...INITIAL_STATE
   };
 
   componentDidMount() {
@@ -74,29 +147,23 @@ class App extends Component {
     const webConnector = new WalletConnect({ bridgeUrl, dappName });
 
     this.setState({ webConnector });
+
+    return webConnector;
   }
 
-  toggleModal = async newState => {
-    // toggle modal
-    await this.setState({ showModal: !this.state.showModal, ...newState });
-
-    if (!this.state.showModal) {
-      // clear uri/result when closing modal
-      await this.setState({ uri: "", result: {}, fetching: false });
-
-      if (!this.state.accounts.length) {
-        // reset session when closing modal without accounts
-        this.createWebConnector();
-      }
-    }
-  };
-
   walletConnectInit = async () => {
-    const { webConnector } = this.state;
+    let { webConnector } = this.state;
+
+    if (!webConnector) {
+      webConnector = this.createWebConnector();
+    }
+
     /**
      *  Initiate WalletConnect session
      */
     await webConnector.initSession();
+
+    window.webConnector = webConnector;
 
     /**
      *  Get accounts (type: <Array>)
@@ -136,51 +203,136 @@ class App extends Component {
     this.setState({ webConnector });
   };
 
+  killSession = async () => {
+    const localStorageId = "wcsmngt";
+
+    localStorage.removeItem(localStorageId);
+
+    this.setState({ ...INITIAL_STATE });
+  };
+
   getAccountBalances = async () => {
     const { address, network } = this.state;
+    this.setState({ fetching: true });
+
     const { data } = await apiGetAccountBalances(address, network);
     const assets = parseAccountBalances(data);
 
-    await this.setState({ address, assets });
+    await this.setState({ fetching: false, address, assets });
   };
 
+  toggleModal = () =>
+    this.setState({ showModal: !this.state.showModal, result: null });
+
   testSendTransaction = async () => {
-    const { webConnector } = this.state;
+    const { webConnector, address, network } = this.state;
+
+    const nonceRes = await apiGetAccountNonce(address, network);
+    const nonce = nonceRes.data.result;
+
+    const gasPriceRes = await apiGetGasPrices();
+
+    const gasPrice = divide(gasPriceRes.data.safeLow, 10);
+
+    const gasLimit = 21000;
     // test transaction
     const tx = {
-      from: "0xab12...1cd",
-      to: "0x0",
-      nonce: 1,
-      gas: 100000,
-      value: 0,
-      data: "0x0"
+      from: address,
+      to: address,
+      nonce: nonce,
+      gasPrice: sanitizeHex(
+        convertStringToHex(convertAmountToRawNumber(gasPrice, 9))
+      ),
+      gasLimit: sanitizeHex(convertStringToHex(gasLimit)),
+      value: "0x00",
+      input: "0x00"
     };
 
-    // send transaction
-    const result = await webConnector.sendTransaction(tx);
+    try {
+      // open modal
+      this.toggleModal();
 
-    // display result
-    this.toggleModal({ result });
+      this.setState({ pendingRequest: true });
 
-    this.setState({ webConnector });
+      // send transaction
+      const result = await webConnector.sendTransaction(tx);
+
+      const formattedResult = {
+        method: "eth_sendTransaction",
+        txHash: result,
+        from: address,
+        to: address,
+        value: "0 ETH",
+        gasPrice: `${gasPrice} gwei`
+      };
+
+      // display result
+      this.setState({
+        webConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ webConnector, pendingRequest: false, result: null });
+    }
   };
 
   testSignMessage = async () => {
-    const { webConnector } = this.state;
+    const { webConnector, address } = this.state;
     // test message
     const msg = "My email is john@doe.com - 1537836206101";
 
-    // sign message
-    const result = await webConnector.signMessage(msg);
+    try {
+      // open modal
+      this.toggleModal();
 
-    // display result
-    this.toggleModal({ result });
+      this.setState({ pendingRequest: true });
 
-    this.setState({ webConnector });
+      let result = null;
+
+      try {
+        result = await webConnector.createCallRequest({
+          method: "eth_sign",
+          params: [address, msg]
+        });
+      } catch (error) {
+        console.error(error);
+        throw new Error("Rejected: Signed Message Request");
+      }
+
+      console.log("result", result);
+
+      // verify signature
+      const signer = ecrecover(msg, result);
+      const verified = signer.toLowerCase() === address.toLowerCase();
+
+      // signature params
+      const sigParams = fromRpcSig(result);
+
+      const formattedResult = {
+        method: "eth_sign",
+        address: address,
+        verified: verified,
+        v: bufferToHex(sigParams.v),
+        r: bufferToHex(sigParams.r),
+        s: bufferToHex(sigParams.s)
+      };
+
+      // display result
+      this.setState({
+        webConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ webConnector, pendingRequest: false, result: null });
+    }
   };
 
   testSignTypedData = async () => {
-    const { webConnector } = this.state;
+    const { webConnector, address } = this.state;
     // test typed data
     const msgParams = [
       {
@@ -194,74 +346,166 @@ class App extends Component {
         value: "1537836206101"
       }
     ];
-    // sign typed data
-    const result = await webConnector.signTypedData(msgParams);
 
-    // display result
-    this.toggleModal({ result });
+    try {
+      // open modal
+      this.toggleModal();
 
-    this.setState({ webConnector });
+      this.setState({ pendingRequest: true });
+
+      // sign typed data
+      const result = await webConnector.signTypedData(msgParams);
+
+      // verify signature
+      const signer = ecrecover(msgParams, result);
+      const verified = signer.toLowerCase() === address.toLowerCase();
+
+      // signature params
+      const sigParams = fromRpcSig(result);
+
+      const formattedResult = {
+        method: "eth_signTypedData",
+        address: address,
+        verified: verified,
+        v: bufferToHex(sigParams.v),
+        r: bufferToHex(sigParams.r),
+        s: bufferToHex(sigParams.s)
+      };
+
+      // display result
+      this.setState({
+        webConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ webConnector, pendingRequest: false, result: null });
+    }
   };
 
-  render = () => (
-    <BaseLayout address={this.state.address}>
-      {!this.state.address && !this.state.assets.length ? (
-        <StyledLanding center>
-          <h2>Check your Ether & Token balances</h2>
-          <StyledButtonContainer>
-            <StyledConnectButton
-              left
-              color="walletconnect"
-              onClick={this.walletConnectInit}
-              fetching={this.state.fetching}
-            >
-              {"Connect to WalletConnect"}
-            </StyledConnectButton>
-          </StyledButtonContainer>
-        </StyledLanding>
-      ) : (
-        <StyledBalances>
-          <h3>Actions</h3>
-          <Column center>
-            <StyledTestButtonContainer>
-              <StyledTestButton
-                left
-                color="walletconnect"
-                onClick={this.testSendTransaction}
-                fetching={this.state.fetching}
-              >
-                {"Send Test Transaction"}
-              </StyledTestButton>
+  render = () => {
+    const {
+      assets,
+      address,
+      fetching,
+      showModal,
+      pendingRequest,
+      result
+    } = this.state;
+    let ethereum = {
+      address: null,
+      name: "Ethereum",
+      symbole: "ETH",
+      decimals: 18,
+      balance: "0"
+    };
+    let tokens = [];
+    if (assets.length) {
+      ethereum = assets.filter(
+        asset => asset.symbol.toLowerCase() === "eth"
+      )[0];
+      tokens = assets.filter(asset => asset.symbol.toLowerCase() !== "eth");
+    }
+    return (
+      <StyledLayout>
+        <Column maxWidth={1000} spanHeight>
+          <Header address={address} killSession={this.killSession} />
+          <StyledContent>
+            {!address && !assets.length ? (
+              <StyledLanding center>
+                <h2>Check your Ether & Token balances</h2>
+                <StyledButtonContainer>
+                  <StyledConnectButton
+                    left
+                    color="walletconnect"
+                    onClick={this.walletConnectInit}
+                    fetching={fetching}
+                  >
+                    {"Connect to WalletConnect"}
+                  </StyledConnectButton>
+                </StyledButtonContainer>
+              </StyledLanding>
+            ) : (
+              <StyledBalances>
+                <h3>Actions</h3>
+                <Column center>
+                  <StyledTestButtonContainer>
+                    <StyledTestButton
+                      left
+                      color="walletconnect"
+                      onClick={this.testSendTransaction}
+                    >
+                      {"Send Test Transaction"}
+                    </StyledTestButton>
 
-              <StyledTestButton
-                left
-                color="walletconnect"
-                onClick={this.testSignMessage}
-                fetching={this.state.fetching}
-              >
-                {"Sign Test Message"}
-              </StyledTestButton>
+                    <StyledTestButton
+                      left
+                      color="walletconnect"
+                      onClick={this.testSignMessage}
+                    >
+                      {"Sign Test Message"}
+                    </StyledTestButton>
 
-              <StyledTestButton
-                left
-                color="walletconnect"
-                onClick={this.testSignTypedData}
-                fetching={this.state.fetching}
-              >
-                {"Sign Test Typed Data"}
-              </StyledTestButton>
-            </StyledTestButtonContainer>
-          </Column>
-          <h3>Balances</h3>
-          <Column center>
-            {this.state.assets.map(asset => (
-              <AssetRow key={asset.symbol} asset={asset} />
-            ))}
-          </Column>
-        </StyledBalances>
-      )}
-    </BaseLayout>
-  );
+                    <StyledTestButton
+                      left
+                      disabled
+                      color="walletconnect"
+                      onClick={this.testSignTypedData}
+                    >
+                      {"Sign Test Typed Data"}
+                    </StyledTestButton>
+                  </StyledTestButtonContainer>
+                </Column>
+                <h3>Balances</h3>
+                {!fetching ? (
+                  <Column center>
+                    <AssetRow key="Ethereum" asset={ethereum} />
+                    {tokens.map(token => (
+                      <AssetRow key={token.symbol} asset={token} />
+                    ))}
+                  </Column>
+                ) : (
+                  <Column center>
+                    <StyledContainer>
+                      <Loader />
+                    </StyledContainer>
+                  </Column>
+                )}
+              </StyledBalances>
+            )}
+          </StyledContent>
+        </Column>
+        <Modal show={showModal} toggleModal={this.toggleModal}>
+          {pendingRequest ? (
+            <div>
+              <StyledModalTitle>{"Pending Call Request"}</StyledModalTitle>
+              <StyledContainer>
+                <Loader />
+              </StyledContainer>
+            </div>
+          ) : result ? (
+            <div>
+              <StyledModalTitle>{"Call Request Approved"}</StyledModalTitle>
+              <StyledTable>
+                {Object.keys(result).map(key => (
+                  <StyledRow>
+                    <StyledKey>{key}</StyledKey>
+                    <StyledValue>{result[key].toString()}</StyledValue>
+                  </StyledRow>
+                ))}
+              </StyledTable>
+            </div>
+          ) : (
+            <div>
+              <StyledModalTitle>{"Call Request Rejected"}</StyledModalTitle>
+              {/* <StyledContainer /> */}
+            </div>
+          )}
+        </Modal>
+      </StyledLayout>
+    );
+  };
 }
 
 export default App;
