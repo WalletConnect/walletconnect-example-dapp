@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import ethSigUtil from "eth-sig-util";
 import WalletConnect from "walletconnect";
 import WalletConnectQRCodeModal from "walletconnect-qrcode-modal";
 import AssetRow from "./components/AssetRow";
@@ -16,7 +15,12 @@ import {
   apiGetGasPrices,
   apiGetAccountNonce
 } from "./helpers/api";
-import { sanitizeHex } from "./helpers/utilities";
+import {
+  ecrecover,
+  fromRpcSig,
+  bufferToHex,
+  sanitizeHex
+} from "./helpers/utilities";
 import {
   divide,
   convertAmountToRawNumber,
@@ -299,22 +303,20 @@ class App extends Component {
 
       console.log("result", result);
 
-      console.log("msg", msg);
-
-      const signer = ethSigUtil.recoverPersonalSignature({
-        data: msg,
-        sig: result
-      });
-
+      // verify signature
+      const signer = ecrecover(msg, result);
       const verified = signer.toLowerCase() === address.toLowerCase();
 
-      console.log("verified", verified);
+      // signature params
+      const sigParams = fromRpcSig(result);
 
       const formattedResult = {
         method: "eth_sign",
         address: address,
         verified: verified,
-        result: result
+        v: bufferToHex(sigParams.v),
+        r: bufferToHex(sigParams.r),
+        s: bufferToHex(sigParams.s)
       };
 
       // display result
@@ -329,53 +331,58 @@ class App extends Component {
     }
   };
 
-  // testSignTypedData = async () => {
-  //   const { webConnector, address } = this.state;
-  //   // test typed data
-  //   const msgParams = [
-  //     {
-  //       type: "string",
-  //       name: "Message",
-  //       value: "My email is john@doe.com"
-  //     },
-  //     {
-  //       type: "uint32",
-  //       name: "A number",
-  //       value: "1537836206101"
-  //     }
-  //   ];
+  testSignTypedData = async () => {
+    const { webConnector, address } = this.state;
+    // test typed data
+    const msgParams = [
+      {
+        type: "string",
+        name: "Message",
+        value: "My email is john@doe.com"
+      },
+      {
+        type: "uint32",
+        name: "A number",
+        value: "1537836206101"
+      }
+    ];
 
-  //   try {
-  //     // open modal
-  //     this.toggleModal();
+    try {
+      // open modal
+      this.toggleModal();
 
-  //     this.setState({ pendingRequest: true });
+      this.setState({ pendingRequest: true });
 
-  //     // sign typed data
-  //     const result = await webConnector.signTypedData(msgParams);
+      // sign typed data
+      const result = await webConnector.signTypedData(msgParams);
 
-  //     const signer = ethSigUtil.recoverTypedSignature({ data: msgParams, sig: result })
+      // verify signature
+      const signer = ecrecover(msgParams, result);
+      const verified = signer.toLowerCase() === address.toLowerCase();
 
-  //     const verified = signer.toLowerCase() === addres.toLowerCase()s
+      // signature params
+      const sigParams = fromRpcSig(result);
 
-  //     const formattedResult = {
-  //       method: "eth_signTypedData",
-  //       address: address,
-  //       verified: verified,
-  //       result: result
-  //     };
+      const formattedResult = {
+        method: "eth_signTypedData",
+        address: address,
+        verified: verified,
+        v: bufferToHex(sigParams.v),
+        r: bufferToHex(sigParams.r),
+        s: bufferToHex(sigParams.s)
+      };
 
-  //     // display result
-  //     this.setState({
-  //       webConnector,
-  //       pendingRequest: false,
-  //       result: formattedResult || null
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     this.setState({ webConnector, pendingRequest: false, result: null });
-  //   }
-  // };
+      // display result
+      this.setState({
+        webConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ webConnector, pendingRequest: false, result: null });
+    }
+  };
 
   render = () => (
     <StyledLayout>
@@ -421,7 +428,7 @@ class App extends Component {
                     left
                     disabled
                     color="walletconnect"
-                    // onClick={this.testSignTypedData}
+                    onClick={this.testSignTypedData}
                   >
                     {"Sign Test Typed Data"}
                   </StyledTestButton>
