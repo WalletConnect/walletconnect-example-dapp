@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
   0% {
@@ -29,11 +29,11 @@ const Wrapper = ({ children, center, ...props }) => (
 
 Wrapper.propTypes = {
   children: PropTypes.node.isRequired,
-  center: PropTypes.bool,
+  center: PropTypes.bool
 };
 
 Wrapper.defaultProps = {
-  center: false,
+  center: false
 };
 
 export default Wrapper;
