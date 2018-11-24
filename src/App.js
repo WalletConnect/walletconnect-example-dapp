@@ -179,11 +179,19 @@ class App extends Component {
       // If there is no accounts, prompt the user to scan the QR code
       const uri = webConnector.uri;
 
+      // Create QR Code callback on close
+      const onQRCodeClose = () => {
+        webConnector.stopLastListener();
+        this.setState({ fetching: false });
+      };
+
       // Display QR Code
-      WalletConnectQRCodeModal.open(uri, webConnector.stopLastListener);
+      WalletConnectQRCodeModal.open(uri, onQRCodeClose);
 
       // Listen for session confirmation from wallet
       await webConnector.listenSessionStatus();
+
+      console.log("listenSessionStatus");
 
       // Close QR Code
       WalletConnectQRCodeModal.close();
@@ -489,7 +497,7 @@ class App extends Component {
               <StyledModalTitle>{"Call Request Approved"}</StyledModalTitle>
               <StyledTable>
                 {Object.keys(result).map(key => (
-                  <StyledRow>
+                  <StyledRow key={key}>
                     <StyledKey>{key}</StyledKey>
                     <StyledValue>{result[key].toString()}</StyledValue>
                   </StyledRow>
