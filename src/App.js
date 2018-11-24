@@ -384,101 +384,128 @@ class App extends Component {
     }
   };
 
-  render = () => (
-    <StyledLayout>
-      <Column maxWidth={1000} spanHeight>
-        <Header address={this.state.address} killSession={this.killSession} />
-        <StyledContent>
-          {!this.state.address && !this.state.assets.length ? (
-            <StyledLanding center>
-              <h2>Check your Ether & Token balances</h2>
-              <StyledButtonContainer>
-                <StyledConnectButton
-                  left
-                  color="walletconnect"
-                  onClick={this.walletConnectInit}
-                  fetching={this.state.fetching}
-                >
-                  {"Connect to WalletConnect"}
-                </StyledConnectButton>
-              </StyledButtonContainer>
-            </StyledLanding>
-          ) : (
-            <StyledBalances>
-              <h3>Actions</h3>
-              <Column center>
-                <StyledTestButtonContainer>
-                  <StyledTestButton
+  render = () => {
+    const {
+      assets,
+      address,
+      fetching,
+      showModal,
+      pendingRequest,
+      result
+    } = this.state;
+    let ethereum = {
+      address: null,
+      name: "Ethereum",
+      symbole: "ETH",
+      decimals: 18,
+      balance: "0"
+    };
+    let tokens = [];
+    if (assets.length) {
+      ethereum = assets.filter(
+        asset => asset.symbol.toLowerCase() === "eth"
+      )[0];
+      tokens = assets.filter(asset => asset.symbol.toLowerCase() !== "eth");
+    }
+    return (
+      <StyledLayout>
+        <Column maxWidth={1000} spanHeight>
+          <Header address={address} killSession={this.killSession} />
+          <StyledContent>
+            {!address && !assets.length ? (
+              <StyledLanding center>
+                <h2>Check your Ether & Token balances</h2>
+                <StyledButtonContainer>
+                  <StyledConnectButton
                     left
                     color="walletconnect"
-                    onClick={this.testSendTransaction}
+                    onClick={this.walletConnectInit}
+                    fetching={fetching}
                   >
-                    {"Send Test Transaction"}
-                  </StyledTestButton>
+                    {"Connect to WalletConnect"}
+                  </StyledConnectButton>
+                </StyledButtonContainer>
+              </StyledLanding>
+            ) : (
+              <StyledBalances>
+                <h3>Actions</h3>
+                <Column center>
+                  <StyledTestButtonContainer>
+                    <StyledTestButton
+                      left
+                      color="walletconnect"
+                      onClick={this.testSendTransaction}
+                    >
+                      {"Send Test Transaction"}
+                    </StyledTestButton>
 
-                  <StyledTestButton
-                    left
-                    color="walletconnect"
-                    onClick={this.testSignMessage}
-                  >
-                    {"Sign Test Message"}
-                  </StyledTestButton>
+                    <StyledTestButton
+                      left
+                      color="walletconnect"
+                      onClick={this.testSignMessage}
+                    >
+                      {"Sign Test Message"}
+                    </StyledTestButton>
 
-                  <StyledTestButton
-                    left
-                    disabled
-                    color="walletconnect"
-                    onClick={this.testSignTypedData}
-                  >
-                    {"Sign Test Typed Data"}
-                  </StyledTestButton>
-                </StyledTestButtonContainer>
-              </Column>
-              <h3>Balances</h3>
-              <Column center>
-                {!this.state.fetching ? (
-                  this.state.assets.map(asset => (
-                    <AssetRow key={asset.symbol} asset={asset} />
-                  ))
+                    <StyledTestButton
+                      left
+                      disabled
+                      color="walletconnect"
+                      onClick={this.testSignTypedData}
+                    >
+                      {"Sign Test Typed Data"}
+                    </StyledTestButton>
+                  </StyledTestButtonContainer>
+                </Column>
+                <h3>Balances</h3>
+                {!fetching ? (
+                  <Column center>
+                    <AssetRow key="Ethereum" asset={ethereum} />
+                    {tokens.map(token => (
+                      <AssetRow key={token.symbol} asset={token} />
+                    ))}
+                  </Column>
                 ) : (
-                  <StyledContainer>
-                    <Loader />
-                  </StyledContainer>
+                  <Column center>
+                    <StyledContainer>
+                      <Loader />
+                    </StyledContainer>
+                  </Column>
                 )}
-              </Column>
-            </StyledBalances>
+              </StyledBalances>
+            )}
+          </StyledContent>
+        </Column>
+        <Modal show={showModal} toggleModal={this.toggleModal}>
+          {pendingRequest ? (
+            <div>
+              <StyledModalTitle>{"Pending Call Request"}</StyledModalTitle>
+              <StyledContainer>
+                <Loader />
+              </StyledContainer>
+            </div>
+          ) : result ? (
+            <div>
+              <StyledModalTitle>{"Call Request Approved"}</StyledModalTitle>
+              <StyledTable>
+                {Object.keys(result).map(key => (
+                  <StyledRow>
+                    <StyledKey>{key}</StyledKey>
+                    <StyledValue>{result[key].toString()}</StyledValue>
+                  </StyledRow>
+                ))}
+              </StyledTable>
+            </div>
+          ) : (
+            <div>
+              <StyledModalTitle>{"Call Request Rejected"}</StyledModalTitle>
+              {/* <StyledContainer /> */}
+            </div>
           )}
-        </StyledContent>
-      </Column>
-      <Modal show={this.state.showModal} toggleModal={this.toggleModal}>
-        {this.state.pendingRequest ? (
-          <div>
-            <StyledModalTitle>{"Pending Call Request"}</StyledModalTitle>
-            <StyledContainer>
-              <Loader />
-            </StyledContainer>
-          </div>
-        ) : this.state.result ? (
-          <div>
-            <StyledModalTitle>{"Call Request Approved"}</StyledModalTitle>
-            <StyledTable>
-              {Object.keys(this.state.result).map(key => (
-                <StyledRow>
-                  <StyledKey>{key}</StyledKey>
-                  <StyledValue>{this.state.result[key].toString()}</StyledValue>
-                </StyledRow>
-              ))}
-            </StyledTable>
-          </div>
-        ) : (
-          <div>
-            <StyledModalTitle>{"Call Request Rejected"}</StyledModalTitle>
-            {/* <StyledContainer /> */}
-          </div>
-        )}
-      </Modal>
-    </StyledLayout>
-  );
+        </Modal>
+      </StyledLayout>
+    );
+  };
 }
 
 export default App;
