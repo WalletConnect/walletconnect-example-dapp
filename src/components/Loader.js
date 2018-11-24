@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
-import { fonts, colors } from '../styles';
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
+import { fonts, colors } from "../styles";
 
 const load = keyframes`
   0% {
@@ -66,8 +66,8 @@ Loader.propTypes = {
 
 Loader.defaultProps = {
   size: 50,
-  color: 'white',
-  background: 'background'
+  color: "dark",
+  background: "white"
 };
 
 export default Loader;
