@@ -229,8 +229,18 @@ class App extends Component {
     await this.setState({ fetching: false, address, assets });
   };
 
-  toggleModal = () =>
-    this.setState({ showModal: !this.state.showModal, result: null });
+  toggleModal = () => {
+    const newState = {};
+    if (this.state.pendingRequest) {
+      this.state.webConnector.stopLastListener();
+      newState.pendingRequest = false;
+    }
+
+    newState.showModal = !this.state.showModal;
+    newState.result = INITIAL_STATE.result;
+
+    this.setState(newState);
+  };
 
   testSendTransaction = async () => {
     const { webConnector, address, network } = this.state;
