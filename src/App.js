@@ -212,10 +212,7 @@ class App extends Component {
   };
 
   killSession = async () => {
-    const localStorageId = "wcsmngt";
-
-    localStorage.removeItem(localStorageId);
-
+    this.state.webConnector.killSession();
     this.setState({ ...INITIAL_STATE });
   };
 
@@ -223,6 +220,7 @@ class App extends Component {
     const { address, network } = this.state;
     this.setState({ fetching: true });
 
+    // get account balances
     const { data } = await apiGetAccountBalances(address, network);
     const assets = parseAccountBalances(data);
 
@@ -231,12 +229,17 @@ class App extends Component {
 
   toggleModal = () => {
     const newState = {};
+
     if (this.state.pendingRequest) {
+      // stop last walletconnect listener
       this.state.webConnector.stopLastListener();
       newState.pendingRequest = false;
     }
 
+    // toggle modal state
     newState.showModal = !this.state.showModal;
+
+    // reset result state
     newState.result = INITIAL_STATE.result;
 
     this.setState(newState);
@@ -245,14 +248,17 @@ class App extends Component {
   testSendTransaction = async () => {
     const { webConnector, address, network } = this.state;
 
+    // get account nonce
     const nonceRes = await apiGetAccountNonce(address, network);
     const nonce = nonceRes.data.result;
 
+    // get current gas prices
     const gasPriceRes = await apiGetGasPrices();
-
     const gasPrice = divide(gasPriceRes.data.safeLow, 10);
 
+    // set gas limit
     const gasLimit = 21000;
+
     // test transaction
     const tx = {
       from: address,
@@ -270,11 +276,13 @@ class App extends Component {
       // open modal
       this.toggleModal();
 
+      // toggle pending request indicator
       this.setState({ pendingRequest: true });
 
       // send transaction
       const result = await webConnector.sendTransaction(tx);
 
+      // format displayed result
       const formattedResult = {
         method: "eth_sendTransaction",
         txHash: result,
@@ -298,36 +306,28 @@ class App extends Component {
 
   testSignMessage = async () => {
     const { webConnector, address } = this.state;
+
     // test message
-    const msg = "My email is john@doe.com - 1537836206101";
+    const msgParams = [address, "My email is john@doe.com - 1537836206101"];
 
     try {
       // open modal
       this.toggleModal();
 
+      // toggle pending request indicator
       this.setState({ pendingRequest: true });
 
-      let result = null;
-
-      try {
-        result = await webConnector.createCallRequest({
-          method: "eth_sign",
-          params: [address, msg]
-        });
-      } catch (error) {
-        console.error(error);
-        throw new Error("Rejected: Signed Message Request");
-      }
-
-      console.log("result", result);
+      // send message
+      const result = await webConnector.signMessage(msgParams);
 
       // verify signature
-      const signer = ecrecover(msg, result);
+      const signer = ecrecover(msgParams[1], result);
       const verified = signer.toLowerCase() === address.toLowerCase();
 
       // signature params
       const sigParams = fromRpcSig(result);
 
+      // format displayed result
       const formattedResult = {
         method: "eth_sign",
         address: address,
@@ -351,6 +351,7 @@ class App extends Component {
 
   testSignTypedData = async () => {
     const { webConnector, address } = this.state;
+
     // test typed data
     const msgParams = [
       {
@@ -369,6 +370,7 @@ class App extends Component {
       // open modal
       this.toggleModal();
 
+      // toggle pending request indicator
       this.setState({ pendingRequest: true });
 
       // sign typed data
@@ -381,6 +383,7 @@ class App extends Component {
       // signature params
       const sigParams = fromRpcSig(result);
 
+      // format displayed result
       const formattedResult = {
         method: "eth_signTypedData",
         address: address,
