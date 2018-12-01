@@ -191,8 +191,6 @@ class App extends Component {
       // Listen for session confirmation from wallet
       await webConnector.listenSessionStatus();
 
-      console.log("listenSessionStatus");
-
       // Close QR Code
       WalletConnectQRCodeModal.close();
 

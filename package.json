@@ -9,7 +9,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4",
+    "react-scripts": "^2.1.1",
     "styled-components": "^3.4.2",
     "walletconnect": "^0.7.27",
     "walletconnect-qrcode-modal": "^0.7.27"
@@ -30,5 +30,11 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.10.0"
-  }
+  },
+    "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
