@@ -158,21 +158,16 @@ class App extends Component {
       webConnector = this.createWebConnector();
     }
 
-    /**
-     *  Initiate WalletConnect session
-     */
+    // Initiate WalletConnect session
     await webConnector.initSession();
 
+    // Expose webConnector for console debugging
     window.webConnector = webConnector;
 
-    /**
-     *  Get accounts (type: <Array>)
-     */
+    //  Get accounts array
     let accounts = webConnector.accounts;
 
-    /**
-     *  Check if accounts is empty array
-     */
+    // Check if accounts is empty array
     if (!accounts.length) {
       await this.setState({ fetching: true });
 
@@ -191,8 +186,6 @@ class App extends Component {
       // Listen for session confirmation from wallet
       await webConnector.listenSessionStatus();
 
-      console.log("listenSessionStatus");
-
       // Close QR Code
       WalletConnectQRCodeModal.close();
 
@@ -204,6 +197,7 @@ class App extends Component {
     if (accounts && accounts.length) {
       const address = accounts[0];
       await this.setState({ accounts, address });
+
       // Display account balances
       await this.getAccountBalances();
     }
