@@ -24,9 +24,9 @@ const StyledAssetBalance = styled.div`
 `;
 
 const AssetRow = ({ asset, ...props }) => (
-  <StyledAssetRow>
+  <StyledAssetRow {...props}>
     <StyledAssetRowLeft>
-      <AssetIcon asset={asset.symbol} />
+      <AssetIcon asset={asset} />
       <StyledAssetName>{asset.name}</StyledAssetName>
     </StyledAssetRowLeft>
     <StyledAssetRowRight>
