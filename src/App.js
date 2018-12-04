@@ -132,7 +132,7 @@ const INITIAL_STATE = {
 
 class App extends Component {
   state = {
-    bridgeUrl: "https://dev-bridge.walletconnect.org",
+    bridgeUrl: "https://test-bridge.walletconnect.org",
     dappName: "Example Dapp",
     ...INITIAL_STATE
   };
