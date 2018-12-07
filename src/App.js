@@ -546,7 +546,6 @@ class App extends Component {
           ) : (
             <div>
               <StyledModalTitle>{"Call Request Rejected"}</StyledModalTitle>
-              {/* <StyledContainer /> */}
             </div>
           )}
         </Modal>
