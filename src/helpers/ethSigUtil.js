@@ -46,11 +46,11 @@ export const TypedDataUtils = {
       if (value !== undefined) {
         if (field.type === "string" || field.type === "bytes") {
           encodedTypes.push("bytes32");
-          value = sha3(value);
+          value = ethUtil.sha3(value);
           encodedValues.push(value);
         } else if (types[field.type] !== undefined) {
           encodedTypes.push("bytes32");
-          value = sha3(this.encodeData(field.type, value, types));
+          value = ethUtil.sha3(this.encodeData(field.type, value, types));
           encodedValues.push(value);
         } else if (field.type.lastIndexOf("]") === field.type.length - 1) {
           throw new Error("Arrays currently unimplemented in encodeData");
@@ -119,7 +119,7 @@ export const TypedDataUtils = {
    * @returns {string} - Hash of an object
    */
   hashStruct(primaryType, data, types) {
-    return sha3(this.encodeData(primaryType, data, types));
+    return ethUtil.sha3(this.encodeData(primaryType, data, types));
   },
 
   /**
@@ -130,7 +130,7 @@ export const TypedDataUtils = {
    * @returns {string} - Hash of an object
    */
   hashType(primaryType, types) {
-    return sha3(this.encodeType(primaryType, types));
+    return ethUtil.sha3(this.encodeType(primaryType, types));
   },
 
   /**
@@ -166,16 +166,9 @@ export const TypedDataUtils = {
         sanitizedData.types
       )
     );
-    return sha3(Buffer.concat(parts));
+    return ethUtil.sha3(Buffer.concat(parts));
   }
 };
-
-/**
- * @desc sha3 util
- * @param  {String} value
- * @return {String}
- */
-export const sha3 = value => sha3(value);
 
 /**
  * @desc convert string to buffer

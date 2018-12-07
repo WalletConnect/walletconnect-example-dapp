@@ -15,7 +15,12 @@ import {
   apiGetGasPrices,
   apiGetAccountNonce
 } from "./helpers/api";
-import { ecrecover, fromRpcSig, bufferToHex } from "./helpers/ethSigUtil";
+import {
+  ecrecover,
+  fromRpcSig,
+  bufferToHex,
+  recoverTypedSignature
+} from "./helpers/ethSigUtil";
 import { sanitizeHex } from "./helpers/utilities";
 import {
   divide,
@@ -23,8 +28,6 @@ import {
   convertStringToHex
 } from "./helpers/bignumber";
 import { parseAccountBalances } from "./helpers/parsers";
-
-import { recoverTypedSignature } from "./helpers/ethSigUtil";
 
 const StyledLayout = styled.div`
   position: relative;
@@ -397,7 +400,10 @@ class App extends Component {
       const result = await webConnector.signTypedData(msgParams);
 
       // verify signature
-      const signer = recoverTypedSignature({ data: msgParams, sig: result });
+      const signer = recoverTypedSignature({
+        data: msgParams,
+        sig: result
+      });
       const verified = signer.toLowerCase() === address.toLowerCase();
 
       // signature params
