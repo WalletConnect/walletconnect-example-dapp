@@ -283,8 +283,7 @@ class App extends Component {
         txHash: result,
         from: address,
         to: address,
-        value: "0 ETH",
-        gasPrice: `${gasPrice} gwei`
+        value: "0 ETH"
       };
 
       // display result
@@ -326,6 +325,7 @@ class App extends Component {
       const formattedResult = {
         method: "eth_sign",
         address: address,
+        signer: signer,
         verified: verified,
         v: bufferToHex(sigParams.v),
         r: bufferToHex(sigParams.r),
@@ -401,7 +401,7 @@ class App extends Component {
 
       // verify signature
       const signer = recoverTypedSignature({
-        data: msgParams,
+        data: msgParams[1],
         sig: result
       });
       const verified = signer.toLowerCase() === address.toLowerCase();
@@ -413,6 +413,7 @@ class App extends Component {
       const formattedResult = {
         method: "eth_signTypedData",
         address: address,
+        signer: signer,
         verified: verified,
         v: bufferToHex(sigParams.v),
         r: bufferToHex(sigParams.r),
