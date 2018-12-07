@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Blockie from "../components/Blockie";
+import { Blockie } from "dapparatus";
 import { ellipseAddress } from "../helpers/utilities";
 import branding from "../assets/walletconnect-branding.png";
 import { transitions } from "../styles";
@@ -54,6 +54,13 @@ const StyledDisconnect = styled.div`
   }
 `;
 
+const StyledBockieWrapper = styled.div`
+  margin-right: 10px;
+  & canvas {
+    border-radius: 3px;
+  }
+`;
+
 const Header = ({ killSession, address, ...props }) => {
   return (
     <StyledHeader {...props}>
@@ -62,7 +69,9 @@ const Header = ({ killSession, address, ...props }) => {
       </StyledBrandingWrapper>
       {address && (
         <StyledActiveAccount>
-          <Blockie seed={address} />
+          <StyledBockieWrapper>
+            <Blockie address={address} config={{ size: 4 }} />
+          </StyledBockieWrapper>
           <p>{ellipseAddress(address)}</p>
           <StyledDisconnect onClick={killSession}>
             {"Disconnect"}
