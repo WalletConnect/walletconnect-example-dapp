@@ -15,18 +15,16 @@ import {
   apiGetGasPrices,
   apiGetAccountNonce
 } from "./helpers/api";
-import {
-  ecrecover,
-  fromRpcSig,
-  bufferToHex,
-  sanitizeHex
-} from "./helpers/utilities";
+import { ecrecover, fromRpcSig, bufferToHex } from "./helpers/ethSigUtil";
+import { sanitizeHex } from "./helpers/utilities";
 import {
   divide,
   convertAmountToRawNumber,
   convertStringToHex
 } from "./helpers/bignumber";
 import { parseAccountBalances } from "./helpers/parsers";
+
+import { recoverTypedSignature } from "./helpers/ethSigUtil";
 
 const StyledLayout = styled.div`
   position: relative;
@@ -359,7 +357,7 @@ class App extends Component {
           ],
           Person: [
             { name: "name", type: "string" },
-            { name: "wallet", type: "address" }
+            { name: "account", type: "address" }
           ],
           Mail: [
             { name: "from", type: "Person" },
@@ -369,21 +367,21 @@ class App extends Component {
         },
         primaryType: "Mail",
         domain: {
-          name: "Ether Mail",
-          version: "1",
+          name: "Example Dapp",
+          version: "0.7.0",
           chainId: 1,
-          verifyingContract: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
+          verifyingContract: "0x0000000000000000000000000000000000000000"
         },
         message: {
           from: {
-            name: "Cow",
-            wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826"
+            name: "Alice",
+            account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           },
           to: {
             name: "Bob",
-            wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB"
+            account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
           },
-          contents: "Hello, Bob!"
+          contents: "Hey, Bob!"
         }
       }
     ];
@@ -399,7 +397,7 @@ class App extends Component {
       const result = await webConnector.signTypedData(msgParams);
 
       // verify signature
-      const signer = ecrecover(msgParams, result);
+      const signer = recoverTypedSignature({ data: msgParams, sig: result });
       const verified = signer.toLowerCase() === address.toLowerCase();
 
       // signature params
@@ -492,7 +490,6 @@ class App extends Component {
 
                     <StyledTestButton
                       left
-                      disabled
                       color="walletconnect"
                       onClick={this.testSignTypedData}
                     >

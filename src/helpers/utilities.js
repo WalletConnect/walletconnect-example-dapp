@@ -1,5 +1,3 @@
-import ethUtil from "ethereumjs-util";
-
 /**
  * @desc capitalize string
  * @param  {String} [string]
@@ -89,50 +87,4 @@ export const getDataString = (func, arrVals) => {
   for (let i = 0; i < arrVals.length; i++) val += padLeft(arrVals[i], 64);
   const data = func + val;
   return data;
-};
-
-/**
- * @desc convert string to buffer
- * @param  {String} value
- * @return {String}
- */
-export const toBuffer = value => ethUtil.toBuffer(value);
-
-/**
- * @desc convert buffer to hex
- * @param  {Object} buffer
- * @return {string}
- */
-export const bufferToHex = buffer => ethUtil.bufferToHex(buffer);
-
-/**
- * @desc separate signature params
- * @param  {String} sig
- * @return {Object}
- */
-export const fromRpcSig = sig => {
-  const signature = ethUtil.toBuffer(sig);
-  const sigParams = ethUtil.fromRpcSig(signature);
-  return sigParams;
-};
-
-/**
- * @desc ecrecover personal sign
- * @param  {String} msg
- * @param  {String} sig
- * @return {String}
- */
-export const ecrecover = (msg, sig) => {
-  const message = toBuffer(msg);
-  const msgHash = ethUtil.hashPersonalMessage(message);
-  const sigParams = fromRpcSig(sig);
-  const publicKey = ethUtil.ecrecover(
-    msgHash,
-    sigParams.v,
-    sigParams.r,
-    sigParams.s
-  );
-  const sender = ethUtil.publicToAddress(publicKey);
-  const senderHex = bufferToHex(sender);
-  return senderHex;
 };

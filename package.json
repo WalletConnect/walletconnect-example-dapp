@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^6.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",

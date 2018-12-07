@@ -24,7 +24,7 @@ const AssetIcon = ({ asset, image, size }) => (
 );
 
 AssetIcon.propTypes = {
-  asset: PropTypes.string,
+  asset: PropTypes.object,
   image: PropTypes.string,
   size: PropTypes.number
 };
