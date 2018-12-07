@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Blockie from "../components/Blockie";
+import { Blockie } from "dapparatus";
 import { ellipseAddress } from "../helpers/utilities";
-import branding from "../assets/walletconnect-branding.png";
+import banner from "../assets/walletconnect-banner.png";
 import { transitions } from "../styles";
 
 const StyledHeader = styled.div`
@@ -17,16 +17,16 @@ const StyledHeader = styled.div`
   padding: 0 16px;
 `;
 
-const StyledBrandingWrapper = styled.div`
+const StyledBannerWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
 `;
 
-const StyledBranding = styled.div`
+const StyledBanner = styled.div`
   width: 275px;
   height: 45px;
-  background: url(${branding}) no-repeat;
+  background: url(${banner}) no-repeat;
   background-size: cover;
   background-position: center;
 `;
@@ -54,15 +54,24 @@ const StyledDisconnect = styled.div`
   }
 `;
 
+const StyledBockieWrapper = styled.div`
+  margin-right: 10px;
+  & canvas {
+    border-radius: 3px;
+  }
+`;
+
 const Header = ({ killSession, address, ...props }) => {
   return (
     <StyledHeader {...props}>
-      <StyledBrandingWrapper>
-        <StyledBranding alt="WalletConnect" />
-      </StyledBrandingWrapper>
+      <StyledBannerWrapper>
+        <StyledBanner alt="WalletConnect" />
+      </StyledBannerWrapper>
       {address && (
         <StyledActiveAccount>
-          <Blockie seed={address} />
+          <StyledBockieWrapper>
+            <Blockie address={address} config={{ size: 4 }} />
+          </StyledBockieWrapper>
           <p>{ellipseAddress(address)}</p>
           <StyledDisconnect onClick={killSession}>
             {"Disconnect"}

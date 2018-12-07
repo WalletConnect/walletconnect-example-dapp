@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import AssetIcon from "./AssetIcon";
+import Icon from "./Icon";
+import TokenIcon from "./TokenIcon";
+import eth from "../assets/eth.svg";
 import { handleSignificantDecimals } from "../helpers/bignumber";
 
 const StyledAssetRow = styled.div`
@@ -26,7 +28,11 @@ const StyledAssetBalance = styled.div`
 const AssetRow = ({ asset, ...props }) => (
   <StyledAssetRow {...props}>
     <StyledAssetRowLeft>
-      <AssetIcon asset={asset} />
+      {asset.symbol && asset.symbol.toLowerCase() === "eth" ? (
+        <Icon icon={eth} />
+      ) : (
+        <TokenIcon tokenAddress={asset.address} />
+      )}
       <StyledAssetName>{asset.name}</StyledAssetName>
     </StyledAssetRowLeft>
     <StyledAssetRowRight>
