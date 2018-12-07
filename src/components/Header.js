@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Blockie } from "dapparatus";
 import { ellipseAddress } from "../helpers/utilities";
-import branding from "../assets/walletconnect-branding.png";
+import banner from "../assets/walletconnect-banner.png";
 import { transitions } from "../styles";
 
 const StyledHeader = styled.div`
@@ -17,16 +17,16 @@ const StyledHeader = styled.div`
   padding: 0 16px;
 `;
 
-const StyledBrandingWrapper = styled.div`
+const StyledBannerWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
 `;
 
-const StyledBranding = styled.div`
+const StyledBanner = styled.div`
   width: 275px;
   height: 45px;
-  background: url(${branding}) no-repeat;
+  background: url(${banner}) no-repeat;
   background-size: cover;
   background-position: center;
 `;
@@ -64,9 +64,9 @@ const StyledBockieWrapper = styled.div`
 const Header = ({ killSession, address, ...props }) => {
   return (
     <StyledHeader {...props}>
-      <StyledBrandingWrapper>
-        <StyledBranding alt="WalletConnect" />
-      </StyledBrandingWrapper>
+      <StyledBannerWrapper>
+        <StyledBanner alt="WalletConnect" />
+      </StyledBannerWrapper>
       {address && (
         <StyledActiveAccount>
           <StyledBockieWrapper>
