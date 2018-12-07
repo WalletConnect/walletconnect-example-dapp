@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Icon from "./Icon";
-import TokenIcon from "./TokenIcon";
+import { ERC20Icon } from "dapparatus";
 import eth from "../assets/eth.svg";
 import { handleSignificantDecimals } from "../helpers/bignumber";
 
@@ -31,7 +31,7 @@ const AssetRow = ({ asset, ...props }) => (
       {asset.symbol && asset.symbol.toLowerCase() === "eth" ? (
         <Icon icon={eth} />
       ) : (
-        <TokenIcon tokenAddress={asset.address} />
+        <ERC20Icon tokenAddress={asset.address} />
       )}
       <StyledAssetName>{asset.name}</StyledAssetName>
     </StyledAssetRowLeft>
