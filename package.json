@@ -5,14 +5,15 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "dapparatus": "^1.0.45",
     "ethereumjs-util": "^6.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-scripts": "^2.1.1",
     "styled-components": "^3.4.2",
-    "walletconnect": "^0.7.27",
-    "walletconnect-qrcode-modal": "^0.7.27"
+    "walletconnect": "^0.7.28",
+    "walletconnect-qrcode-modal": "^0.7.28"
   },
   "scripts": {
     "start": "react-scripts start",
