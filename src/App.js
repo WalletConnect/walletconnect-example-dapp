@@ -264,7 +264,7 @@ class App extends Component {
       ),
       gasLimit: sanitizeHex(convertStringToHex(gasLimit)),
       value: "0x00",
-      input: "0x00"
+      data: "0x"
     };
 
     try {
