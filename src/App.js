@@ -9,6 +9,7 @@ import Wrapper from "./components/Wrapper";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
+import PendingLoader from "./components/PendingLoader";
 import { fonts } from "./styles";
 import {
   apiGetAccountBalances,
@@ -64,6 +65,7 @@ const StyledContainer = styled.div`
   height: 100%;
   min-height: 200px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   word-break: break-word;
@@ -528,7 +530,7 @@ class App extends Component {
             <div>
               <StyledModalTitle>{"Pending Call Request"}</StyledModalTitle>
               <StyledContainer>
-                <Loader />
+                <PendingLoader />
               </StyledContainer>
             </div>
           ) : result ? (
