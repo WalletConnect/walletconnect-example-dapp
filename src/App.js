@@ -9,7 +9,6 @@ import Wrapper from "./components/Wrapper";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
-import PendingLoader from "./components/PendingLoader";
 import { fonts } from "./styles";
 import {
   apiGetAccountBalances,
@@ -30,7 +29,7 @@ import {
 } from "./helpers/bignumber";
 import { parseAccountBalances } from "./helpers/parsers";
 
-const StyledLayout = styled.div`
+const SLayout = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -38,22 +37,22 @@ const StyledLayout = styled.div`
   text-align: center;
 `;
 
-const StyledContent = styled(Wrapper)`
+const SContent = styled(Wrapper)`
   width: 100%;
   height: 100%;
   padding: 0 16px;
 `;
 
-const StyledLanding = styled(Column)`
+const SLanding = styled(Column)`
   height: 600px;
 `;
 
-const StyledButtonContainer = styled(Column)`
+const SButtonContainer = styled(Column)`
   width: 250px;
   margin: 50px 0;
 `;
 
-const StyledConnectButton = styled(Button)`
+const SConnectButton = styled(Button)`
   border-radius: 8px;
   font-size: ${fonts.size.medium};
   height: 44px;
@@ -61,7 +60,7 @@ const StyledConnectButton = styled(Button)`
   margin: 12px 0;
 `;
 
-const StyledContainer = styled.div`
+const SContainer = styled.div`
   height: 100%;
   min-height: 200px;
   display: flex;
@@ -71,48 +70,52 @@ const StyledContainer = styled.div`
   word-break: break-word;
 `;
 
-const StyledModalTitle = styled.div`
+const SModalTitle = styled.div`
   margin: 1em 0;
   font-size: 20px;
   font-weight: 700;
 `;
 
-const StyledBalances = styled(StyledLanding)`
+const SModalParagraph = styled.p`
+  margin-top: 30px;
+`;
+
+const SBalances = styled(SLanding)`
   height: 100%;
   & h3 {
     padding-top: 30px;
   }
 `;
 
-const StyledTable = styled(StyledContainer)`
+const STable = styled(SContainer)`
   flex-direction: column;
   text-align: left;
 `;
 
-const StyledRow = styled.div`
+const SRow = styled.div`
   width: 100%;
   display: flex;
   margin: 6px 0;
 `;
 
-const StyledKey = styled.div`
+const SKey = styled.div`
   width: 30%;
   font-weight: 700;
 `;
 
-const StyledValue = styled.div`
+const SValue = styled.div`
   width: 70%;
   font-family: monospace;
 `;
 
-const StyledTestButtonContainer = styled.div`
+const STestButtonContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const StyledTestButton = styled(Button)`
+const STestButton = styled(Button)`
   border-radius: 8px;
   font-size: ${fonts.size.medium};
   height: 44px;
@@ -458,53 +461,53 @@ class App extends Component {
       tokens = assets.filter(asset => asset.symbol.toLowerCase() !== "eth");
     }
     return (
-      <StyledLayout>
+      <SLayout>
         <Column maxWidth={1000} spanHeight>
           <Header address={address} killSession={this.killSession} />
-          <StyledContent>
+          <SContent>
             {!address && !assets.length ? (
-              <StyledLanding center>
+              <SLanding center>
                 <h2>Try out WalletConnect!</h2>
-                <StyledButtonContainer>
-                  <StyledConnectButton
+                <SButtonContainer>
+                  <SConnectButton
                     left
                     color="walletconnect"
                     onClick={this.walletConnectInit}
                     fetching={fetching}
                   >
                     {"Connect to WalletConnect"}
-                  </StyledConnectButton>
-                </StyledButtonContainer>
-              </StyledLanding>
+                  </SConnectButton>
+                </SButtonContainer>
+              </SLanding>
             ) : (
-              <StyledBalances>
+              <SBalances>
                 <h3>Actions</h3>
                 <Column center>
-                  <StyledTestButtonContainer>
-                    <StyledTestButton
+                  <STestButtonContainer>
+                    <STestButton
                       left
                       color="walletconnect"
                       onClick={this.testSendTransaction}
                     >
                       {"Send Test Transaction"}
-                    </StyledTestButton>
+                    </STestButton>
 
-                    <StyledTestButton
+                    <STestButton
                       left
                       color="walletconnect"
                       onClick={this.testSignMessage}
                     >
                       {"Sign Test Message"}
-                    </StyledTestButton>
+                    </STestButton>
 
-                    <StyledTestButton
+                    <STestButton
                       left
                       color="walletconnect"
                       onClick={this.testSignTypedData}
                     >
                       {"Sign Test Typed Data"}
-                    </StyledTestButton>
-                  </StyledTestButtonContainer>
+                    </STestButton>
+                  </STestButtonContainer>
                 </Column>
                 <h3>Balances</h3>
                 {!fetching ? (
@@ -516,42 +519,45 @@ class App extends Component {
                   </Column>
                 ) : (
                   <Column center>
-                    <StyledContainer>
+                    <SContainer>
                       <Loader />
-                    </StyledContainer>
+                    </SContainer>
                   </Column>
                 )}
-              </StyledBalances>
+              </SBalances>
             )}
-          </StyledContent>
+          </SContent>
         </Column>
         <Modal show={showModal} toggleModal={this.toggleModal}>
           {pendingRequest ? (
             <div>
-              <StyledModalTitle>{"Pending Call Request"}</StyledModalTitle>
-              <StyledContainer>
-                <PendingLoader />
-              </StyledContainer>
+              <SModalTitle>{"Pending Call Request"}</SModalTitle>
+              <SContainer>
+                <Loader />
+                <SModalParagraph>
+                  {"Approve or reject request using your wallet"}
+                </SModalParagraph>
+              </SContainer>
             </div>
           ) : result ? (
             <div>
-              <StyledModalTitle>{"Call Request Approved"}</StyledModalTitle>
-              <StyledTable>
+              <SModalTitle>{"Call Request Approved"}</SModalTitle>
+              <STable>
                 {Object.keys(result).map(key => (
-                  <StyledRow key={key}>
-                    <StyledKey>{key}</StyledKey>
-                    <StyledValue>{result[key].toString()}</StyledValue>
-                  </StyledRow>
+                  <SRow key={key}>
+                    <SKey>{key}</SKey>
+                    <SValue>{result[key].toString()}</SValue>
+                  </SRow>
                 ))}
-              </StyledTable>
+              </STable>
             </div>
           ) : (
             <div>
-              <StyledModalTitle>{"Call Request Rejected"}</StyledModalTitle>
+              <SModalTitle>{"Call Request Rejected"}</SModalTitle>
             </div>
           )}
         </Modal>
-      </StyledLayout>
+      </SLayout>
     );
   };
 }

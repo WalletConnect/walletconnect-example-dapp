@@ -11,7 +11,7 @@ const fadeIn = keyframes`
   }
 `;
 
-const StyledWrapper = styled.div`
+const SWrapper = styled.div`
   will-change: transform, opacity;
   animation: ${fadeIn} 0.7s ease 0s normal 1;
   min-height: 200px;
@@ -22,9 +22,9 @@ const StyledWrapper = styled.div`
 `;
 
 const Wrapper = ({ children, center, ...props }) => (
-  <StyledWrapper center={center} {...props}>
+  <SWrapper center={center} {...props}>
     {children}
-  </StyledWrapper>
+  </SWrapper>
 );
 
 Wrapper.propTypes = {

@@ -6,7 +6,7 @@ import { ellipseAddress } from "../helpers/utilities";
 import banner from "../assets/walletconnect-banner.png";
 import { transitions } from "../styles";
 
-const StyledHeader = styled.div`
+const SHeader = styled.div`
   margin-top: -1px;
   margin-bottom: 1px;
   width: 100%;
@@ -17,13 +17,13 @@ const StyledHeader = styled.div`
   padding: 0 16px;
 `;
 
-const StyledBannerWrapper = styled.div`
+const SBannerWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
 `;
 
-const StyledBanner = styled.div`
+const SBanner = styled.div`
   width: 275px;
   height: 45px;
   background: url(${banner}) no-repeat;
@@ -31,14 +31,14 @@ const StyledBanner = styled.div`
   background-position: center;
 `;
 
-const StyledActiveAccount = styled.div`
+const SActiveAccount = styled.div`
   display: flex;
   align-items: center;
   position: relative;
   font-weight: 500;
 `;
 
-const StyledDisconnect = styled.div`
+const SDisconnect = styled.div`
   transition: ${transitions.button};
   font-size: 12px;
   font-family: monospace;
@@ -54,7 +54,7 @@ const StyledDisconnect = styled.div`
   }
 `;
 
-const StyledBockieWrapper = styled.div`
+const SBockieWrapper = styled.div`
   margin-right: 10px;
   & canvas {
     border-radius: 3px;
@@ -63,22 +63,20 @@ const StyledBockieWrapper = styled.div`
 
 const Header = ({ killSession, address, ...props }) => {
   return (
-    <StyledHeader {...props}>
-      <StyledBannerWrapper>
-        <StyledBanner alt="WalletConnect" />
-      </StyledBannerWrapper>
+    <SHeader {...props}>
+      <SBannerWrapper>
+        <SBanner alt="WalletConnect" />
+      </SBannerWrapper>
       {address && (
-        <StyledActiveAccount>
-          <StyledBockieWrapper>
+        <SActiveAccount>
+          <SBockieWrapper>
             <Blockie address={address} config={{ size: 4 }} />
-          </StyledBockieWrapper>
+          </SBockieWrapper>
           <p>{ellipseAddress(address)}</p>
-          <StyledDisconnect onClick={killSession}>
-            {"Disconnect"}
-          </StyledDisconnect>
-        </StyledActiveAccount>
+          <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>
+        </SActiveAccount>
       )}
-    </StyledHeader>
+    </SHeader>
   );
 };
 

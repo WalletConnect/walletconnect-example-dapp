@@ -5,42 +5,42 @@ import { ERC20Icon } from "dapparatus";
 import eth from "../assets/eth.svg";
 import { handleSignificantDecimals } from "../helpers/bignumber";
 
-const StyledAssetRow = styled.div`
+const SAssetRow = styled.div`
   width: 100%;
   padding: 20px;
   display: flex;
   justify-content: space-between;
 `;
-const StyledAssetRowLeft = styled.div`
+const SAssetRowLeft = styled.div`
   display: flex;
 `;
-const StyledAssetName = styled.div`
+const SAssetName = styled.div`
   display: flex;
   margin-left: 10px;
 `;
-const StyledAssetRowRight = styled.div`
+const SAssetRowRight = styled.div`
   display: flex;
 `;
-const StyledAssetBalance = styled.div`
+const SAssetBalance = styled.div`
   display: flex;
 `;
 
 const AssetRow = ({ asset, ...props }) => (
-  <StyledAssetRow {...props}>
-    <StyledAssetRowLeft>
+  <SAssetRow {...props}>
+    <SAssetRowLeft>
       {asset.symbol && asset.symbol.toLowerCase() === "eth" ? (
         <Icon icon={eth} />
       ) : (
         <ERC20Icon tokenAddress={asset.address} />
       )}
-      <StyledAssetName>{asset.name}</StyledAssetName>
-    </StyledAssetRowLeft>
-    <StyledAssetRowRight>
-      <StyledAssetBalance>
+      <SAssetName>{asset.name}</SAssetName>
+    </SAssetRowLeft>
+    <SAssetRowRight>
+      <SAssetBalance>
         {`${handleSignificantDecimals(asset.balance, 8)} ${asset.symbol}`}
-      </StyledAssetBalance>
-    </StyledAssetRowRight>
-  </StyledAssetRow>
+      </SAssetBalance>
+    </SAssetRowRight>
+  </SAssetRow>
 );
 
 export default AssetRow;

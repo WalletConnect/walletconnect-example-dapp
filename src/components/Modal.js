@@ -4,7 +4,7 @@ import styled from "styled-components";
 import CloseButton from "./CloseButton";
 import { colors } from "../styles";
 
-const StyledModal = styled.div`
+const SModal = styled.div`
   height: 100vh;
   width: 100vw;
   text-align: center;
@@ -24,7 +24,7 @@ const StyledModal = styled.div`
   align-items: center;
 `;
 
-const StyledCard = styled.div`
+const SCard = styled.div`
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -38,12 +38,12 @@ const StyledCard = styled.div`
 `;
 
 const Modal = ({ children, show, toggleModal, ...otherProps }) => (
-  <StyledModal show={show} {...otherProps}>
-    <StyledCard>
+  <SModal show={show} {...otherProps}>
+    <SCard>
       <CloseButton onClick={toggleModal} />
       <div>{children}</div>
-    </StyledCard>
-  </StyledModal>
+    </SCard>
+  </SModal>
 );
 
 Modal.propTypes = {

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Loader from "./Loader";
 import { colors, fonts, shadows, transitions } from "../styles";
 
-const StyledIcon = styled.div`
+const SIcon = styled.div`
   position: absolute;
   height: 15px;
   width: 15px;
@@ -12,7 +12,7 @@ const StyledIcon = styled.div`
   top: calc((100% - 15px) / 2);
 `;
 
-const StyledHoverLayer = styled.div`
+const SHoverLayer = styled.div`
   transition: ${transitions.button};
   position: absolute;
   height: 100%;
@@ -27,7 +27,7 @@ const StyledHoverLayer = styled.div`
   visibility: hidden;
 `;
 
-const StyledButton = styled.button`
+const SButton = styled.button`
   transition: ${transitions.button};
   position: relative;
   border: none;
@@ -65,7 +65,7 @@ const StyledButton = styled.button`
           : `${shadows.soft}`};
     }
 
-    &:hover ${StyledHoverLayer} {
+    &:hover ${SHoverLayer} {
       opacity: 1;
       visibility: visible;
     }
@@ -77,12 +77,12 @@ const StyledButton = styled.button`
     color: ${({ outline, color }) =>
       outline ? `rgb(${colors[color]})` : `rgba(${colors.white}, 0.24)`};
 
-    & ${StyledIcon} {
+    & ${SIcon} {
       opacity: 0.8;
     }
   }
 
-  & ${StyledIcon} {
+  & ${SIcon} {
     right: ${({ left }) => (left ? "auto" : "0")};
     left: ${({ left }) => (left ? "0" : "auto")};
     display: ${({ icon }) => (icon ? "block" : "none")};
@@ -105,7 +105,7 @@ const Button = ({
   round,
   ...props
 }) => (
-  <StyledButton
+  <SButton
     type={type}
     outline={outline}
     color={color}
@@ -114,14 +114,14 @@ const Button = ({
     left={left}
     {...props}
   >
-    <StyledHoverLayer />
-    <StyledIcon />
+    <SHoverLayer />
+    <SIcon />
     {fetching ? (
       <Loader size={20} color="white" background={color} />
     ) : (
       children
     )}
-  </StyledButton>
+  </SButton>
 );
 
 Button.propTypes = {

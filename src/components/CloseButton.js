@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { colors, transitions } from "../styles";
 
-const StyledCloseButton = styled.div`
+const SCloseButton = styled.div`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   position: absolute;
@@ -18,14 +18,14 @@ const StyledCloseButton = styled.div`
   }
 `;
 
-const StyledFirstLine = styled.div`
+const SFirstLine = styled.div`
   position: absolute;
   width: 60%;
   border: 1px solid rgb(${colors.black});
   transition: ${transitions.base};
 `;
 
-const StyledSecondLine = styled.div`
+const SSecondLine = styled.div`
   position: absolute;
   width: 60%;
   border: 1px solid rgb(${colors.black});
@@ -33,10 +33,10 @@ const StyledSecondLine = styled.div`
 `;
 
 const CloseButton = ({ size, ...props }) => (
-  <StyledCloseButton size={size} {...props}>
-    <StyledFirstLine />
-    <StyledSecondLine />
-  </StyledCloseButton>
+  <SCloseButton size={size} {...props}>
+    <SFirstLine />
+    <SSecondLine />
+  </SCloseButton>
 );
 
 CloseButton.propTypes = {

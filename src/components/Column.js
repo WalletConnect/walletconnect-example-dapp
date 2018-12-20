@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const StyledColumn = styled.div`
+const SColumn = styled.div`
   position: relative;
   width: 100%;
   height: ${({ spanHeight }) => (spanHeight ? "100%" : "auto")};
@@ -15,14 +15,14 @@ const StyledColumn = styled.div`
 `;
 
 const Column = ({ children, spanHeight, maxWidth, center, ...props }) => (
-  <StyledColumn
+  <SColumn
     spanHeight={spanHeight}
     maxWidth={maxWidth}
     center={center}
     {...props}
   >
     {children}
-  </StyledColumn>
+  </SColumn>
 );
 
 Column.propTypes = {
