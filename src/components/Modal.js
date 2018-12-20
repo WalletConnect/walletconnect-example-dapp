@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import CloseButton from "./CloseButton";
-import { colors } from "../styles";
+import { colors, transitions } from "../styles";
 
 const SModal = styled.div`
   height: 100vh;
@@ -24,6 +23,34 @@ const SModal = styled.div`
   align-items: center;
 `;
 
+const SCloseButton = styled.div`
+  transition: ${transitions.short};
+  position: absolute;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
+  right: ${({ size }) => `${size / 1.6667}px`};
+  top: ${({ size }) => `${size / 1.6667}px`};
+  opacity: 0.5;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
+  &:before,
+  &:after {
+    position: absolute;
+    content: " ";
+    height: ${({ size }) => `${size}px`};
+    width: 2px;
+    background: ${({ color }) => `rgb(${colors[color]})`};
+  }
+  &:before {
+    transform: rotate(45deg);
+  }
+  &:after {
+    transform: rotate(-45deg);
+  }
+`;
+
 const SCard = styled.div`
   position: relative;
   width: 100%;
@@ -40,7 +67,7 @@ const SCard = styled.div`
 const Modal = ({ children, show, toggleModal, ...otherProps }) => (
   <SModal show={show} {...otherProps}>
     <SCard>
-      <CloseButton onClick={toggleModal} />
+      <SCloseButton size={25} color={"dark"} onClick={toggleModal} />
       <div>{children}</div>
     </SCard>
   </SModal>
