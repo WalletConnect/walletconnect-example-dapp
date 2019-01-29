@@ -1,9 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
+import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import { colors, transitions } from "../styles";
 
-const SModal = styled.div`
+interface IModalStyleProps {
+  show: boolean;
+}
+
+const SModalStyleTypes = styled.div<IModalStyleProps>``;
+const SModal = styled(SModalStyleTypes)`
   height: 100vh;
   width: 100vw;
   text-align: center;
@@ -23,7 +28,14 @@ const SModal = styled.div`
   align-items: center;
 `;
 
-const SCloseButton = styled.div`
+interface ICloseButtonStyleProps {
+  size: number;
+  color: string;
+  onClick?: any;
+}
+
+const SCloseButtonStyleTypes = styled.div<ICloseButtonStyleProps>``;
+const SCloseButton = styled(SCloseButtonStyleTypes)`
   transition: ${transitions.short};
   position: absolute;
   width: ${({ size }) => `${size}px`};
@@ -64,14 +76,23 @@ const SCard = styled.div`
   align-items: center;
 `;
 
-const Modal = ({ children, show, toggleModal, ...otherProps }) => (
-  <SModal show={show} {...otherProps}>
-    <SCard>
-      <SCloseButton size={25} color={"dark"} onClick={toggleModal} />
-      <div>{children}</div>
-    </SCard>
-  </SModal>
-);
+interface IModalProps {
+  children: React.ReactNode;
+  show: boolean;
+  toggleModal: any;
+}
+
+const Modal = (props: IModalProps) => {
+  const { children, show, toggleModal } = props;
+  return (
+    <SModal show={show} {...props}>
+      <SCard>
+        <SCloseButton size={25} color={"dark"} onClick={toggleModal} />
+        <div>{children}</div>
+      </SCard>
+    </SModal>
+  );
+};
 
 Modal.propTypes = {
   children: PropTypes.node.isRequired,

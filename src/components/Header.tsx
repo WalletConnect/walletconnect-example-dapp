@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
 import styled from "styled-components";
-import { Blockie } from "dapparatus";
+import * as PropTypes from "prop-types";
+import Blockie from "./Blockie";
 import { ellipseAddress } from "../helpers/utilities";
 import banner from "../assets/walletconnect-banner.png";
 import { transitions } from "../styles";
@@ -61,16 +61,17 @@ const SBockieWrapper = styled.div`
   }
 `;
 
-const Header = ({ killSession, address, ...props }) => {
+const Header = (props: any) => {
+  const { killSession, address } = props;
   return (
     <SHeader {...props}>
       <SBannerWrapper>
-        <SBanner alt="WalletConnect" />
+        <SBanner />
       </SBannerWrapper>
       {address && (
         <SActiveAccount>
           <SBockieWrapper>
-            <Blockie address={address} config={{ size: 4 }} />
+            <Blockie address={address} />
           </SBockieWrapper>
           <p>{ellipseAddress(address)}</p>
           <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>
