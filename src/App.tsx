@@ -29,7 +29,7 @@ import { IInternalEvent } from "./lib/types";
 const SLayout = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   min-height: 100vh;
   text-align: center;
 `;
