@@ -467,7 +467,7 @@ class App extends Component {
           <SContent>
             {!address && !assets.length ? (
               <SLanding center>
-                <h2>Try out WalletConnect!</h2>
+                <h2>{`Try out WalletConnect v${process.env.REACT_APP_VERSION}`}</h2>
                 <SButtonContainer>
                   <SConnectButton
                     left

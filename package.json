@@ -1,6 +1,6 @@
 {
   "name": "walletconnect-example-dapp",
-  "version": "0.7.0",
+  "version": "0.7.28",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
