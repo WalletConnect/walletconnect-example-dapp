@@ -508,7 +508,9 @@ class App extends React.Component<any, any> {
           <SContent>
             {!address && !assets.length ? (
               <SLanding center>
-                <h3>Try out WalletConnect!</h3>
+                <h3>{`Try out WalletConnect v${
+                  process.env.REACT_APP_VERSION
+                }`}</h3>
                 <SButtonContainer>
                   <SConnectButton
                     left
