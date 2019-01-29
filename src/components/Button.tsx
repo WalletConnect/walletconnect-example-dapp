@@ -1,8 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
 import styled from "styled-components";
 import Loader from "./Loader";
 import { colors, fonts, shadows, transitions } from "../styles";
+
+interface IButtonStyleProps {
+  fetching: boolean;
+  outline: boolean;
+  type: string;
+  color: string;
+  disabled: boolean;
+  icon: any;
+  left: boolean;
+}
+
+interface IButtonProps extends IButtonStyleProps {
+  children: React.ReactNode;
+  onClick?: any;
+}
 
 const SIcon = styled.div`
   position: absolute;
@@ -27,7 +41,8 @@ const SHoverLayer = styled.div`
   visibility: hidden;
 `;
 
-const SButton = styled.button`
+const SButtonStyleTypes = styled.button<IButtonStyleProps>``;
+const SButton = styled(SButtonStyleTypes)`
   transition: ${transitions.button};
   position: relative;
   border: none;
@@ -41,11 +56,10 @@ const SButton = styled.button`
     outline ? `rgb(${colors[color]})` : `rgb(${colors.white})`};
   box-shadow: ${({ outline }) => (outline ? "none" : `${shadows.soft}`)};
   border-radius: 8px;
-  font-size: ${fonts.size.h6};
+  font-size: ${fonts.size.medium};
   font-weight: ${fonts.weight.semibold};
   padding: ${({ icon, left }) =>
     icon ? (left ? "7px 12px 8px 28px" : "7px 28px 8px 12px") : "8px 12px"};
-  height: 32px;
   cursor: ${({ disabled }) => (disabled ? "auto" : "pointer")};
   will-change: transform;
 
@@ -93,53 +107,27 @@ const SButton = styled.button`
   }
 `;
 
-const Button = ({
-  children,
-  fetching,
-  outline,
-  type,
-  color,
-  disabled,
-  icon,
-  left,
-  round,
-  ...props
-}) => (
+const Button = (props: IButtonProps) => (
   <SButton
-    type={type}
-    outline={outline}
-    color={color}
-    disabled={disabled}
-    icon={icon}
-    left={left}
+    type={props.type}
+    outline={props.outline}
+    color={props.color}
+    disabled={props.disabled}
+    icon={props.icon}
+    left={props.left}
     {...props}
   >
     <SHoverLayer />
     <SIcon />
-    {fetching ? (
-      <Loader size={20} color="white" background={color} />
-    ) : (
-      children
-    )}
+    {props.fetching ? <Loader size={20} color="white" /> : props.children}
   </SButton>
 );
-
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  fetching: PropTypes.bool,
-  outline: PropTypes.bool,
-  type: PropTypes.string,
-  color: PropTypes.string,
-  disabled: PropTypes.bool,
-  icon: PropTypes.any,
-  left: PropTypes.bool
-};
 
 Button.defaultProps = {
   fetching: false,
   outline: false,
   type: "button",
-  color: "darkGrey",
+  color: "lightBlue",
   disabled: false,
   icon: null,
   left: false

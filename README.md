@@ -3,17 +3,17 @@
 ## Develop
 
 ```bash
-$ yarn start
+yarn start
 ```
 
 ## Test
 
 ```bash
-$ yarn test
+yarn test
 ```
 
 ## Build
 
 ```bash
-$ yarn build
+yarn build
 ```

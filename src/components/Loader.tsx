@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
+import * as PropTypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 import { colors } from "../styles";
 
@@ -21,14 +21,24 @@ const load = keyframes`
   }
 `;
 
-const SLoader = styled.svg`
+interface ILoaderStyleProps {
+  size: number;
+}
+
+interface ILoaderProps extends ILoaderStyleProps {
+  color: string;
+}
+
+const SLoaderStyleTypes = styled.svg<ILoaderStyleProps>``;
+const SLoader = styled(SLoaderStyleTypes)`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   animation: ${load} 1s infinite cubic-bezier(0.25, 0, 0.75, 1);
   transform: translateZ(0);
 `;
 
-const Loader = ({ size, color }) => {
+const Loader = (props: ILoaderProps) => {
+  const { size, color } = props;
   const rgb = `rgb(${colors[color]})`;
   return (
     <SLoader viewBox="0 0 186 187" size={size}>
@@ -60,7 +70,7 @@ Loader.propTypes = {
 
 Loader.defaultProps = {
   size: 40,
-  color: "walletconnect"
+  color: "lightBlue"
 };
 
 export default Loader;

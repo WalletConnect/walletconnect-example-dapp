@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
+import * as PropTypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
@@ -11,7 +11,12 @@ const fadeIn = keyframes`
   }
 `;
 
-const SWrapper = styled.div`
+interface IWrapperStyleProps {
+  center: boolean;
+}
+
+const SWrapperStyleTypes = styled.div<IWrapperStyleProps>``;
+const SWrapper = styled(SWrapperStyleTypes)`
   will-change: transform, opacity;
   animation: ${fadeIn} 0.7s ease 0s normal 1;
   min-height: 200px;
@@ -21,11 +26,18 @@ const SWrapper = styled.div`
   align-items: ${({ center }) => (center ? `center` : `flex-start`)};
 `;
 
-const Wrapper = ({ children, center, ...props }) => (
-  <SWrapper center={center} {...props}>
-    {children}
-  </SWrapper>
-);
+interface IWrapperProps extends IWrapperStyleProps {
+  children: React.ReactNode;
+}
+
+const Wrapper = (props: IWrapperProps) => {
+  const { children, center } = props;
+  return (
+    <SWrapper center={center} {...props}>
+      {children}
+    </SWrapper>
+  );
+};
 
 Wrapper.propTypes = {
   children: PropTypes.node.isRequired,
