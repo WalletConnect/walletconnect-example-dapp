@@ -172,6 +172,9 @@ class App extends React.Component<any, any> {
       // get uri for QR Code modal
       const uri = walletConnector.uri;
 
+      // console log the uri for development
+      console.log(uri); // tslint:disable-line
+
       // display QR Code modal
       WalletConnectQRCodeModal.open(uri, () => {
         console.log("QR Code Modal closed"); // tslint:disable-line
