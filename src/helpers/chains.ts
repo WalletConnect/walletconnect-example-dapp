@@ -34,6 +34,14 @@ const supportedChains: IChainData[] = [
     network_id: 5
   },
   {
+    name: "Ethereum Kovan",
+    short_name: "kov",
+    chain: "ETH",
+    network: "kovan",
+    chain_id: 42,
+    network_id: 42
+  },
+  {
     name: "Ethereum Classic Mainnet",
     short_name: "etc",
     chain: "ETC",
