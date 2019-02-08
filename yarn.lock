@@ -130,6 +130,43 @@
     "@types/react" "*"
     csstype "^2.2.0"
 
+"@walletconnect/browser@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/browser/-/browser-1.0.0-beta.3.tgz#8a41698ab08170a01387d794bef9d90eb1241ab6"
+  integrity sha512-DHzDMRNB2FmNlcmGLe3dCOLOYMffe2DsmurUlZ6iiG50UpBezZZr2jkg3bxmFG1O8Ki6GbSuCS7mf+VSO3E/xA==
+  dependencies:
+    "@walletconnect/core" "^1.0.0-beta.3"
+    "@walletconnect/types" "^1.0.0-beta.2"
+    "@walletconnect/utils" "^1.0.0-beta.3"
+
+"@walletconnect/core@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.0.0-beta.3.tgz#4fb76507e2b25a4db0a5dc8e7d87450d32de7e48"
+  integrity sha512-Ato/mB//yC8Ak/ZgnbU3FDjb6QNG+7tKj35bqDI0eAYl6k9ISWdr99pRwVW7pVDL1kHN6uPtPpTvpwdYJEB5Cg==
+  dependencies:
+    "@walletconnect/types" "^1.0.0-beta.2"
+    "@walletconnect/utils" "^1.0.0-beta.3"
+
+"@walletconnect/qrcode-modal@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.0.0-beta.3.tgz#f2623d2554332d78278cd021144730683e89c9ec"
+  integrity sha512-M063DWAfe8f3O2l9HRd6ERccXJuq7GyNpJ2XjAs9+kgTlqes61BBFqg5036AMJFrvPkjx71nOMm4KKps5zwZBQ==
+  dependencies:
+    "@walletconnect/types" "^1.0.0-beta.2"
+    qr-image "^3.2.0"
+
+"@walletconnect/types@^1.0.0-beta.2":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.0.0-beta.3.tgz#15a302808468886331176042f9f98d10ebaecf8e"
+  integrity sha512-PiB0F7HF2LN6MWnSUR6HdqlwPJR1gblJIKNLOyfanzJOCIdceAtI5WHkuZOsM4bljUFKXpujMRTw1QmwntOw6g==
+
+"@walletconnect/utils@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.0.0-beta.3.tgz#7c845aa04f7ae0074850f929e05dcc022c3119dc"
+  integrity sha512-+TMjnd8Q9sGCVpEk9GxbADu38nv2RJgywXakXpqdfxpL7ZU6ZS4DrcvEdsywxfJ1xh+4VN3VEaX/EbVBmgjKuA==
+  dependencies:
+    "@walletconnect/types" "^1.0.0-beta.2"
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"

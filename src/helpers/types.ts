@@ -13,6 +13,7 @@ export interface IChainData {
   network: string;
   chain_id: number;
   network_id: number;
+  rpc_url: string;
 }
 
 export interface ITxData {
@@ -69,7 +70,7 @@ export interface IBlockScoutTokenTx {
 }
 
 export interface IParsedTx {
-  timeStamp: string;
+  timestamp: string;
   hash: string;
   from: string;
   to: string;
@@ -112,7 +113,18 @@ export interface IGasPrice {
 }
 
 export interface IGasPrices {
+  timestamp: number;
   slow: IGasPrice;
   average: IGasPrice;
   fast: IGasPrice;
+}
+
+export interface IMethodArgument {
+  type: string;
+}
+
+export interface IMethod {
+  signature: string;
+  name: string;
+  args: IMethodArgument[];
 }
