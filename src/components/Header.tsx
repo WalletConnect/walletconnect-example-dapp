@@ -2,8 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import * as PropTypes from "prop-types";
 import Blockie from "./Blockie";
-import { ellipseAddress } from "../helpers/utilities";
-import banner from "../assets/walletconnect-banner.png";
+import Banner from "./Banner";
+import { ellipseAddress, getChainData } from "../helpers/utilities";
 import { transitions } from "../styles";
 
 const SHeader = styled.div`
@@ -17,25 +17,25 @@ const SHeader = styled.div`
   padding: 0 16px;
 `;
 
-const SBannerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-`;
-
-const SBanner = styled.div`
-  width: 275px;
-  height: 45px;
-  background: url(${banner}) no-repeat;
-  background-size: cover;
-  background-position: center;
-`;
-
 const SActiveAccount = styled.div`
   display: flex;
   align-items: center;
   position: relative;
   font-weight: 500;
+`;
+
+const SActiveChain = styled(SActiveAccount)`
+  flex-direction: column;
+  text-align: left;
+  align-items: flex-start;
+  & p {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0;
+  }
+  & p:nth-child(2) {
+    font-weight: bold;
+  }
 `;
 
 const SDisconnect = styled.div`
@@ -61,20 +61,35 @@ const SBockieWrapper = styled.div`
   }
 `;
 
-const Header = (props: any) => {
-  const { killSession, address } = props;
+interface IHeaderProps {
+  killSession: () => void;
+  connected: boolean;
+  address: string;
+  chainId: number;
+}
+
+const Header = (props: IHeaderProps) => {
+  const { connected, address, chainId, killSession } = props;
+  const activeChain = chainId ? getChainData(chainId).name : null;
   return (
     <SHeader {...props}>
-      <SBannerWrapper>
-        <SBanner />
-      </SBannerWrapper>
+      {connected && activeChain ? (
+        <SActiveChain>
+          <p>{`Connected to`}</p>
+          <p>{activeChain}</p>
+        </SActiveChain>
+      ) : (
+        <Banner />
+      )}
       {address && (
         <SActiveAccount>
           <SBockieWrapper>
             <Blockie address={address} />
           </SBockieWrapper>
           <p>{ellipseAddress(address)}</p>
-          <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>
+          {connected && (
+            <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>
+          )}
         </SActiveAccount>
       )}
     </SHeader>

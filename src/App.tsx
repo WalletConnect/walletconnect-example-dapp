@@ -25,6 +25,7 @@ import {
   convertStringToHex
 } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
+import Banner from "./components/Banner";
 
 const SLayout = styled.div`
   position: relative;
@@ -482,6 +483,8 @@ class App extends React.Component<any, any> {
     const {
       assets,
       address,
+      connected,
+      chainId,
       fetching,
       showModal,
       pendingRequest,
@@ -506,7 +509,12 @@ class App extends React.Component<any, any> {
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
-          <Header address={address} killSession={this.killSession} />
+          <Header
+            connected={connected}
+            address={address}
+            chainId={chainId}
+            killSession={this.killSession}
+          />
           <SContent>
             {!address && !assets.length ? (
               <SLanding center>
@@ -527,6 +535,7 @@ class App extends React.Component<any, any> {
               </SLanding>
             ) : (
               <SBalances>
+                <Banner />
                 <h3>Actions</h3>
                 <Column center>
                   <STestButtonContainer>

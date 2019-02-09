@@ -1,4 +1,6 @@
 import EthCrypto from "eth-crypto";
+import { IChainData } from "./types";
+import supportedChains from "./chains";
 
 export function capitalize(string: string): string {
   return string
@@ -99,6 +101,18 @@ export function isMobile(): boolean {
   mobile = hasMobileUserAgent();
 
   return mobile;
+}
+
+export function getChainData(chainId: number): IChainData {
+  const chainData = supportedChains.filter(
+    (chain: any) => chain.chain_id === chainId
+  )[0];
+
+  if (!chainData) {
+    throw new Error("ChainId missing or not supported");
+  }
+
+  return chainData;
 }
 
 export function ecrecover(sig: string, msg: string): string {
