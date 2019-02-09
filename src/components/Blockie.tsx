@@ -16,7 +16,7 @@ const SBlockieWrapper = styled(SBlockieStyleTypes)`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 3px;
+  border-radius: 6px;
   overflow: hidden;
   & img {
     width: 100%;
