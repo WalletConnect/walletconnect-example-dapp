@@ -1,7 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import WalletConnect from "./lib";
-import WalletConnectQRCodeModal from "./qrcode-modal";
+import WalletConnect from "@walletconnect/browser";
+import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
+import { IInternalEvent } from "@walletconnect/types";
 import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -24,7 +25,6 @@ import {
   convertStringToHex
 } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
-import { IInternalEvent } from "./lib/types";
 
 const SLayout = styled.div`
   position: relative;
@@ -288,8 +288,7 @@ class App extends React.Component<any, any> {
     const to = address;
 
     // nonce
-    const nonceRes = await apiGetAccountNonce(address, chainId);
-    const nonce = nonceRes.data.result;
+    const nonce = await apiGetAccountNonce(address, chainId);
 
     // gasPrice
     const gasPrices = await apiGetGasPrices();

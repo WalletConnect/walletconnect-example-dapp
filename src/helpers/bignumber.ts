@@ -1,5 +1,30 @@
 import BigNumber from "bignumber.js";
 
+export function isNaN(value: string | number): boolean {
+  return new BigNumber(`${value}`).isNaN();
+}
+
+export function isNumber(value: string | number): boolean {
+  const isNaNResult = isNaN(value);
+  return !isNaNResult;
+}
+
+export function isInteger(value: string | number): boolean {
+  return new BigNumber(`${value}`).isInteger();
+}
+
+export function isPositive(value: string | number): boolean {
+  return new BigNumber(`${value}`).isPositive();
+}
+
+export function isNegative(value: string | number): boolean {
+  return new BigNumber(`${value}`).isNegative();
+}
+
+export function isZero(value: string | number): boolean {
+  return new BigNumber(`${value}`).isZero();
+}
+
 export function countDecimalPlaces(value: string | number): number {
   return new BigNumber(`${value}`).dp();
 }
