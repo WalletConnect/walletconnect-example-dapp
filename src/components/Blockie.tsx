@@ -17,7 +17,6 @@ const SBlockieWrapper = styled(SBlockieStyleTypes)`
   align-items: center;
   justify-content: center;
   border-radius: 3px;
-  margin-right: 10px;
   overflow: hidden;
   & img {
     width: 100%;
@@ -32,7 +31,7 @@ const Blockie = (props: IBlockieProps) => {
     })
     .toDataURL();
   return (
-    <SBlockieWrapper size={props.size}>
+    <SBlockieWrapper size={props.size} {...props}>
       <img src={imgUrl} alt={props.address} />
     </SBlockieWrapper>
   );

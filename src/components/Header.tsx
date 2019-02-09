@@ -38,26 +38,28 @@ const SActiveChain = styled(SActiveAccount)`
   }
 `;
 
+const SAddresss = styled.p`
+  font-weight: bold;
+  margin-top: -2px;
+`;
+
+const SBlockie = styled(Blockie)`
+  margin-right: 10px;
+`;
+
 const SDisconnect = styled.div`
   transition: ${transitions.button};
   font-size: 12px;
   font-family: monospace;
   position: absolute;
   right: 0;
-  top: 30px;
+  top: 20px;
   opacity: 0.7;
   cursor: pointer;
 
   &:hover {
     transform: translateY(-1px);
     opacity: 0.5;
-  }
-`;
-
-const SBockieWrapper = styled.div`
-  margin-right: 10px;
-  & canvas {
-    border-radius: 3px;
   }
 `;
 
@@ -83,9 +85,8 @@ const Header = (props: IHeaderProps) => {
       )}
       {address && (
         <SActiveAccount>
-          <SBockieWrapper>
-            <Blockie address={address} />
-          </SBockieWrapper>
+          <SBlockie address={address} />
+          <SAddresss>{ellipseAddress(address)}</SAddresss>
           <p>{ellipseAddress(address)}</p>
           {connected && (
             <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>

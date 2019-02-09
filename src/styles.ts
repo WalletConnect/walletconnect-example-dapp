@@ -60,8 +60,8 @@ export const shadows = {
 
 export const responsive = {
   xs: {
-    min: "min-width: 479px",
-    max: "max-width: 480px"
+    min: "min-width: 467px",
+    max: "max-width: 468px"
   },
   sm: {
     min: "min-width: 639px",
