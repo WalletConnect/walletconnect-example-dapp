@@ -38,26 +38,39 @@ const SActiveChain = styled(SActiveAccount)`
   }
 `;
 
-const SDisconnect = styled.div`
+const SBlockie = styled(Blockie)`
+  margin-right: 10px;
+`;
+
+interface IHeaderStyle {
+  connected: boolean;
+}
+
+const SAddressStyleProps = styled.p<IHeaderStyle>``;
+const SAddress = styled(SAddressStyleProps)`
+  transition: ${transitions.base};
+  font-weight: bold;
+  margin: ${({ connected }) => (connected ? "-2px auto 0.7em" : "0")};
+`;
+
+const SDisconnectStyleProps = styled.div<IHeaderStyle>``;
+const SDisconnect = styled(SDisconnectStyleProps)`
   transition: ${transitions.button};
   font-size: 12px;
   font-family: monospace;
   position: absolute;
   right: 0;
-  top: 30px;
+  top: 20px;
   opacity: 0.7;
   cursor: pointer;
+
+  opacity: ${({ connected }) => (connected ? 1 : 0)};
+  visibility: ${({ connected }) => (connected ? "visible" : "hidden")};
+  pointer-events: ${({ connected }) => (connected ? "auto" : "none")};
 
   &:hover {
     transform: translateY(-1px);
     opacity: 0.5;
-  }
-`;
-
-const SBockieWrapper = styled.div`
-  margin-right: 10px;
-  & canvas {
-    border-radius: 3px;
   }
 `;
 
@@ -83,13 +96,11 @@ const Header = (props: IHeaderProps) => {
       )}
       {address && (
         <SActiveAccount>
-          <SBockieWrapper>
-            <Blockie address={address} />
-          </SBockieWrapper>
-          <p>{ellipseAddress(address)}</p>
-          {connected && (
-            <SDisconnect onClick={killSession}>{"Disconnect"}</SDisconnect>
-          )}
+          <SBlockie address={address} />
+          <SAddress connected={connected}>{ellipseAddress(address)}</SAddress>
+          <SDisconnect connected={connected} onClick={killSession}>
+            {"Disconnect"}
+          </SDisconnect>
         </SActiveAccount>
       )}
     </SHeader>
