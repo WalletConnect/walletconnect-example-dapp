@@ -289,7 +289,8 @@ class App extends React.Component<any, any> {
     const to = address;
 
     // nonce
-    const nonce = await apiGetAccountNonce(address, chainId);
+    const _nonce = await apiGetAccountNonce(address, chainId);
+    const nonce = sanitizeHex(convertStringToHex(_nonce));
 
     // gasPrice
     const gasPrices = await apiGetGasPrices();
@@ -303,7 +304,8 @@ class App extends React.Component<any, any> {
     const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
     // value
-    const value = "0x00";
+    const _value = 0;
+    const value = sanitizeHex(convertStringToHex(_value));
 
     // data
     const data = "0x";
