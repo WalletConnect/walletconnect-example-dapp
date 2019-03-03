@@ -2,6 +2,21 @@
   "name": "walletconnect-example-dapp",
   "version": "1.0.0-beta",
   "private": true,
+  "keywords": [
+    "walletconnect",
+    "ethereum",
+    "web3",
+    "crypto"
+  ],
+  "author": "WalletConnect <walletconnect.org>",
+  "homepage": "https://walletconnect.org",
+  "license": "LGPL-3.0",
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
+  },
   "dependencies": {
     "@walletconnect/browser": "^1.0.0-beta.6",
     "@walletconnect/qrcode-modal": "^1.0.0-beta.6",
@@ -15,11 +30,12 @@
     "react-scripts-ts": "3.1.0",
     "styled-components": "^4.1.3"
   },
-  "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walletconnect/walletconnect-monorepo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/walletconnect/walletconnect-monorepo/issues"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
