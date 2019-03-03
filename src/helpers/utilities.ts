@@ -118,7 +118,9 @@ export function getChainData(chainId: number): IChainData {
 export function ecrecover(sig: string, msg: string): string {
   const signer = EthCrypto.recover(
     sig,
-    EthCrypto.hash.keccak256(msg) // signed message hash
+    EthCrypto.hash.keccak256(
+      "\x19Ethereum Signed Message:\n" + msg.length + msg
+    )
   );
   return signer;
 }
