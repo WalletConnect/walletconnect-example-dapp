@@ -75,8 +75,8 @@ const supportedChains: IChainData[] = [
   },
   {
     name: "xDAI Chain",
-    short_name: "dai",
-    chain: "DAI",
+    short_name: "xdai",
+    chain: "xDAI",
     network: "mainnet",
     chain_id: 100,
     network_id: 1,

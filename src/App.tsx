@@ -191,7 +191,7 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    walletConnector.on("session_update", (error, payload) => {
+    walletConnector.on("session_update", async (error, payload) => {
       console.log('walletConnector.on("session_update")'); // tslint:disable-line
 
       if (error) {
@@ -199,8 +199,7 @@ class App extends React.Component<any, any> {
       }
 
       const { chainId, accounts } = payload.params[0];
-      const address = accounts[0];
-      this.setState({ chainId, accounts, address });
+      this.onSessionUpdate(accounts, chainId);
     });
 
     walletConnector.on("connect", (error, payload) => {
@@ -262,14 +261,24 @@ class App extends React.Component<any, any> {
     this.getAccountAssets();
   };
 
+  public onSessionUpdate = async (accounts: string[], chainId: number) => {
+    const address = accounts[0];
+    await this.setState({ chainId, accounts, address });
+    await this.getAccountAssets();
+  };
+
   public getAccountAssets = async () => {
     const { address, chainId } = this.state;
     this.setState({ fetching: true });
+    try {
+      // get account balances
+      const assets = await apiGetAccountAssets(address, chainId);
 
-    // get account balances
-    const assets = await apiGetAccountAssets(address, chainId);
-
-    await this.setState({ fetching: false, address, assets });
+      await this.setState({ fetching: false, address, assets });
+    } catch (error) {
+      console.error(error); // tslint:disable-line
+      await this.setState({ fetching: false });
+    }
   };
 
   public toggleModal = () =>
@@ -499,6 +508,22 @@ class App extends React.Component<any, any> {
       decimals: "18",
       balance: "0"
     };
+    // let ethereum: IAssetData =
+    //   chainId === 100
+    //     ? {
+    //         contractAddress: "",
+    //         name: "xDAI",
+    //         symbol: "xDAI",
+    //         decimals: "18",
+    //         balance: "0"
+    //       }
+    //     : {
+    //         contractAddress: "",
+    //         name: "Ethereum",
+    //         symbol: "ETH",
+    //         decimals: "18",
+    //         balance: "0"
+    //       };
     let tokens: IAssetData[] = [];
     if (assets.length) {
       ethereum = assets.filter(
