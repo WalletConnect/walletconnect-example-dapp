@@ -3,7 +3,6 @@ import styled from "styled-components";
 import WalletConnect from "@walletconnect/browser";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 import { IInternalEvent } from "@walletconnect/types";
-import AssetRow from "./components/AssetRow";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
@@ -26,6 +25,7 @@ import {
 } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
+import AccountAssets from "./components/AccountAssets";
 
 const SLayout = styled.div`
   position: relative;
@@ -501,38 +501,6 @@ class App extends React.Component<any, any> {
       pendingRequest,
       result
     } = this.state;
-    let ethereum: IAssetData = {
-      contractAddress: "",
-      name: "Ethereum",
-      symbol: "ETH",
-      decimals: "18",
-      balance: "0"
-    };
-    // let ethereum: IAssetData =
-    //   chainId === 100
-    //     ? {
-    //         contractAddress: "",
-    //         name: "xDAI",
-    //         symbol: "xDAI",
-    //         decimals: "18",
-    //         balance: "0"
-    //       }
-    //     : {
-    //         contractAddress: "",
-    //         name: "Ethereum",
-    //         symbol: "ETH",
-    //         decimals: "18",
-    //         balance: "0"
-    //       };
-    let tokens: IAssetData[] = [];
-    if (assets.length) {
-      ethereum = assets.filter(
-        (asset: IAssetData) => asset.symbol.toLowerCase() === "eth"
-      )[0];
-      tokens = assets.filter(
-        (asset: IAssetData) => asset.symbol.toLowerCase() !== "eth"
-      );
-    }
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
@@ -585,12 +553,7 @@ class App extends React.Component<any, any> {
                 </Column>
                 <h3>Balances</h3>
                 {!fetching ? (
-                  <Column center>
-                    <AssetRow key="Ethereum" asset={ethereum} />
-                    {tokens.map(token => (
-                      <AssetRow key={token.symbol} asset={token} />
-                    ))}
-                  </Column>
+                  <AccountAssets chainId={chainId} assets={assets} />
                 ) : (
                   <Column center>
                     <SContainer>
