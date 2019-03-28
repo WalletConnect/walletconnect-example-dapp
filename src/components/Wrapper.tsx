@@ -15,8 +15,7 @@ interface IWrapperStyleProps {
   center: boolean;
 }
 
-const SWrapperStyleTypes = styled.div<IWrapperStyleProps>``;
-const SWrapper = styled(SWrapperStyleTypes)`
+const SWrapper = styled.div<IWrapperStyleProps>`
   will-change: transform, opacity;
   animation: ${fadeIn} 0.7s ease 0s normal 1;
   min-height: 200px;

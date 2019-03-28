@@ -7,8 +7,7 @@ interface IModalStyleProps {
   show: boolean;
 }
 
-const SModalStyleTypes = styled.div<IModalStyleProps>``;
-const SModal = styled(SModalStyleTypes)`
+const SModal = styled.div<IModalStyleProps>`
   height: 100vh;
   width: 100vw;
   text-align: center;

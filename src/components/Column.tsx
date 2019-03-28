@@ -12,8 +12,7 @@ interface IColumnProps extends IColumnStyleProps {
   children: React.ReactNode;
 }
 
-const SColumnStyleTypes = styled.div<IColumnStyleProps>``;
-const SColumn = styled(SColumnStyleTypes)`
+const SColumn = styled.div<IColumnStyleProps>`
   position: relative;
   width: 100%;
   height: ${({ spanHeight }) => (spanHeight ? "100%" : "auto")};

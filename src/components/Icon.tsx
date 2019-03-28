@@ -6,8 +6,7 @@ interface IIconStyleProps {
   size: number;
 }
 
-const SIconStyleTypes = styled.img<IIconStyleProps>``;
-const SIcon = styled(SIconStyleTypes)`
+const SIcon = styled.img<IIconStyleProps>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
 `;

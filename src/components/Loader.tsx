@@ -29,8 +29,7 @@ interface ILoaderProps extends ILoaderStyleProps {
   color: string;
 }
 
-const SLoaderStyleTypes = styled.svg<ILoaderStyleProps>``;
-const SLoader = styled(SLoaderStyleTypes)`
+const SLoader = styled.svg<ILoaderStyleProps>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   animation: ${load} 1s infinite cubic-bezier(0.25, 0, 0.75, 1);
