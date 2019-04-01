@@ -18,8 +18,8 @@
     "eject": "react-scripts-ts eject"
   },
   "dependencies": {
-    "@walletconnect/browser": "^1.0.0-beta.6",
-    "@walletconnect/qrcode-modal": "^1.0.0-beta.6",
+    "@walletconnect/browser": "^1.0.0-beta.8",
+    "@walletconnect/qrcode-modal": "^1.0.0-beta.8",
     "axios": "^0.18.0",
     "bignumber.js": "^8.0.2",
     "eth-crypto": "^1.3.2",
