@@ -1,6 +1,6 @@
 {
   "name": "walletconnect-example-dapp",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "private": true,
   "keywords": [
     "walletconnect",
@@ -18,8 +18,8 @@
     "eject": "react-scripts-ts eject"
   },
   "dependencies": {
-    "@walletconnect/browser": "^1.0.0-beta.9",
-    "@walletconnect/qrcode-modal": "^1.0.0-beta.9",
+    "@walletconnect/browser": "^1.0.0-beta.10",
+    "@walletconnect/qrcode-modal": "^1.0.0-beta.10",
     "axios": "^0.18.0",
     "bignumber.js": "^8.0.2",
     "eth-crypto": "^1.3.2",
