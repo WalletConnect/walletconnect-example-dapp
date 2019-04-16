@@ -6,7 +6,7 @@ import { colors, fonts, shadows, transitions } from "../styles";
 interface IButtonStyleProps {
   fetching: boolean;
   outline: boolean;
-  type: string;
+  type: "button" | "submit" | "reset";
   color: string;
   disabled: boolean;
   icon: any;
