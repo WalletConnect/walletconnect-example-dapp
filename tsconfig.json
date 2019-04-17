@@ -16,6 +16,7 @@
     "noImplicitAny": true,
     "importHelpers": true,
     "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true
