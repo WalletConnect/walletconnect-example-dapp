@@ -219,7 +219,7 @@ class App extends React.Component<any, any> {
         throw error;
       }
 
-      this.resetApp();
+      this.onDisconnect();
     });
 
     if (walletConnector.connected) {
@@ -259,6 +259,11 @@ class App extends React.Component<any, any> {
     });
     WalletConnectQRCodeModal.close();
     this.getAccountAssets();
+  };
+
+  public onDisconnect = async () => {
+    WalletConnectQRCodeModal.close();
+    this.resetApp();
   };
 
   public onSessionUpdate = async (accounts: string[], chainId: number) => {
