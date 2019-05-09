@@ -18,7 +18,12 @@ import {
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import { sanitizeHex, ecrecover } from "./helpers/utilities";
+import {
+  sanitizeHex,
+  ecrecover,
+  isMobile
+  // clickLink
+} from "./helpers/utilities";
 import {
   convertAmountToRawNumber,
   convertStringToHex
@@ -133,6 +138,7 @@ interface IAppState {
   address: string;
   result: any | null;
   assets: IAssetData[];
+  deepLink: string;
 }
 
 const INITIAL_STATE: IAppState = {
@@ -146,7 +152,8 @@ const INITIAL_STATE: IAppState = {
   accounts: [],
   address: "",
   result: null,
-  assets: []
+  assets: [],
+  deepLink: ""
 };
 
 class App extends React.Component<any, any> {
@@ -176,14 +183,35 @@ class App extends React.Component<any, any> {
       // console log the uri for development
       console.log(uri); // tslint:disable-line
 
-      // display QR Code modal
-      WalletConnectQRCodeModal.open(uri, () => {
-        console.log("QR Code Modal closed"); // tslint:disable-line
-      });
+      // check if is mobile
+      if (isMobile()) {
+        await this.createDeepLink();
+      } else {
+        // display QR Code modal
+        WalletConnectQRCodeModal.open(uri, () => {
+          console.log("QR Code Modal closed"); // tslint:disable-line
+        });
+      }
     }
     // subscribe to events
     await this.subscribeToEvents();
   };
+
+  public createDeepLink = async () => {
+    const { walletConnector } = this.state;
+    if (walletConnector) {
+      const uri = walletConnector.uri;
+
+      // const deepLink: string = uri.replace("wc:", "rainbow:");
+
+      const deepLink: string = `rainbow://${uri}&redirectUrl=${encodeURIComponent(
+        window.location.href
+      )}`;
+
+      await this.setState({ deepLink });
+    }
+  };
+
   public subscribeToEvents = () => {
     const { walletConnector } = this.state;
 
@@ -255,7 +283,8 @@ class App extends React.Component<any, any> {
       connected: true,
       chainId,
       accounts,
-      address
+      address,
+      deepLink: ""
     });
     WalletConnectQRCodeModal.close();
     this.getAccountAssets();
@@ -504,7 +533,8 @@ class App extends React.Component<any, any> {
       fetching,
       showModal,
       pendingRequest,
-      result
+      result,
+      deepLink
     } = this.state;
     return (
       <SLayout>
@@ -523,15 +553,25 @@ class App extends React.Component<any, any> {
                   <br />
                   <span>{`v${process.env.REACT_APP_VERSION}`}</span>
                 </h3>
-                <SButtonContainer>
-                  <SConnectButton
-                    left
-                    onClick={this.walletConnectInit}
-                    fetching={fetching}
-                  >
-                    {"Connect to WalletConnect"}
-                  </SConnectButton>
-                </SButtonContainer>
+                {deepLink ? (
+                  <SButtonContainer>
+                    <a href={deepLink}>
+                      <SConnectButton left fetching={fetching}>
+                        {"Connect to Rainbow"}
+                      </SConnectButton>
+                    </a>
+                  </SButtonContainer>
+                ) : (
+                  <SButtonContainer>
+                    <SConnectButton
+                      left
+                      onClick={this.walletConnectInit}
+                      fetching={fetching}
+                    >
+                      {"Connect to WalletConnect"}
+                    </SConnectButton>
+                  </SButtonContainer>
+                )}
               </SLanding>
             ) : (
               <SBalances>
