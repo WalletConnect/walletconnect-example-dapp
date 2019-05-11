@@ -99,6 +99,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.4.tgz#1c586b991457cbb58fef51bc4e0cfcfa347714b5"
   integrity sha512-DT25xX/YgyPKiHFOpNuANIQIVvYEwCWXgK2jYYwqgaMrYE6+tq+DtmMwlD3drl6DJbUwtlIDnn0d7tIn/EbXBg==
 
+"@types/node@^10.3.2":
+  version "10.14.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.6.tgz#9cbfcb62c50947217f4d88d4d274cc40c22625a9"
+  integrity sha512-Fvm24+u85lGmV4hT5G++aht2C5I4Z4dYlWZIh62FAfFO/TfzXtPpoLI6I7AuBWkIFqZCnhFOoTT7RjjaIL5Fjg==
+
 "@types/prop-types@*", "@types/prop-types@^15.5.8":
   version "15.7.0"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.0.tgz#4c48fed958d6dcf9487195a0ef6456d5f6e0163a"
@@ -135,44 +140,43 @@
     "@types/react" "*"
     csstype "^2.2.0"
 
-"@walletconnect/browser@^1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/browser/-/browser-1.0.0-beta.20.tgz#4eea6eab3c21cb3652cd6606307ad39a072178d0"
-  integrity sha512-aIWFFL1+Dclk/hiacyrytwW3IF+vfPJAwn6hhsOyTtYYovz5W9uAjwc1YZKBsJ+lkrDIsT+1sJD/4S9Ak5yjUQ==
+"@walletconnect/browser@^1.0.0-beta.22":
+  version "1.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/@walletconnect/browser/-/browser-1.0.0-beta.22.tgz#4c8d64cc04a83f6a043ed458c844b701218aca6a"
+  integrity sha512-ULDybOLJcK2+kaW4RPCIp7RnO6k7dCgC6S2twZ7xsHmlCBpPqq5Jhs28714CTbqouZ9wL78mfTO3KbReCdjfgA==
   dependencies:
-    "@walletconnect/core" "^1.0.0-beta.20"
-    "@walletconnect/types" "^1.0.0-beta.20"
-    "@walletconnect/utils" "^1.0.0-beta.20"
+    "@walletconnect/core" "^1.0.0-beta.22"
+    "@walletconnect/types" "^1.0.0-beta.21"
+    "@walletconnect/utils" "^1.0.0-beta.22"
 
-"@walletconnect/core@^1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.0.0-beta.20.tgz#6279288398aa065a4d779022257072327fea3809"
-  integrity sha512-zzhJZkcbouymbRndy67n0w8fpYb4lxKBO2yHBJ48FetjceV45LbpVeIFD9PH7jvIfIyxhQ/pJrlNdSVytRsQew==
+"@walletconnect/core@^1.0.0-beta.22":
+  version "1.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.0.0-beta.22.tgz#a0b3b755cf934618f2d4f55efc2bf176570d51d6"
+  integrity sha512-I8dsXwfBSQai0NBEYDStYqIJkPkBMmtbsBQeda8FEIzDMTRmTXTDdkCae4bQqr4ZT4vi4Qv3GsL8uinMSF6EKA==
   dependencies:
-    "@walletconnect/types" "^1.0.0-beta.20"
-    "@walletconnect/utils" "^1.0.0-beta.20"
+    "@walletconnect/types" "^1.0.0-beta.21"
+    "@walletconnect/utils" "^1.0.0-beta.22"
 
-"@walletconnect/qrcode-modal@^1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.0.0-beta.20.tgz#a40d50fb8f42ccfcd7e1460c3d4d144b15dc232a"
-  integrity sha512-9FVeDM2qRnk1xEqAqnydPxLnhFR1c7kc/HdJL4KA5lcWm9JmetwGQ8ukXxkAg5AvEu906+bATzEoJKzc2tD72Q==
+"@walletconnect/qrcode-modal@^1.0.0-beta.22":
+  version "1.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.0.0-beta.22.tgz#d6f1a8d4215159d7956c80fbec04e97ce52b0c18"
+  integrity sha512-sTxRCHWLBZ+MFhkBWjZvpnJhikeVSE649q3H5e217x9zCPJ4JW7r8xX6e3w6+ocCPEzHk2F0GC+cCyHi/xLflg==
   dependencies:
-    "@walletconnect/types" "^1.0.0-beta.20"
+    "@walletconnect/types" "^1.0.0-beta.21"
     qr-image "^3.2.0"
 
-"@walletconnect/types@^1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.0.0-beta.20.tgz#7d7e3053637464be0f071c544ea59249169a52b6"
-  integrity sha512-onHXDYH9KZ8HByRRVbO2iNLoi3PAafFr+1LWVJZ6Jk8V84xW6bZVhiy22ztuBln7P7jw7OMxRC/B2dYNmQldag==
+"@walletconnect/types@^1.0.0-beta.21":
+  version "1.0.0-beta.21"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.0.0-beta.21.tgz#fdaebe1a952e232663218f37faef03ce55240ea9"
+  integrity sha512-sVQWaBnH3tBaFSRdXt2uNll6fdF3Uh6GD5p8XXiyF7WxQYsk/B6J+UK8DttTbGTYbSk9hQsFfSISmJPehfMq0A==
 
-"@walletconnect/utils@^1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.0.0-beta.20.tgz#4a6295a874e3ff6a32f59a1ca53f3cf0b359628f"
-  integrity sha512-wl5KbW/Cli9GEKV3SEYRnXQlcNxqDcXaMk21joqHwS4/EgCPww/kmSzCyBShbu/yXF/9jUfKol6kBJw+vRWOCQ==
+"@walletconnect/utils@^1.0.0-beta.22":
+  version "1.0.0-beta.22"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.0.0-beta.22.tgz#6f83515a3bc447d7eb2b005b18473779f7b0fca2"
+  integrity sha512-7TTGBP/3eoJYGUfnZcWCvuKP58ccOUiJi7Y0zZmA+u61e0bbFaMTaZk7FLixIqnsIoh0cowOQmSwdtQibh2piA==
   dependencies:
-    "@walletconnect/types" "^1.0.0-beta.20"
-    js-sha3 "^0.8.0"
-    lodash.isnumber "^3.0.3"
+    "@walletconnect/types" "^1.0.0-beta.21"
+    ethers "^4.0.27"
 
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
@@ -3325,6 +3329,22 @@ ethers@3.0.27:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
+ethers@^4.0.27:
+  version "4.0.27"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.27.tgz#e570b0da9d805ad65c83d81919abe02b2264c6bf"
+  integrity sha512-+DXZLP/tyFnXWxqr2fXLT67KlGUfLuvDkHSOtSC9TUVG9OIj6yrG5JPeXRMYo15xkOYwnjgdMKrXp5V94rtjJA==
+  dependencies:
+    "@types/node" "^10.3.2"
+    aes-js "3.0.0"
+    bn.js "^4.4.0"
+    elliptic "6.3.3"
+    hash.js "1.1.3"
+    js-sha3 "0.5.7"
+    scrypt-js "2.0.4"
+    setimmediate "1.0.4"
+    uuid "2.0.1"
+    xmlhttprequest "1.8.0"
+
 ethjs-util@^0.1.3, ethjs-util@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/ethjs-util/-/ethjs-util-0.1.6.tgz#f308b62f185f9fe6237132fb2a9818866a5cd536"
@@ -4201,6 +4221,14 @@ hash-base@^3.0.0:
   dependencies:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
+
+hash.js@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.3.tgz#340dedbe6290187151c1ea1d777a3448935df846"
+  integrity sha512-/UETyP0W22QILqS+6HowevwhEFJ3MBJnwTf75Qob9Wz9t0DPuisL8kW8YZMK62dHAKE1c1p+gY1TtOLY+USEHA==
+  dependencies:
+    inherits "^2.0.3"
+    minimalistic-assert "^1.0.0"
 
 hash.js@^1.0.0, hash.js@^1.0.3:
   version "1.1.7"
@@ -5359,11 +5387,6 @@ js-sha3@0.5.7:
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
   integrity sha1-DU/9gALVMzqrr0oj7tL2N0yfKOc=
 
-js-sha3@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
-  integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
-
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -5732,11 +5755,6 @@ lodash.isfunction@^3.0.8:
   version "3.0.9"
   resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz#06de25df4db327ac931981d1bdb067e5af68d051"
   integrity sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==
-
-lodash.isnumber@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/lodash.isnumber/-/lodash.isnumber-3.0.3.tgz#3ce76810c5928d03352301ac287317f11c0b1ffc"
-  integrity sha1-POdoEMWSjQM1IwGsKHMX8RwLH/w=
 
 lodash.isstring@^4.0.1:
   version "4.0.1"
@@ -8027,6 +8045,11 @@ scrypt-js@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
   integrity sha1-uwBAvgMEPamgEqLOqfyfhSz8h9Q=
+
+scrypt-js@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.4.tgz#32f8c5149f0797672e551c07e230f834b6af5f16"
+  integrity sha512-4KsaGcPnuhtCZQCxFxN3GVYIhKFPTdLd8PLC552XwbMndtD0cjRFAhDuuydXQ0h08ZfPgzqe6EKHozpuH74iDw==
 
 secp256k1@3.5.2:
   version "3.5.2"
