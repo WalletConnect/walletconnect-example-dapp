@@ -55,6 +55,11 @@ const SButtonContainer = styled(Column)`
   margin: 50px 0;
 `;
 
+const SDeepLink = styled.a`
+  margin: 0;
+  padding: 0;
+`;
+
 const SConnectButton = styled(Button)`
   border-radius: 8px;
   font-size: ${fonts.size.medium};
@@ -551,15 +556,17 @@ class App extends React.Component<any, any> {
                 <h3>
                   {`Try out WalletConnect`}
                   <br />
-                  <span>{`v${process.env.REACT_APP_VERSION}`}</span>
+                  {/* <span>{`v${process.env.REACT_APP_VERSION}`}</span> */}
+                  <span>{`Deep Linking`}</span>
                 </h3>
+
                 {deepLink ? (
                   <SButtonContainer>
-                    <a href={deepLink}>
-                      <SConnectButton left fetching={fetching}>
+                    <SDeepLink href={deepLink}>
+                      <SConnectButton left color="purple" fetching={fetching}>
                         {"Connect to Rainbow"}
                       </SConnectButton>
-                    </a>
+                    </SDeepLink>
                   </SButtonContainer>
                 ) : (
                   <SButtonContainer>
