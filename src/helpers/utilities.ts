@@ -171,3 +171,24 @@ export function clickLink(url: string) {
   }
   return cancelled;
 }
+
+export function parseQueryString(queryString: string): any {
+  const result: any = {};
+
+  const pairs = (queryString[0] === "?"
+    ? queryString.substr(1)
+    : queryString
+  ).split("&");
+
+  for (let i = 0; i < pairs.length; i++) {
+    const keyArr: string[] = pairs[i].match(/\w+(?==)/i) || [];
+    const valueArr: string[] = pairs[i].match(/=.+/i) || [];
+    if (keyArr[0]) {
+      result[decodeURIComponent(keyArr[0])] = decodeURIComponent(
+        valueArr[0].substr(1)
+      );
+    }
+  }
+
+  return result;
+}
