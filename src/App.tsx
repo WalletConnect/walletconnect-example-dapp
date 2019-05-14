@@ -22,7 +22,8 @@ import {
   sanitizeHex,
   ecrecover,
   isMobile,
-  parseQueryString
+  parseQueryString,
+  appendToQueryString
   // clickLink
 } from "./helpers/utilities";
 import {
