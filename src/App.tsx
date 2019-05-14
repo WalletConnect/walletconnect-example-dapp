@@ -170,21 +170,23 @@ class App extends React.Component<any, any> {
   public componentDidMount() {
     const walletConnector = this.listenToPersistedSession();
 
-    this.walletConnectInitFromStorage(walletConnector);
+    if (walletConnector) {
+      this.walletConnectInitFromStorage(walletConnector);
+    }
   }
 
   public listenToPersistedSession() {
-    let session = null;
+    let walletConnector = null;
 
     const queryString = window.location.search;
 
     const queryParams = parseQueryString(queryString);
 
     if (queryParams.walletconnect) {
-      session = localStorage.getItem("walletconnect");
-    }
+      const session = localStorage.getItem("walletconnect");
 
-    const walletConnector = new WalletConnect({ session });
+      walletConnector = new WalletConnect({ session });
+    }
 
     return walletConnector;
   }
