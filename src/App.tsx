@@ -235,9 +235,20 @@ class App extends React.Component<any, any> {
     const { walletConnector } = this.state;
     if (walletConnector) {
       const uri: string = encodeURIComponent(walletConnector.uri);
-      const redirectUrl: string = encodeURIComponent(
-        `${window.location.href}?walletconnect=true`
+
+      const redirectUrlQueryString = appendToQueryString(
+        window.location.search,
+        {
+          walletconnect: true
+        }
       );
+
+      const redirectUrl: string = encodeURIComponent(
+        `${window.location.origin}${
+          window.location.pathname
+        }${redirectUrlQueryString}`
+      );
+
       const deepLink: string = `https://rainbow.me/wc?uri=${uri}&redirectUrl=${redirectUrl}`;
 
       await this.setState({ deepLink });
