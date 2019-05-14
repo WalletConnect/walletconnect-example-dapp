@@ -18,7 +18,7 @@ import {
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import { sanitizeHex, ecrecover } from "./helpers/utilities";
+import { sanitizeHex, ecrecover, parseQueryString } from "./helpers/utilities";
 import {
   convertAmountToRawNumber,
   convertStringToHex
@@ -154,6 +154,28 @@ class App extends React.Component<any, any> {
     ...INITIAL_STATE
   };
 
+  public componentDidMount() {
+    const walletConnector = this.listenToPersistedSession();
+
+    this.walletConnectInitFromStorage(walletConnector);
+  }
+
+  public listenToPersistedSession() {
+    let session = null;
+
+    const queryString = window.location.search;
+
+    const queryParams = parseQueryString(queryString);
+
+    if (queryParams.walletconnect) {
+      session = localStorage.getItem("walletconnect");
+    }
+
+    const walletConnector = new WalletConnect({ session });
+
+    return walletConnector;
+  }
+
   public walletConnectInit = async () => {
     // bridge url
     const bridge = "https://bridge.walletconnect.org";
@@ -184,6 +206,17 @@ class App extends React.Component<any, any> {
     // subscribe to events
     await this.subscribeToEvents();
   };
+
+  public walletConnectInitFromStorage = async (
+    walletConnector: WalletConnect
+  ) => {
+    window.walletConnector = walletConnector;
+
+    await this.setState({ walletConnector });
+
+    await this.subscribeToEvents();
+  };
+
   public subscribeToEvents = () => {
     const { walletConnector } = this.state;
 
