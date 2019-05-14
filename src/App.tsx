@@ -183,10 +183,12 @@ class App extends React.Component<any, any> {
     const queryParams = parseQueryString(queryString);
 
     if (queryParams.walletconnect) {
-      let session = localStorage.getItem("walletconnect");
-      if (session) {
-        session = JSON.parse(session);
-        walletConnector = new WalletConnect({ session });
+      const localSession = localStorage.getItem("walletconnect");
+      if (localSession) {
+        const session = JSON.parse(localSession);
+        if (session) {
+          walletConnector = new WalletConnect({ session });
+        }
       }
     }
 
