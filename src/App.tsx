@@ -9,7 +9,9 @@ import Wrapper from "./components/Wrapper";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
-import { fonts } from "./styles";
+import { fonts, colors } from "./styles";
+import { IChainData } from "./helpers/types";
+
 import {
   apiGetAccountAssets,
   apiGetGasPrices,
@@ -18,7 +20,7 @@ import {
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import { sanitizeHex, ecrecover } from "./helpers/utilities";
+import { sanitizeHex, ecrecover, getChainData } from "./helpers/utilities";
 import {
   convertAmountToRawNumber,
   convertStringToHex
@@ -121,6 +123,12 @@ const STestButton = styled(Button)`
   margin: 12px;
 `;
 
+const SErrorMessage = styled.div`
+  width: 70%;
+  font-family: monospace;
+  color: rgb(${colors.red}, 1);
+`;
+
 interface IAppState {
   walletConnector: WalletConnect | null;
   fetching: boolean;
@@ -133,6 +141,7 @@ interface IAppState {
   address: string;
   result: any | null;
   assets: IAssetData[];
+  notSupported: boolean;
 }
 
 const INITIAL_STATE: IAppState = {
@@ -146,7 +155,8 @@ const INITIAL_STATE: IAppState = {
   accounts: [],
   address: "",
   result: null,
-  assets: []
+  assets: [],
+  notSupported: false
 };
 
 class App extends React.Component<any, any> {
@@ -163,7 +173,7 @@ class App extends React.Component<any, any> {
 
     window.walletConnector = walletConnector;
 
-    await this.setState({ walletConnector });
+    await this.setState({ walletConnector, notSupported: false });
 
     // check if already connected
     if (!walletConnector.connected) {
@@ -239,9 +249,9 @@ class App extends React.Component<any, any> {
   public killSession = async () => {
     const { walletConnector } = this.state;
     if (walletConnector) {
-      walletConnector.killSession();
+      await walletConnector.killSession();
     }
-    this.resetApp();
+    await this.resetApp();
   };
 
   public resetApp = async () => {
@@ -250,15 +260,31 @@ class App extends React.Component<any, any> {
 
   public onConnect = async (payload: IInternalEvent) => {
     const { chainId, accounts } = payload.params[0];
-    const address = accounts[0];
-    await this.setState({
-      connected: true,
-      chainId,
-      accounts,
-      address
-    });
-    WalletConnectQRCodeModal.close();
-    this.getAccountAssets();
+    console.log(chainId)  // tslint:disable-line
+    let chainData: IChainData | null = null
+    try {
+      chainData = getChainData(chainId)
+      console.log(chainData)  // tslint:disable-line
+    } catch(e) {
+      // chain not supported
+    }
+
+    if (chainData) {
+      const address = accounts[0];
+      await this.setState({
+        connected: true,
+        chainId,
+        accounts,
+        address
+      });
+      WalletConnectQRCodeModal.close();
+      this.getAccountAssets();
+    } else {
+      await this.killSession()
+      await this.setState({
+        notSupported: true
+      });
+    }
   };
 
   public onDisconnect = async () => {
@@ -504,7 +530,8 @@ class App extends React.Component<any, any> {
       fetching,
       showModal,
       pendingRequest,
-      result
+      result,
+      notSupported
     } = this.state;
     return (
       <SLayout>
@@ -523,6 +550,11 @@ class App extends React.Component<any, any> {
                   <br />
                   <span>{`v${process.env.REACT_APP_VERSION}`}</span>
                 </h3>
+                {notSupported && (
+                  <SErrorMessage>
+                    Selected chain is not supported
+                  </SErrorMessage>
+                )}
                 <SButtonContainer>
                   <SConnectButton
                     left
