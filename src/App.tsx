@@ -251,7 +251,8 @@ class App extends React.Component<any, any> {
 
     await this.setState({ walletConnector });
 
-    await this.subscribeToEvents();
+    this.subscribeToEvents();
+    this.getAccountAssets();
   };
 
   public subscribeToEvents = () => {
