@@ -133,6 +133,12 @@ const STestButton = styled(Button)`
   margin: 12px;
 `;
 
+interface IDisplayDeepLink {
+  name: string;
+  color: string;
+  href: string;
+}
+
 interface IAppState {
   walletConnector: WalletConnect | null;
   fetching: boolean;
@@ -145,7 +151,7 @@ interface IAppState {
   address: string;
   result: any | null;
   assets: IAssetData[];
-  deepLink: string;
+  deepLinks: IDisplayDeepLink[];
 }
 
 const INITIAL_STATE: IAppState = {
@@ -160,8 +166,25 @@ const INITIAL_STATE: IAppState = {
   address: "",
   result: null,
   assets: [],
-  deepLink: ""
+  deepLinks: []
 };
+
+const deepLinkSupportedWallets = [
+  {
+    name: "Metamask",
+    color: "orange",
+    universalLink: "https://metamask.io",
+    deepLink: "metamask:",
+    chromeIntent: ""
+  },
+  {
+    name: "Rainbow",
+    color: "purple",
+    universalLink: "https://rainbow.me",
+    deepLink: "rainbow:",
+    chromeIntent: ""
+  }
+];
 
 class App extends React.Component<any, any> {
   public state: IAppState = {
@@ -220,7 +243,7 @@ class App extends React.Component<any, any> {
 
       // check if is mobile
       if (isMobile()) {
-        await this.createDeepLink();
+        await this.displayDeepLinks();
       } else {
         // display QR Code modal
         WalletConnectQRCodeModal.open(uri, () => {
@@ -232,10 +255,11 @@ class App extends React.Component<any, any> {
     await this.subscribeToEvents();
   };
 
-  public createDeepLink = async () => {
+  public displayDeepLinks = async () => {
     const { walletConnector } = this.state;
     if (walletConnector) {
-      const uri: string = encodeURIComponent(walletConnector.uri);
+      const uri = walletConnector.uri;
+      const encodedUri: string = encodeURIComponent(uri);
 
       const redirectUrlQueryString = appendToQueryString(
         window.location.search,
@@ -250,9 +274,22 @@ class App extends React.Component<any, any> {
         }${redirectUrlQueryString}`
       );
 
-      const deepLink: string = `https://rainbow.me/wc?uri=${uri}&redirectUrl=${redirectUrl}`;
+      const deepLinks = deepLinkSupportedWallets.map(wallet => {
+        // const href: string = ;
+        return {
+          name: wallet.name,
+          color: wallet.color,
+          href: wallet.universalLink
+            ? `${
+                wallet.universalLink
+              }/wc?uri=${encodedUri}&redirectUrl=${redirectUrl}`
+            : wallet.deepLink
+            ? `£{wallet.deepLink}${uri}`
+            : ""
+        };
+      });
 
-      await this.setState({ deepLink });
+      await this.setState({ deepLinks });
     }
   };
 
@@ -339,7 +376,7 @@ class App extends React.Component<any, any> {
       chainId,
       accounts,
       address,
-      deepLink: ""
+      deepLinks: ""
     });
     WalletConnectQRCodeModal.close();
     this.getAccountAssets();
@@ -589,7 +626,7 @@ class App extends React.Component<any, any> {
       showModal,
       pendingRequest,
       result,
-      deepLink
+      deepLinks
     } = this.state;
     return (
       <SLayout>
@@ -610,13 +647,19 @@ class App extends React.Component<any, any> {
                   <span>{`Deep Linking`}</span>
                 </h3>
 
-                {deepLink ? (
+                {deepLinks && deepLinks.length ? (
                   <SButtonContainer>
-                    <SDeepLink href={deepLink}>
-                      <SConnectButton left color="purple" fetching={fetching}>
-                        {"Connect to Rainbow"}
-                      </SConnectButton>
-                    </SDeepLink>
+                    {deepLinks.map((deepLink: IDisplayDeepLink) => (
+                      <SDeepLink href={deepLink.href}>
+                        <SConnectButton
+                          left
+                          color={deepLink.color}
+                          fetching={fetching}
+                        >
+                          {`Connect to ${deepLink.name}`}
+                        </SConnectButton>
+                      </SDeepLink>
+                    ))}
                   </SButtonContainer>
                 ) : (
                   <SButtonContainer>
