@@ -68,6 +68,12 @@ const SContainer = styled.div`
   word-break: break-word;
 `;
 
+const SModalContainer = styled.div`
+  width: 100%;
+  position: relative;
+  word-wrap: break-word;
+`;
+
 const SModalTitle = styled.div`
   margin: 1em 0;
   font-size: 20px;
@@ -572,7 +578,7 @@ class App extends React.Component<any, any> {
         </Column>
         <Modal show={showModal} toggleModal={this.toggleModal}>
           {pendingRequest ? (
-            <div>
+            <SModalContainer>
               <SModalTitle>{"Pending Call Request"}</SModalTitle>
               <SContainer>
                 <Loader />
@@ -580,9 +586,9 @@ class App extends React.Component<any, any> {
                   {"Approve or reject request using your wallet"}
                 </SModalParagraph>
               </SContainer>
-            </div>
+            </SModalContainer>
           ) : result ? (
-            <div>
+            <SModalContainer>
               <SModalTitle>{"Call Request Approved"}</SModalTitle>
               <STable>
                 {Object.keys(result).map(key => (
@@ -592,11 +598,11 @@ class App extends React.Component<any, any> {
                   </SRow>
                 ))}
               </STable>
-            </div>
+            </SModalContainer>
           ) : (
-            <div>
+            <SModalContainer>
               <SModalTitle>{"Call Request Rejected"}</SModalTitle>
-            </div>
+            </SModalContainer>
           )}
         </Modal>
       </SLayout>
