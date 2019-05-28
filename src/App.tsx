@@ -2,7 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import WalletConnect from "@walletconnect/browser";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
-import { IInternalEvent } from "@walletconnect/types";
+import { convertUtf8ToHex } from "@walletconnect/utils";
+import { IInternalEvent, IJsonRpcRequest } from "@walletconnect/types";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
@@ -18,7 +19,12 @@ import {
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import { sanitizeHex, ecrecover } from "./helpers/utilities";
+import {
+  sanitizeHex,
+  hashPersonalMessage,
+  recoverPublicKey,
+  recoverPersonalSignature
+} from "./helpers/utilities";
 import {
   convertAmountToRawNumber,
   convertStringToHex
@@ -115,8 +121,9 @@ const SValue = styled.div`
 const STestButtonContainer = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const STestButton = styled(Button)`
@@ -124,6 +131,7 @@ const STestButton = styled(Button)`
   font-size: ${fonts.size.medium};
   height: 44px;
   width: 100%;
+  max-width: 175px;
   margin: 12px;
 `;
 
@@ -372,6 +380,115 @@ class App extends React.Component<any, any> {
     }
   };
 
+  public testSignTransaction = async () => {
+    const { walletConnector, address, chainId } = this.state;
+
+    if (!walletConnector) {
+      return;
+    }
+
+    // from
+    const from = address;
+
+    // to
+    const to = address;
+
+    // nonce
+    const _nonce = await apiGetAccountNonce(address, chainId);
+    const nonce = sanitizeHex(convertStringToHex(_nonce));
+
+    // gasPrice
+    const gasPrices = await apiGetGasPrices();
+    const _gasPrice = gasPrices.slow.price;
+    const gasPrice = sanitizeHex(
+      convertStringToHex(convertAmountToRawNumber(_gasPrice, 9))
+    );
+
+    // gasLimit
+    const _gasLimit = 21000;
+    const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+    // value
+    const _value = 0;
+    const value = sanitizeHex(convertStringToHex(_value));
+
+    // data
+    const data = "0x";
+
+    // test transaction
+    const tx = {
+      from,
+      to,
+      nonce,
+      gasPrice,
+      gasLimit,
+      value,
+      data
+    };
+
+    try {
+      // open modal
+      this.toggleModal();
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true });
+
+      // send transaction
+      const result = await walletConnector.signTransaction(tx);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_signTransaction",
+        result
+      };
+
+      // display result
+      this.setState({
+        walletConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error); // tslint:disable-line
+      this.setState({ walletConnector, pendingRequest: false, result: null });
+    }
+  };
+
+  public testCustomRequest = async (customRequest: IJsonRpcRequest) => {
+    const { walletConnector } = this.state;
+
+    if (!walletConnector) {
+      return;
+    }
+
+    try {
+      // open modal
+      this.toggleModal();
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true });
+
+      // send message
+      const result = await walletConnector.sendCustomRequest(customRequest);
+
+      // format displayed result
+      const formattedResult = {
+        method: customRequest.method,
+        result
+      };
+
+      // display result
+      this.setState({
+        walletConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error); // tslint:disable-line
+      this.setState({ walletConnector, pendingRequest: false, result: null });
+    }
+  };
+
   public testSignMessage = async () => {
     const { walletConnector, address } = this.state;
 
@@ -380,7 +497,13 @@ class App extends React.Component<any, any> {
     }
 
     // test message
-    const msgParams = [address, "My email is john@doe.com - 1537836206101"];
+    const message = "My email is john@doe.com - 1537836206101";
+
+    // hash message
+    const hash = hashPersonalMessage(message);
+
+    // eth_sign params
+    const msgParams = [address, hash];
 
     try {
       // open modal
@@ -393,7 +516,7 @@ class App extends React.Component<any, any> {
       const result = await walletConnector.signMessage(msgParams);
 
       // verify signature
-      const signer = ecrecover(result, msgParams[1]);
+      const signer = recoverPublicKey(result, hash);
       const verified = signer.toLowerCase() === address.toLowerCase();
 
       // format displayed result
@@ -417,89 +540,140 @@ class App extends React.Component<any, any> {
     }
   };
 
-  // public testSignTypedData = async () => {
-  //   const { walletConnector, address } = this.state;
+  public testSignPersonalMessage = async () => {
+    const { walletConnector, address } = this.state;
 
-  //   if (!walletConnector) {
-  //     return;
-  //   }
+    if (!walletConnector) {
+      return;
+    }
 
-  //   // test typed data
-  //   const msgParams = [
-  //     address,
-  //     {
-  //       types: {
-  //         EIP712Domain: [
-  //           { name: "name", type: "string" },
-  //           { name: "version", type: "string" },
-  //           { name: "chainId", type: "uint256" },
-  //           { name: "verifyingContract", type: "address" }
-  //         ],
-  //         Person: [
-  //           { name: "name", type: "string" },
-  //           { name: "account", type: "address" }
-  //         ],
-  //         Mail: [
-  //           { name: "from", type: "Person" },
-  //           { name: "to", type: "Person" },
-  //           { name: "contents", type: "string" }
-  //         ]
-  //       },
-  //       primaryType: "Mail",
-  //       domain: {
-  //         name: "Example Dapp",
-  //         version: "0.7.0",
-  //         chainId: 1,
-  //         verifyingContract: "0x0000000000000000000000000000000000000000"
-  //       },
-  //       message: {
-  //         from: {
-  //           name: "Alice",
-  //           account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-  //         },
-  //         to: {
-  //           name: "Bob",
-  //           account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-  //         },
-  //         contents: "Hey, Bob!"
-  //       }
-  //     }
-  //   ];
+    // test message
+    const message = "My email is john@doe.com - 1537836206101";
 
-  //   try {
-  //     // open modal
-  //     this.toggleModal();
+    // encode message (hex)
+    const hexMsg = convertUtf8ToHex(message);
 
-  //     // toggle pending request indicator
-  //     this.setState({ pendingRequest: true });
+    // personal_sign params
+    const msgParams = [hexMsg, address];
 
-  //     // sign typed data
-  //     const result = await walletConnector.signTypedData(msgParams);
+    try {
+      // open modal
+      this.toggleModal();
 
-  //      // verify signature
-  //      const signer = ecrecover(result, msgParams[1]);
-  //      const verified = signer.toLowerCase() === address.toLowerCase();
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true });
 
-  //     // format displayed result
-  //     const formattedResult = {
-  //       method: "eth_signTypedData",
-  //       address,
-  //       signer,
-  //       verified,
-  //       result
-  //     };
+      // send message
+      const result = await walletConnector.signPersonalMessage(msgParams);
 
-  //     // display result
-  //     this.setState({
-  //       walletConnector,
-  //       pendingRequest: false,
-  //       result: formattedResult || null
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     this.setState({ walletConnector, pendingRequest: false, result: null });
-  //   }
-  // };
+      // verify signature
+      const signer = recoverPersonalSignature(result, message);
+      const verified = signer.toLowerCase() === address.toLowerCase();
+
+      // format displayed result
+      const formattedResult = {
+        method: "personal_sign",
+        address,
+        signer,
+        verified,
+        result
+      };
+
+      // display result
+      this.setState({
+        walletConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error); // tslint:disable-line
+      this.setState({ walletConnector, pendingRequest: false, result: null });
+    }
+  };
+
+  public testSignTypedData = async () => {
+    const { walletConnector, address } = this.state;
+
+    if (!walletConnector) {
+      return;
+    }
+
+    // typed data
+    const typedData = {
+      types: {
+        EIP712Domain: [
+          { name: "name", type: "string" },
+          { name: "version", type: "string" },
+          { name: "chainId", type: "uint256" },
+          { name: "verifyingContract", type: "address" }
+        ],
+        Person: [
+          { name: "name", type: "string" },
+          { name: "account", type: "address" }
+        ],
+        Mail: [
+          { name: "from", type: "Person" },
+          { name: "to", type: "Person" },
+          { name: "contents", type: "string" }
+        ]
+      },
+      primaryType: "Mail",
+      domain: {
+        name: "Example Dapp",
+        version: "0.7.0",
+        chainId: 1,
+        verifyingContract: "0x0000000000000000000000000000000000000000"
+      },
+      message: {
+        from: {
+          name: "Alice",
+          account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        to: {
+          name: "Bob",
+          account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        contents: "Hey, Bob!"
+      }
+    };
+
+    // eth_signTypedData params
+    const msgParams = [address, typedData];
+
+    try {
+      // open modal
+      this.toggleModal();
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true });
+
+      // sign typed data
+      const result = await walletConnector.signTypedData(msgParams);
+
+      // // verify signature
+      // const signer = recoverPublicKey(result, typedData);
+      // const verified = signer.toLowerCase() === address.toLowerCase();
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_signTypedData",
+        address,
+        // signer,
+        // verified,
+        result
+      };
+
+      // display result
+      this.setState({
+        walletConnector,
+        pendingRequest: false,
+        result: formattedResult || null
+      });
+    } catch (error) {
+      console.error(error); // tslint:disable-line
+      this.setState({ walletConnector, pendingRequest: false, result: null });
+    }
+  };
 
   public render = () => {
     const {
@@ -546,19 +720,27 @@ class App extends React.Component<any, any> {
                 <Column center>
                   <STestButtonContainer>
                     <STestButton left onClick={this.testSendTransaction}>
-                      {"Send Test Transaction"}
+                      {"eth_sendTransaction"}
+                    </STestButton>
+
+                    <STestButton left onClick={this.testSignTransaction}>
+                      {"eth_signTransaction"}
+                    </STestButton>
+
+                    <STestButton disabled left onClick={this.testCustomRequest}>
+                      {"Custom Request"}
                     </STestButton>
 
                     <STestButton left onClick={this.testSignMessage}>
-                      {"Sign Test Message"}
+                      {"eth_sign"}
                     </STestButton>
 
-                    <STestButton
-                      disabled
-                      left
-                      // onClick={this.testSignTypedData}
-                    >
-                      {"Sign Test Typed Data"}
+                    <STestButton left onClick={this.testSignPersonalMessage}>
+                      {"personal_sign"}
+                    </STestButton>
+
+                    <STestButton disabled left onClick={this.testSignTypedData}>
+                      {"eth_signTypedData"}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>

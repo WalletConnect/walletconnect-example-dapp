@@ -1,4 +1,4 @@
-import EthCrypto from "eth-crypto";
+import * as ethUtil from "ethereumjs-util";
 import { IChainData } from "./types";
 import supportedChains from "./chains";
 
@@ -130,12 +130,28 @@ export function getChainData(chainId: number): IChainData {
   return chainData;
 }
 
-export function ecrecover(sig: string, msg: string): string {
-  const signer = EthCrypto.recover(
-    sig,
-    EthCrypto.hash.keccak256(
-      "\x19Ethereum Signed Message:\n" + msg.length + msg
-    )
+export function hashPersonalMessage(msg: string): string {
+  const buffer = ethUtil.toBuffer(msg);
+  const result = ethUtil.hashPersonalMessage(buffer);
+  const hash = ethUtil.bufferToHex(result);
+  return hash;
+}
+
+export function recoverPublicKey(sig: string, hash: string): string {
+  const sigParams = ethUtil.fromRpcSig(sig);
+  const hashBuffer = ethUtil.toBuffer(hash);
+  const result = ethUtil.ecrecover(
+    hashBuffer,
+    sigParams.v,
+    sigParams.r,
+    sigParams.s
   );
+  const signer = ethUtil.bufferToHex(ethUtil.publicToAddress(result));
+  return signer;
+}
+
+export function recoverPersonalSignature(sig: string, msg: string): string {
+  const hash = hashPersonalMessage(msg);
+  const signer = recoverPublicKey(sig, hash);
   return signer;
 }
