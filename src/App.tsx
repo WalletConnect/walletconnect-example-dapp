@@ -173,7 +173,7 @@ const deepLinkSupportedWallets = [
   {
     name: "Metamask",
     color: "orange",
-    universalLink: "https://metamask.io",
+    universalLink: "https://metamask.app.link",
     deepLink: "metamask:",
     chromeIntent: ""
   },
