@@ -207,45 +207,45 @@
     "@types/react" "*"
     csstype "^2.2.0"
 
-"@walletconnect/browser@^1.0.0-beta.25":
-  version "1.0.0-beta.25"
-  resolved "https://registry.yarnpkg.com/@walletconnect/browser/-/browser-1.0.0-beta.25.tgz#4dfc692237db84ca41729c7eea6c2dbb2a583a58"
-  integrity sha512-Oq2BGQvakAvM5T1mN6Jx0BGfURq//oPDw7vdGmJCq7Ziz9S4MyIfSw364o/nvIUKwtWYWD7uaFQqor+kb6gv4g==
+"@walletconnect/browser@^1.0.0-beta.26":
+  version "1.0.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@walletconnect/browser/-/browser-1.0.0-beta.26.tgz#0091b91fe1a727fc60e9ac93f963463e1001db28"
+  integrity sha512-fRgyLFlw3PO6jEuRWPyyizNQIrnhUSP+GkQ0upX+IeJLYFrQIdARcsfE+CjORXaIdIRteRKXMEVCAmFo/vnyWA==
   dependencies:
-    "@walletconnect/core" "^1.0.0-beta.25"
-    "@walletconnect/types" "^1.0.0-beta.25"
-    "@walletconnect/utils" "^1.0.0-beta.25"
+    "@walletconnect/core" "^1.0.0-beta.26"
+    "@walletconnect/types" "^1.0.0-beta.26"
+    "@walletconnect/utils" "^1.0.0-beta.26"
 
-"@walletconnect/core@^1.0.0-beta.25":
-  version "1.0.0-beta.25"
-  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.0.0-beta.25.tgz#a0e1f27df66da3ecb9693eac3672f40970c01083"
-  integrity sha512-EPLn5k6JrWXLvsOTHSYN9cSTFznPvB4rC1NIaSAAAqW+x1mJ8VX5SF7McpTQpxIqAVw6qAwDVOu6xZufhKlvFw==
+"@walletconnect/core@^1.0.0-beta.26":
+  version "1.0.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.0.0-beta.26.tgz#74796fe0372028110ff892320308dbc29d0f655e"
+  integrity sha512-2xeztI0Lpz6QluIGLDkfmJIPm+g3KbD3w+KzGJ2E1cWqQb1Tsvj+6zpNLn2WTQGn5xLub1b3BLgXwGxLcMsA9w==
   dependencies:
-    "@walletconnect/types" "^1.0.0-beta.25"
-    "@walletconnect/utils" "^1.0.0-beta.25"
+    "@walletconnect/types" "^1.0.0-beta.26"
+    "@walletconnect/utils" "^1.0.0-beta.26"
 
-"@walletconnect/qrcode-modal@^1.0.0-beta.25":
-  version "1.0.0-beta.25"
-  resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.0.0-beta.25.tgz#fbb813b9ad659edf60a91e521fe1c66a34b67cd5"
-  integrity sha512-fnuM8gBlEozqDVhinw5g0BY0E0g+PrpxHMajR2BqBvW9r1q/dJolIJ5Y575opyaX7wfJJwEHUI2NokViXavR4Q==
+"@walletconnect/qrcode-modal@^1.0.0-beta.26":
+  version "1.0.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.0.0-beta.26.tgz#5b2f6bd515276a802790659fb8093583339f6784"
+  integrity sha512-f0hXx49s0tC4BPP5mn8s3MxGiJaRqmd/gMP0NICgKR/S+TAOivT6hZY/hNb0aGRuk8DHVigDDVGnq/AUBRQo8Q==
   dependencies:
-    "@walletconnect/types" "^1.0.0-beta.25"
     qr-image "^3.2.0"
+    qrcode-terminal "^0.12.0"
 
-"@walletconnect/types@^1.0.0-beta.25":
-  version "1.0.0-beta.25"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.0.0-beta.25.tgz#18b6bcbd73d25f99023b5124c9d92900b3b71a46"
-  integrity sha512-HF7WOsKzrkjM0T3yCRKiquZFJnk3A8zCnmy6ueQ/lvIQGnnUaJDY4tZRRXdlntTmbiCcIBEz/tYM2Z7r4O79SA==
+"@walletconnect/types@^1.0.0-beta.26":
+  version "1.0.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.0.0-beta.26.tgz#a21def3fb302b55f8e93532a9c33e5a2f4b93588"
+  integrity sha512-uUNDKo3gr18AtGTFi8+VrcZiV2eHlaq2+uMGkAoMeUZe2MK28MH3GkH0Dh2yDTVCh1bopMri61eMvwqKaW6/VQ==
 
-"@walletconnect/utils@^1.0.0-beta.25":
-  version "1.0.0-beta.25"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.0.0-beta.25.tgz#6ddffb9553e9c013ce4c62297a86b024f7afd250"
-  integrity sha512-IQOFERSMa4IAPdd6kwL2J/wES+wQK8IN2FP0aqpUhZ1TzUfIVo5Nortev91PPsX6yi4de1Q4BwUCxxEWc4fQsQ==
+"@walletconnect/utils@^1.0.0-beta.26":
+  version "1.0.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.0.0-beta.26.tgz#0dc9dc7a79fb17696266278fba00801a08ca81b3"
+  integrity sha512-CW2rkccGtKZNjr+vtTCXyB986g8OWX9ove957a36CdVrSzTQvMNpprzeatpBEzNlwX1KxNyJL/zBqnc1Maf1aw==
   dependencies:
     "@ethersproject/address" "^5.0.0-beta.125"
     "@ethersproject/bytes" "^5.0.0-beta.126"
     "@ethersproject/strings" "^5.0.0-beta.125"
-    "@walletconnect/types" "^1.0.0-beta.25"
+    "@walletconnect/types" "^1.0.0-beta.26"
     bignumber.js "^8.1.1"
 
 abab@^1.0.3:
@@ -6837,6 +6837,11 @@ qr-image@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/qr-image/-/qr-image-3.2.0.tgz#9fa8295beae50c4a149cf9f909a1db464a8672e8"
   integrity sha1-n6gpW+rlDEoUnPn5CaHbRkqGcug=
+
+qrcode-terminal@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/qrcode-terminal/-/qrcode-terminal-0.12.0.tgz#bb5b699ef7f9f0505092a3748be4464fe71b5819"
+  integrity sha512-EXtzRZmC+YGmGlDFbXKxQiMZNwCLEO6BANKXG4iCtSIM0yqc/pappSx3RIKr4r0uh5JsBckOXeKrB3Iz7mdQpQ==
 
 qs@6.5.2, qs@~6.5.2:
   version "6.5.2"

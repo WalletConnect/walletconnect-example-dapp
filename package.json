@@ -1,6 +1,6 @@
 {
   "name": "walletconnect-example-dapp",
-  "version": "1.0.0-beta.25",
+  "version": "1.0.0-beta.26",
   "private": true,
   "keywords": [
     "walletconnect",
@@ -25,8 +25,8 @@
     "url": "https://github.com/walletconnect/walletconnect-example-dapp/issues"
   },
   "dependencies": {
-    "@walletconnect/browser": "^1.0.0-beta.25",
-    "@walletconnect/qrcode-modal": "^1.0.0-beta.25",
+    "@walletconnect/browser": "^1.0.0-beta.26",
+    "@walletconnect/qrcode-modal": "^1.0.0-beta.26",
     "axios": "^0.18.0",
     "bignumber.js": "^8.0.2",
     "ethereumjs-util": "^6.1.0",
