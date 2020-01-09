@@ -3,7 +3,7 @@ import styled from "styled-components";
 import WalletConnect from "@walletconnect/browser";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 import { convertUtf8ToHex } from "@walletconnect/utils";
-import { IInternalEvent, IJsonRpcRequest } from "@walletconnect/types";
+import { IInternalEvent } from "@walletconnect/types";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
@@ -19,12 +19,7 @@ import {
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import {
-  sanitizeHex,
-  hashPersonalMessage,
-  recoverPublicKey,
-  recoverPersonalSignature
-} from "./helpers/utilities";
+import { sanitizeHex, recoverPersonalSignature } from "./helpers/utilities";
 import {
   convertAmountToRawNumber,
   convertStringToHex
@@ -380,166 +375,6 @@ class App extends React.Component<any, any> {
     }
   };
 
-  public testSignTransaction = async () => {
-    const { walletConnector, address, chainId } = this.state;
-
-    if (!walletConnector) {
-      return;
-    }
-
-    // from
-    const from = address;
-
-    // to
-    const to = address;
-
-    // nonce
-    const _nonce = await apiGetAccountNonce(address, chainId);
-    const nonce = sanitizeHex(convertStringToHex(_nonce));
-
-    // gasPrice
-    const gasPrices = await apiGetGasPrices();
-    const _gasPrice = gasPrices.slow.price;
-    const gasPrice = sanitizeHex(
-      convertStringToHex(convertAmountToRawNumber(_gasPrice, 9))
-    );
-
-    // gasLimit
-    const _gasLimit = 21000;
-    const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
-
-    // value
-    const _value = 0;
-    const value = sanitizeHex(convertStringToHex(_value));
-
-    // data
-    const data = "0x";
-
-    // test transaction
-    const tx = {
-      from,
-      to,
-      nonce,
-      gasPrice,
-      gasLimit,
-      value,
-      data
-    };
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send transaction
-      const result = await walletConnector.signTransaction(tx);
-
-      // format displayed result
-      const formattedResult = {
-        method: "eth_signTransaction",
-        result
-      };
-
-      // display result
-      this.setState({
-        walletConnector,
-        pendingRequest: false,
-        result: formattedResult || null
-      });
-    } catch (error) {
-      console.error(error); // tslint:disable-line
-      this.setState({ walletConnector, pendingRequest: false, result: null });
-    }
-  };
-
-  public testCustomRequest = async (customRequest: IJsonRpcRequest) => {
-    const { walletConnector } = this.state;
-
-    if (!walletConnector) {
-      return;
-    }
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send message
-      const result = await walletConnector.sendCustomRequest(customRequest);
-
-      // format displayed result
-      const formattedResult = {
-        method: customRequest.method,
-        result
-      };
-
-      // display result
-      this.setState({
-        walletConnector,
-        pendingRequest: false,
-        result: formattedResult || null
-      });
-    } catch (error) {
-      console.error(error); // tslint:disable-line
-      this.setState({ walletConnector, pendingRequest: false, result: null });
-    }
-  };
-
-  public testSignMessage = async () => {
-    const { walletConnector, address } = this.state;
-
-    if (!walletConnector) {
-      return;
-    }
-
-    // test message
-    const message = "My email is john@doe.com - 1537836206101";
-
-    // hash message
-    const hash = hashPersonalMessage(message);
-
-    // eth_sign params
-    const msgParams = [address, hash];
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send message
-      const result = await walletConnector.signMessage(msgParams);
-
-      // verify signature
-      const signer = recoverPublicKey(result, hash);
-      const verified = signer.toLowerCase() === address.toLowerCase();
-
-      // format displayed result
-      const formattedResult = {
-        method: "eth_sign",
-        address,
-        signer,
-        verified,
-        result
-      };
-
-      // display result
-      this.setState({
-        walletConnector,
-        pendingRequest: false,
-        result: formattedResult || null
-      });
-    } catch (error) {
-      console.error(error); // tslint:disable-line
-      this.setState({ walletConnector, pendingRequest: false, result: null });
-    }
-  };
-
   public testSignPersonalMessage = async () => {
     const { walletConnector, address } = this.state;
 
@@ -721,18 +556,6 @@ class App extends React.Component<any, any> {
                   <STestButtonContainer>
                     <STestButton left onClick={this.testSendTransaction}>
                       {"eth_sendTransaction"}
-                    </STestButton>
-
-                    <STestButton left onClick={this.testSignTransaction}>
-                      {"eth_signTransaction"}
-                    </STestButton>
-
-                    <STestButton disabled left onClick={this.testCustomRequest}>
-                      {"Custom Request"}
-                    </STestButton>
-
-                    <STestButton left onClick={this.testSignMessage}>
-                      {"eth_sign"}
                     </STestButton>
 
                     <STestButton left onClick={this.testSignPersonalMessage}>
