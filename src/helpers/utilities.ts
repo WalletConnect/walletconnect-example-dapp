@@ -1,3 +1,4 @@
+import { convertUtf8ToHex } from "@walletconnect/utils";
 import * as ethUtil from "ethereumjs-util";
 import { IChainData } from "./types";
 import supportedChains from "./chains";
@@ -131,7 +132,8 @@ export function getChainData(chainId: number): IChainData {
 }
 
 export function hashPersonalMessage(msg: string): string {
-  const buffer = ethUtil.toBuffer(msg);
+  const hex = convertUtf8ToHex(msg);
+  const buffer = ethUtil.toBuffer(hex);
   const result = ethUtil.hashPersonalMessage(buffer);
   const hash = ethUtil.bufferToHex(result);
   return hash;
