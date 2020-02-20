@@ -107,7 +107,7 @@ const Header = (props: IHeaderProps) => {
 
 Header.propTypes = {
   killSession: PropTypes.func.isRequired,
-  address: PropTypes.string
+  address: PropTypes.string,
 };
 
 export default Header;

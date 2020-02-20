@@ -40,11 +40,11 @@ const Wrapper = (props: IWrapperProps) => {
 
 Wrapper.propTypes = {
   children: PropTypes.node.isRequired,
-  center: PropTypes.bool
+  center: PropTypes.bool,
 };
 
 Wrapper.defaultProps = {
-  center: false
+  center: false,
 };
 
 export default Wrapper;

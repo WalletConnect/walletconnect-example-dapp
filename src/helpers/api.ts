@@ -6,39 +6,27 @@ const api: AxiosInstance = axios.create({
   timeout: 30000, // 30 secs
   headers: {
     Accept: "application/json",
-    "Content-Type": "application/json"
-  }
+    "Content-Type": "application/json",
+  },
 });
 
-export async function apiGetAccountAssets(
-  address: string,
-  chainId: number
-): Promise<IAssetData[]> {
-  const response = await api.get(
-    `/account-assets?address=${address}&chainId=${chainId}`
-  );
+export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
+  const response = await api.get(`/account-assets?address=${address}&chainId=${chainId}`);
   const { result } = response.data;
   return result;
 }
 
 export async function apiGetAccountTransactions(
   address: string,
-  chainId: number
+  chainId: number,
 ): Promise<IParsedTx[]> {
-  const response = await api.get(
-    `/account-transactions?address=${address}&chainId=${chainId}`
-  );
+  const response = await api.get(`/account-transactions?address=${address}&chainId=${chainId}`);
   const { result } = response.data;
   return result;
 }
 
-export const apiGetAccountNonce = async (
-  address: string,
-  chainId: number
-): Promise<string> => {
-  const response = await api.get(
-    `/account-nonce?address=${address}&chainId=${chainId}`
-  );
+export const apiGetAccountNonce = async (address: string, chainId: number): Promise<string> => {
+  const response = await api.get(`/account-nonce?address=${address}&chainId=${chainId}`);
   const { result } = response.data;
   return result;
 };

@@ -26,13 +26,13 @@ const Icon = (props: any) => {
 Icon.propTypes = {
   src: PropTypes.string,
   fallback: PropTypes.string,
-  size: PropTypes.number
+  size: PropTypes.number,
 };
 
 Icon.defaultProps = {
   src: null,
   fallback: null,
-  size: 20
+  size: 20,
 };
 
 export default Icon;

@@ -10,12 +10,12 @@ const ERC20Icon = (props: any) => {
 
 ERC20Icon.propTypes = {
   contractAddress: PropTypes.string,
-  size: PropTypes.number
+  size: PropTypes.number,
 };
 
 ERC20Icon.defaultProps = {
   contractAddress: null,
-  size: 20
+  size: 20,
 };
 
 export default ERC20Icon;

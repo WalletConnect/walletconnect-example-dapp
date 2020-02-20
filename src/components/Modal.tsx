@@ -119,7 +119,7 @@ interface IModalProps {
 }
 
 const INITIAL_STATE: IModalState = {
-  offset: 0
+  offset: 0,
 };
 
 class Modal extends React.Component<IModalProps, IModalState> {
@@ -127,13 +127,13 @@ class Modal extends React.Component<IModalProps, IModalState> {
     children: PropTypes.node.isRequired,
     show: PropTypes.bool.isRequired,
     toggleModal: PropTypes.func.isRequired,
-    opacity: PropTypes.number
+    opacity: PropTypes.number,
   };
 
   public lightbox?: HTMLDivElement | null;
 
   public state: IModalState = {
-    ...INITIAL_STATE
+    ...INITIAL_STATE,
   };
 
   public componentDidUpdate() {
@@ -164,12 +164,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     const { offset } = this.state;
     const { children, show, opacity } = this.props;
     return (
-      <SLightbox
-        show={show}
-        offset={offset}
-        opacity={opacity}
-        ref={c => (this.lightbox = c)}
-      >
+      <SLightbox show={show} offset={offset} opacity={opacity} ref={c => (this.lightbox = c)}>
         <SModalContainer>
           <SHitbox onClick={this.toggleModal} />
 

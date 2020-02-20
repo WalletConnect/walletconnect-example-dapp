@@ -26,7 +26,7 @@ const Blockie = (props: IBlockieProps) => {
   const seed = props.address.toLowerCase() || "";
   const imgUrl = window.blockies
     .create({
-      seed
+      seed,
     })
     .toDataURL();
   return (
@@ -38,7 +38,7 @@ const Blockie = (props: IBlockieProps) => {
 
 Blockie.defaultProps = {
   address: "0x0000000000000000000000000000000000000000",
-  size: 30
+  size: 30,
 };
 
 export default Blockie;

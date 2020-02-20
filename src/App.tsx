@@ -11,19 +11,12 @@ import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
 import { fonts } from "./styles";
-import {
-  apiGetAccountAssets,
-  apiGetGasPrices,
-  apiGetAccountNonce
-} from "./helpers/api";
+import { apiGetAccountAssets, apiGetGasPrices, apiGetAccountNonce } from "./helpers/api";
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
 import { sanitizeHex, recoverPersonalSignature } from "./helpers/utilities";
-import {
-  convertAmountToRawNumber,
-  convertStringToHex
-} from "./helpers/bignumber";
+import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
@@ -155,12 +148,12 @@ const INITIAL_STATE: IAppState = {
   accounts: [],
   address: "",
   result: null,
-  assets: []
+  assets: [],
 };
 
 class App extends React.Component<any, any> {
   public state: IAppState = {
-    ...INITIAL_STATE
+    ...INITIAL_STATE,
   };
 
   public walletConnectInit = async () => {
@@ -183,11 +176,11 @@ class App extends React.Component<any, any> {
       const uri = walletConnector.uri;
 
       // console log the uri for development
-      console.log(uri); // tslint:disable-line
+      console.log(uri);
 
       // display QR Code modal
       WalletConnectQRCodeModal.open(uri, () => {
-        console.log("QR Code Modal closed"); // tslint:disable-line
+        console.log("QR Code Modal closed");
       });
     }
     // subscribe to events
@@ -201,7 +194,7 @@ class App extends React.Component<any, any> {
     }
 
     walletConnector.on("session_update", async (error, payload) => {
-      console.log('walletConnector.on("session_update")'); // tslint:disable-line
+      console.log(`walletConnector.on("session_update")`);
 
       if (error) {
         throw error;
@@ -212,7 +205,7 @@ class App extends React.Component<any, any> {
     });
 
     walletConnector.on("connect", (error, payload) => {
-      console.log('walletConnector.on("connect")'); // tslint:disable-line
+      console.log(`walletConnector.on("connect")`);
 
       if (error) {
         throw error;
@@ -222,7 +215,7 @@ class App extends React.Component<any, any> {
     });
 
     walletConnector.on("disconnect", (error, payload) => {
-      console.log('walletConnector.on("disconnect")'); // tslint:disable-line
+      console.log(`walletConnector.on("disconnect")`);
 
       if (error) {
         throw error;
@@ -238,7 +231,7 @@ class App extends React.Component<any, any> {
         connected: true,
         chainId,
         accounts,
-        address
+        address,
       });
     }
 
@@ -264,7 +257,7 @@ class App extends React.Component<any, any> {
       connected: true,
       chainId,
       accounts,
-      address
+      address,
     });
     WalletConnectQRCodeModal.close();
     this.getAccountAssets();
@@ -290,13 +283,12 @@ class App extends React.Component<any, any> {
 
       await this.setState({ fetching: false, address, assets });
     } catch (error) {
-      console.error(error); // tslint:disable-line
+      console.error(error);
       await this.setState({ fetching: false });
     }
   };
 
-  public toggleModal = () =>
-    this.setState({ showModal: !this.state.showModal });
+  public toggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   public testSendTransaction = async () => {
     const { walletConnector, address, chainId } = this.state;
@@ -318,9 +310,7 @@ class App extends React.Component<any, any> {
     // gasPrice
     const gasPrices = await apiGetGasPrices();
     const _gasPrice = gasPrices.slow.price;
-    const gasPrice = sanitizeHex(
-      convertStringToHex(convertAmountToRawNumber(_gasPrice, 9))
-    );
+    const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
 
     // gasLimit
     const _gasLimit = 21000;
@@ -341,7 +331,7 @@ class App extends React.Component<any, any> {
       gasPrice,
       gasLimit,
       value,
-      data
+      data,
     };
 
     try {
@@ -360,17 +350,17 @@ class App extends React.Component<any, any> {
         txHash: result,
         from: address,
         to: address,
-        value: "0 ETH"
+        value: "0 ETH",
       };
 
       // display result
       this.setState({
         walletConnector,
         pendingRequest: false,
-        result: formattedResult || null
+        result: formattedResult || null,
       });
     } catch (error) {
-      console.error(error); // tslint:disable-line
+      console.error(error);
       this.setState({ walletConnector, pendingRequest: false, result: null });
     }
   };
@@ -411,17 +401,17 @@ class App extends React.Component<any, any> {
         address,
         signer,
         verified,
-        result
+        result,
       };
 
       // display result
       this.setState({
         walletConnector,
         pendingRequest: false,
-        result: formattedResult || null
+        result: formattedResult || null,
       });
     } catch (error) {
-      console.error(error); // tslint:disable-line
+      console.error(error);
       this.setState({ walletConnector, pendingRequest: false, result: null });
     }
   };
@@ -440,36 +430,36 @@ class App extends React.Component<any, any> {
           { name: "name", type: "string" },
           { name: "version", type: "string" },
           { name: "chainId", type: "uint256" },
-          { name: "verifyingContract", type: "address" }
+          { name: "verifyingContract", type: "address" },
         ],
         Person: [
           { name: "name", type: "string" },
-          { name: "account", type: "address" }
+          { name: "account", type: "address" },
         ],
         Mail: [
           { name: "from", type: "Person" },
           { name: "to", type: "Person" },
-          { name: "contents", type: "string" }
-        ]
+          { name: "contents", type: "string" },
+        ],
       },
       primaryType: "Mail",
       domain: {
         name: "Example Dapp",
         version: "0.7.0",
         chainId: 1,
-        verifyingContract: "0x0000000000000000000000000000000000000000"
+        verifyingContract: "0x0000000000000000000000000000000000000000",
       },
       message: {
         from: {
           name: "Alice",
-          account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         },
         to: {
           name: "Bob",
-          account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         },
-        contents: "Hey, Bob!"
-      }
+        contents: "Hey, Bob!",
+      },
     };
 
     // eth_signTypedData params
@@ -495,17 +485,17 @@ class App extends React.Component<any, any> {
         address,
         // signer,
         // verified,
-        result
+        result,
       };
 
       // display result
       this.setState({
         walletConnector,
         pendingRequest: false,
-        result: formattedResult || null
+        result: formattedResult || null,
       });
     } catch (error) {
-      console.error(error); // tslint:disable-line
+      console.error(error);
       this.setState({ walletConnector, pendingRequest: false, result: null });
     }
   };
@@ -519,7 +509,7 @@ class App extends React.Component<any, any> {
       fetching,
       showModal,
       pendingRequest,
-      result
+      result,
     } = this.state;
     return (
       <SLayout>
@@ -539,11 +529,7 @@ class App extends React.Component<any, any> {
                   <span>{`v${process.env.REACT_APP_VERSION}`}</span>
                 </h3>
                 <SButtonContainer>
-                  <SConnectButton
-                    left
-                    onClick={this.walletConnectInit}
-                    fetching={fetching}
-                  >
+                  <SConnectButton left onClick={this.walletConnectInit} fetching={fetching}>
                     {"Connect to WalletConnect"}
                   </SConnectButton>
                 </SButtonContainer>
@@ -587,9 +573,7 @@ class App extends React.Component<any, any> {
               <SModalTitle>{"Pending Call Request"}</SModalTitle>
               <SContainer>
                 <Loader />
-                <SModalParagraph>
-                  {"Approve or reject request using your wallet"}
-                </SModalParagraph>
+                <SModalParagraph>{"Approve or reject request using your wallet"}</SModalParagraph>
               </SContainer>
             </SModalContainer>
           ) : result ? (

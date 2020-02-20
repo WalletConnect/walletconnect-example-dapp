@@ -12,14 +12,14 @@ const AccountAssets = (props: any) => {
           symbol: "xDAI",
           name: "xDAI",
           decimals: "18",
-          balance: "0"
+          balance: "0",
         }
       : {
           contractAddress: "",
           name: "Ethereum",
           symbol: "ETH",
           decimals: "18",
-          balance: "0"
+          balance: "0",
         };
 
   let nativeCurrency: IAssetData = defaultNativeCurrency;
@@ -28,7 +28,7 @@ const AccountAssets = (props: any) => {
     const filteredNativeCurrency = assets.filter((asset: IAssetData) =>
       asset && asset.symbol
         ? asset.symbol.toLowerCase() === nativeCurrency.symbol.toLowerCase()
-        : false
+        : false,
     );
     nativeCurrency =
       filteredNativeCurrency && filteredNativeCurrency.length
@@ -37,7 +37,7 @@ const AccountAssets = (props: any) => {
     tokens = assets.filter((asset: IAssetData) =>
       asset && asset.symbol
         ? asset.symbol.toLowerCase() !== nativeCurrency.symbol.toLowerCase()
-        : false
+        : false,
     );
   }
   return (

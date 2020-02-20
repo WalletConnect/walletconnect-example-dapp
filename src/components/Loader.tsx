@@ -48,15 +48,7 @@ const Loader = (props: ILoaderProps) => {
           fill={rgb}
           fillRule="nonzero"
         />
-        <rect
-          id="Rectangle"
-          fill={rgb}
-          x="44"
-          y="44.34375"
-          width="98"
-          height="98"
-          rx="35"
-        />
+        <rect id="Rectangle" fill={rgb} x="44" y="44.34375" width="98" height="98" rx="35" />
       </g>
     </SLoader>
   );
@@ -64,12 +56,12 @@ const Loader = (props: ILoaderProps) => {
 
 Loader.propTypes = {
   size: PropTypes.number,
-  color: PropTypes.string
+  color: PropTypes.string,
 };
 
 Loader.defaultProps = {
   size: 40,
-  color: "lightBlue"
+  color: "lightBlue",
 };
 
 export default Loader;
