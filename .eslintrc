@@ -1,0 +1,51 @@
+{
+  "rules": {
+    "@typescript-eslint/ban-ts-ignore": ["off"],
+    "@typescript-eslint/camelcase": ["off"],
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+    "@typescript-eslint/interface-name-prefix": ["off"],
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-unused-expressions": ["off"],
+    "@typescript-eslint/no-var-requires": ["off"],
+    "@typescript-eslint/no-use-before-define": ["off"],
+    "@typescript-eslint/no-unused-vars": ["off"],
+    "comma-dangle": ["error", "always-multiline"],
+    "no-async-promise-executor": ["off"],
+    "no-empty-pattern": ["off"],
+    "no-undef": ["error"],
+    "no-var": ["error"],
+    "object-curly-spacing": ["error", "always"],
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+    "semi": ["error", "always"],
+    "spaced-comment": ["off"],
+    "no-prototype-builtins": ["off"],
+    "sort-keys": ["off"],
+    "space-before-function-paren": ["off"],
+    "indent": ["off"],
+    "no-console": ["off"],
+    "no-useless-catch": ["off"]
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true,
+    "jasmine": true,
+    "jest": true,
+    "es6": true
+  },
+  "extends": [
+    "standard",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "@typescript-eslint", "prettier"]
+}
