@@ -124,7 +124,7 @@ const STestButton = styled(Button)`
 `;
 
 interface IAppState {
-  walletConnector: WalletConnect | null;
+  connector: WalletConnect | null;
   fetching: boolean;
   connected: boolean;
   chainId: number;
@@ -138,7 +138,7 @@ interface IAppState {
 }
 
 const INITIAL_STATE: IAppState = {
-  walletConnector: null,
+  connector: null,
   fetching: false,
   connected: false,
   chainId: 1,
@@ -160,20 +160,18 @@ class App extends React.Component<any, any> {
     // bridge url
     const bridge = "https://bridge.walletconnect.org";
 
-    // create new walletConnector
-    const walletConnector = new WalletConnect({ bridge });
+    // create new connector
+    const connector = new WalletConnect({ bridge });
 
-    window.walletConnector = walletConnector;
-
-    await this.setState({ walletConnector });
+    await this.setState({ connector });
 
     // check if already connected
-    if (!walletConnector.connected) {
+    if (!connector.connected) {
       // create new session
-      await walletConnector.createSession();
+      await connector.createSession();
 
       // get uri for QR Code modal
-      const uri = walletConnector.uri;
+      const uri = connector.uri;
 
       // console log the uri for development
       console.log(uri);
@@ -187,14 +185,14 @@ class App extends React.Component<any, any> {
     await this.subscribeToEvents();
   };
   public subscribeToEvents = () => {
-    const { walletConnector } = this.state;
+    const { connector } = this.state;
 
-    if (!walletConnector) {
+    if (!connector) {
       return;
     }
 
-    walletConnector.on("session_update", async (error, payload) => {
-      console.log(`walletConnector.on("session_update")`);
+    connector.on("session_update", async (error, payload) => {
+      console.log(`connector.on("session_update")`);
 
       if (error) {
         throw error;
@@ -204,8 +202,8 @@ class App extends React.Component<any, any> {
       this.onSessionUpdate(accounts, chainId);
     });
 
-    walletConnector.on("connect", (error, payload) => {
-      console.log(`walletConnector.on("connect")`);
+    connector.on("connect", (error, payload) => {
+      console.log(`connector.on("connect")`);
 
       if (error) {
         throw error;
@@ -214,8 +212,8 @@ class App extends React.Component<any, any> {
       this.onConnect(payload);
     });
 
-    walletConnector.on("disconnect", (error, payload) => {
-      console.log(`walletConnector.on("disconnect")`);
+    connector.on("disconnect", (error, payload) => {
+      console.log(`connector.on("disconnect")`);
 
       if (error) {
         throw error;
@@ -224,8 +222,8 @@ class App extends React.Component<any, any> {
       this.onDisconnect();
     });
 
-    if (walletConnector.connected) {
-      const { chainId, accounts } = walletConnector;
+    if (connector.connected) {
+      const { chainId, accounts } = connector;
       const address = accounts[0];
       this.setState({
         connected: true,
@@ -235,13 +233,13 @@ class App extends React.Component<any, any> {
       });
     }
 
-    this.setState({ walletConnector });
+    this.setState({ connector });
   };
 
   public killSession = async () => {
-    const { walletConnector } = this.state;
-    if (walletConnector) {
-      walletConnector.killSession();
+    const { connector } = this.state;
+    if (connector) {
+      connector.killSession();
     }
     this.resetApp();
   };
@@ -291,9 +289,9 @@ class App extends React.Component<any, any> {
   public toggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   public testSendTransaction = async () => {
-    const { walletConnector, address, chainId } = this.state;
+    const { connector, address, chainId } = this.state;
 
-    if (!walletConnector) {
+    if (!connector) {
       return;
     }
 
@@ -342,7 +340,7 @@ class App extends React.Component<any, any> {
       this.setState({ pendingRequest: true });
 
       // send transaction
-      const result = await walletConnector.sendTransaction(tx);
+      const result = await connector.sendTransaction(tx);
 
       // format displayed result
       const formattedResult = {
@@ -355,20 +353,20 @@ class App extends React.Component<any, any> {
 
       // display result
       this.setState({
-        walletConnector,
+        connector,
         pendingRequest: false,
         result: formattedResult || null,
       });
     } catch (error) {
       console.error(error);
-      this.setState({ walletConnector, pendingRequest: false, result: null });
+      this.setState({ connector, pendingRequest: false, result: null });
     }
   };
 
   public testSignPersonalMessage = async () => {
-    const { walletConnector, address } = this.state;
+    const { connector, address } = this.state;
 
-    if (!walletConnector) {
+    if (!connector) {
       return;
     }
 
@@ -389,7 +387,7 @@ class App extends React.Component<any, any> {
       this.setState({ pendingRequest: true });
 
       // send message
-      const result = await walletConnector.signPersonalMessage(msgParams);
+      const result = await connector.signPersonalMessage(msgParams);
 
       // verify signature
       const signer = recoverPersonalSignature(result, message);
@@ -406,20 +404,20 @@ class App extends React.Component<any, any> {
 
       // display result
       this.setState({
-        walletConnector,
+        connector,
         pendingRequest: false,
         result: formattedResult || null,
       });
     } catch (error) {
       console.error(error);
-      this.setState({ walletConnector, pendingRequest: false, result: null });
+      this.setState({ connector, pendingRequest: false, result: null });
     }
   };
 
   public testSignTypedData = async () => {
-    const { walletConnector, address } = this.state;
+    const { connector, address } = this.state;
 
-    if (!walletConnector) {
+    if (!connector) {
       return;
     }
 
@@ -473,7 +471,7 @@ class App extends React.Component<any, any> {
       this.setState({ pendingRequest: true });
 
       // sign typed data
-      const result = await walletConnector.signTypedData(msgParams);
+      const result = await connector.signTypedData(msgParams);
 
       // // verify signature
       // const signer = recoverPublicKey(result, typedData);
@@ -490,13 +488,13 @@ class App extends React.Component<any, any> {
 
       // display result
       this.setState({
-        walletConnector,
+        connector,
         pendingRequest: false,
         result: formattedResult || null,
       });
     } catch (error) {
       console.error(error);
-      this.setState({ walletConnector, pendingRequest: false, result: null });
+      this.setState({ connector, pendingRequest: false, result: null });
     }
   };
 

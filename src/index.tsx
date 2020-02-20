@@ -12,7 +12,6 @@ declare global {
   // tslint:disable-next-line
   interface Window {
     blockies: any;
-    walletConnector: any;
   }
 }
 
