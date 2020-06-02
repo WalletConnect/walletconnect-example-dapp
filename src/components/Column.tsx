@@ -27,7 +27,7 @@ const SColumn = styled.div<IColumnStyleProps>`
 const Column = (props: IColumnProps) => {
   const { children, spanHeight, maxWidth, center } = props;
   return (
-    <SColumn spanHeight={spanHeight} maxWidth={maxWidth} center={center} {...props}>
+    <SColumn {...props} spanHeight={spanHeight} maxWidth={maxWidth} center={center}>
       {children}
     </SColumn>
   );

@@ -101,13 +101,13 @@ const SButton = styled.button<IButtonStyleProps>`
 
 const Button = (props: IButtonProps) => (
   <SButton
+    {...props}
     type={props.type}
     outline={props.outline}
     color={props.color}
     disabled={props.disabled}
     icon={props.icon}
     left={props.left}
-    {...props}
   >
     <SHoverLayer />
     <SIcon />

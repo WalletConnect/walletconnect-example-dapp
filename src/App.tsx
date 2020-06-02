@@ -231,6 +231,7 @@ class App extends React.Component<any, any> {
         accounts,
         address,
       });
+      this.onSessionUpdate(accounts, chainId);
     }
 
     this.setState({ connector });
