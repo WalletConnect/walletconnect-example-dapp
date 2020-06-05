@@ -20,6 +20,7 @@ import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumbe
 import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
+import { exampleEIP712 } from "./helpers/eip712";
 
 const SLayout = styled.div`
   position: relative;
@@ -421,47 +422,8 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    // typed data
-    const typedData = {
-      types: {
-        EIP712Domain: [
-          { name: "name", type: "string" },
-          { name: "version", type: "string" },
-          { name: "chainId", type: "uint256" },
-          { name: "verifyingContract", type: "address" },
-        ],
-        Person: [
-          { name: "name", type: "string" },
-          { name: "account", type: "address" },
-        ],
-        Mail: [
-          { name: "from", type: "Person" },
-          { name: "to", type: "Person" },
-          { name: "contents", type: "string" },
-        ],
-      },
-      primaryType: "Mail",
-      domain: {
-        name: "Example Dapp",
-        version: "0.7.0",
-        chainId: 1,
-        verifyingContract: "0x0000000000000000000000000000000000000000",
-      },
-      message: {
-        from: {
-          name: "Alice",
-          account: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        },
-        to: {
-          name: "Bob",
-          account: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        },
-        contents: "Hey, Bob!",
-      },
-    };
-
     // eth_signTypedData params
-    const msgParams = [address, typedData];
+    const msgParams = [address, JSON.stringify(exampleEIP712)];
 
     try {
       // open modal
@@ -546,7 +508,7 @@ class App extends React.Component<any, any> {
                       {"personal_sign"}
                     </STestButton>
 
-                    <STestButton disabled left onClick={this.testSignTypedData}>
+                    <STestButton left onClick={this.testSignTypedData}>
                       {"eth_signTypedData"}
                     </STestButton>
                   </STestButtonContainer>
