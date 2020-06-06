@@ -1,7 +1,10 @@
+import { providers } from "ethers";
 import { convertUtf8ToHex } from "@walletconnect/utils";
+import { TypedDataUtils } from "eth-sig-util";
 import * as ethUtil from "ethereumjs-util";
 import { IChainData } from "./types";
-import supportedChains from "./chains";
+import { SUPPORTED_CHAINS } from "./chains";
+import { eip1271 } from "./eip1271";
 
 export function capitalize(string: string): string {
   return string
@@ -99,13 +102,13 @@ export function isMobile(): boolean {
 }
 
 export function getChainData(chainId: number): IChainData {
-  const chainData = supportedChains.filter((chain: any) => chain.chain_id === chainId)[0];
+  const chainData = SUPPORTED_CHAINS.filter((chain: any) => chain.chain_id === chainId)[0];
 
   if (!chainData) {
     throw new Error("ChainId missing or not supported");
   }
 
-  const API_KEY = process.env.REACT_APP_INFURA_PROJECT_ID;
+  const API_KEY = process.env.REACT_APP_INFURA_ID;
 
   if (
     chainData.rpc_url.includes("infura.io") &&
@@ -131,6 +134,12 @@ export function hashPersonalMessage(msg: string): string {
   return hash;
 }
 
+export function hashTypedDataMessage(msg: string): string {
+  const buffer = TypedDataUtils.sign(JSON.parse(msg));
+  const hex = ethUtil.bufferToHex(buffer);
+  return hex;
+}
+
 export function recoverPublicKey(sig: string, hash: string): string {
   const sigParams = ethUtil.fromRpcSig(sig);
   const hashBuffer = ethUtil.toBuffer(hash);
@@ -143,4 +152,21 @@ export function recoverPersonalSignature(sig: string, msg: string): string {
   const hash = hashPersonalMessage(msg);
   const signer = recoverPublicKey(sig, hash);
   return signer;
+}
+
+export async function isValidSignature(
+  address: string,
+  sig: string,
+  hash: string,
+  chainId: number,
+): Promise<boolean> {
+  const rpcUrl = getChainData(chainId).rpc_url;
+  const provider = new providers.JsonRpcProvider(rpcUrl);
+  const bytecode = await provider.getCode(address);
+  if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
+    const signer = recoverPublicKey(sig, hash);
+    return signer.toLowerCase() === address.toLowerCase();
+  } else {
+    return eip1271.isValidSignature(address, sig, hash, provider);
+  }
 }

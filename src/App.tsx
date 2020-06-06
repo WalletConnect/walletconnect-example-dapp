@@ -15,12 +15,17 @@ import { apiGetAccountAssets, apiGetGasPrices, apiGetAccountNonce } from "./help
 // import {
 //   recoverTypedSignature
 // } from "./helpers/ethSigUtil";
-import { sanitizeHex, recoverPersonalSignature } from "./helpers/utilities";
+import {
+  sanitizeHex,
+  isValidSignature,
+  hashPersonalMessage,
+  hashTypedDataMessage,
+} from "./helpers/utilities";
 import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
-import { exampleEIP712 } from "./helpers/eip712";
+import { eip712 } from "./helpers/eip712";
 
 const SLayout = styled.div`
   position: relative;
@@ -365,7 +370,7 @@ class App extends React.Component<any, any> {
   };
 
   public testSignPersonalMessage = async () => {
-    const { connector, address } = this.state;
+    const { connector, address, chainId } = this.state;
 
     if (!connector) {
       return;
@@ -391,15 +396,14 @@ class App extends React.Component<any, any> {
       const result = await connector.signPersonalMessage(msgParams);
 
       // verify signature
-      const signer = recoverPersonalSignature(result, message);
-      const verified = signer.toLowerCase() === address.toLowerCase();
+      const hash = hashPersonalMessage(message);
+      const valid = await isValidSignature(address, result, hash, chainId);
 
       // format displayed result
       const formattedResult = {
         method: "personal_sign",
         address,
-        signer,
-        verified,
+        valid,
         result,
       };
 
@@ -416,14 +420,16 @@ class App extends React.Component<any, any> {
   };
 
   public testSignTypedData = async () => {
-    const { connector, address } = this.state;
+    const { connector, address, chainId } = this.state;
 
     if (!connector) {
       return;
     }
 
+    const message = JSON.stringify(eip712.example);
+
     // eth_signTypedData params
-    const msgParams = [address, JSON.stringify(exampleEIP712)];
+    const msgParams = [address, message];
 
     try {
       // open modal
@@ -435,16 +441,15 @@ class App extends React.Component<any, any> {
       // sign typed data
       const result = await connector.signTypedData(msgParams);
 
-      // // verify signature
-      // const signer = recoverPublicKey(result, typedData);
-      // const verified = signer.toLowerCase() === address.toLowerCase();
+      // verify signature
+      const hash = hashTypedDataMessage(message);
+      const valid = await isValidSignature(address, result, hash, chainId);
 
       // format displayed result
       const formattedResult = {
         method: "eth_signTypedData",
         address,
-        // signer,
-        // verified,
+        valid,
         result,
       };
 

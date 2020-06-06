@@ -1,4 +1,4 @@
-export const exampleEIP712 = {
+const example = {
   types: {
     EIP712Domain: [
       { name: "name", type: "string" },
@@ -43,4 +43,8 @@ export const exampleEIP712 = {
       paymaster: "0x957F270d45e9Ceca5c5af2b49f1b5dC1Abb0421c",
     },
   },
+};
+
+export const eip712 = {
+  example,
 };
