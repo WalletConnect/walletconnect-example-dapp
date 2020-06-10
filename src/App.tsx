@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import WalletConnect from "@walletconnect/browser";
-import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 import { convertUtf8ToHex } from "@walletconnect/utils";
 import { IInternalEvent } from "@walletconnect/types";
 import Button from "./components/Button";
@@ -183,7 +183,7 @@ class App extends React.Component<any, any> {
       console.log(uri);
 
       // display QR Code modal
-      WalletConnectQRCodeModal.open(uri, () => {
+      QRCodeModal.open(uri, () => {
         console.log("QR Code Modal closed");
       });
     }
@@ -264,12 +264,12 @@ class App extends React.Component<any, any> {
       accounts,
       address,
     });
-    WalletConnectQRCodeModal.close();
+    QRCodeModal.close();
     this.getAccountAssets();
   };
 
   public onDisconnect = async () => {
-    WalletConnectQRCodeModal.close();
+    QRCodeModal.close();
     this.resetApp();
   };
 
