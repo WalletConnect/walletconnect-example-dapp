@@ -32,7 +32,7 @@ interface IWrapperProps extends IWrapperStyleProps {
 const Wrapper = (props: IWrapperProps) => {
   const { children, center } = props;
   return (
-    <SWrapper center={center} {...props}>
+    <SWrapper {...props} center={center}>
       {children}
     </SWrapper>
   );
