@@ -85,9 +85,9 @@ async function isValidSignature(
   data: string,
   provider: providers.Provider,
 ): Promise<boolean> {
-  let result = _isValidSignature(address, sig, data, provider);
+  let result = await _isValidSignature(address, sig, data, provider);
   if (!result) {
-    result = _isValidSignature(
+    result = await _isValidSignature(
       address,
       sig,
       data,
