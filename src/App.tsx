@@ -12,14 +12,11 @@ import Header from "./components/Header";
 import Loader from "./components/Loader";
 import { fonts } from "./styles";
 import { apiGetAccountAssets, apiGetGasPrices, apiGetAccountNonce } from "./helpers/api";
-// import {
-//   recoverTypedSignature
-// } from "./helpers/ethSigUtil";
 import {
   sanitizeHex,
   isValidSignature,
-  hashPersonalMessage,
-  hashTypedDataMessage,
+  encodeTypedDataMessage,
+  encodePersonalMessage,
 } from "./helpers/utilities";
 import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
@@ -84,6 +81,7 @@ const SModalParagraph = styled.p`
   margin-top: 30px;
 `;
 
+// @ts-ignore
 const SBalances = styled(SLanding)`
   height: 100%;
   & h3 {
@@ -397,8 +395,8 @@ class App extends React.Component<any, any> {
       const result = await connector.signPersonalMessage(msgParams);
 
       // verify signature
-      const hash = hashPersonalMessage(message);
-      const valid = await isValidSignature(address, result, hash, chainId);
+      const data = encodePersonalMessage(message);
+      const valid = await isValidSignature(address, result, data, chainId);
 
       // format displayed result
       const formattedResult = {
@@ -443,8 +441,8 @@ class App extends React.Component<any, any> {
       const result = await connector.signTypedData(msgParams);
 
       // verify signature
-      const hash = hashTypedDataMessage(message);
-      const valid = await isValidSignature(address, result, hash, chainId);
+      const data = encodeTypedDataMessage(message);
+      const valid = await isValidSignature(address, result, data, chainId);
 
       // format displayed result
       const formattedResult = {

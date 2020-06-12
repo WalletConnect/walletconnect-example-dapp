@@ -31,14 +31,14 @@ const abi = [
 async function isValidSignature(
   address: string,
   sig: string,
-  hash: string,
+  data: string,
   provider: providers.Provider,
 ): Promise<boolean> {
   const contract = new Contract(address, eip1271.abi, provider);
 
   let returnValue;
   try {
-    returnValue = await contract.isValidSignature(utils.arrayify(hash), sig);
+    returnValue = await contract.isValidSignature(utils.arrayify(data), sig);
   } catch (e) {
     return false;
   }
