@@ -1,19 +1,24 @@
 # WalletConnect Example Dapp
 
+## Install
+
+```bash
+npm install
+```
 ## Develop
 
 ```bash
-yarn start
+npm start
 ```
 
 ## Test
 
 ```bash
-yarn test
+npm test
 ```
 
 ## Build
 
 ```bash
-yarn build
+npm build
 ```
