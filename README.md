@@ -3,17 +3,17 @@
 ## Develop
 
 ```bash
-npm run start
+yarn start
 ```
 
 ## Test
 
 ```bash
-npm run test
+yarn test
 ```
 
 ## Build
 
 ```bash
-npm run build
+yarn build
 ```
