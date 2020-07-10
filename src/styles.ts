@@ -81,7 +81,6 @@ export const responsive = {
 };
 
 export const globalStyle = `
-  @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,800');
 
   html, body, #root {
     height: 100%;
