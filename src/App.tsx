@@ -14,9 +14,9 @@ import { fonts } from "./styles";
 import { apiGetAccountAssets, apiGetGasPrices, apiGetAccountNonce } from "./helpers/api";
 import {
   sanitizeHex,
-  isValidSignature,
-  encodeTypedDataMessage,
-  encodePersonalMessage,
+  verifySignature,
+  hashTypedDataMessage,
+  hashPersonalMessage,
 } from "./helpers/utilities";
 import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
@@ -32,22 +32,22 @@ const SLayout = styled.div`
   text-align: center;
 `;
 
-const SContent = styled(Wrapper)`
+const SContent = styled(Wrapper as any)`
   width: 100%;
   height: 100%;
   padding: 0 16px;
 `;
 
-const SLanding = styled(Column)`
+const SLanding = styled(Column as any)`
   height: 600px;
 `;
 
-const SButtonContainer = styled(Column)`
+const SButtonContainer = styled(Column as any)`
   width: 250px;
   margin: 50px 0;
 `;
 
-const SConnectButton = styled(Button)`
+const SConnectButton = styled(Button as any)`
   border-radius: 8px;
   font-size: ${fonts.size.medium};
   height: 44px;
@@ -82,14 +82,14 @@ const SModalParagraph = styled.p`
 `;
 
 // @ts-ignore
-const SBalances = styled(SLanding)`
+const SBalances = styled(SLanding as any)`
   height: 100%;
   & h3 {
     padding-top: 30px;
   }
 `;
 
-const STable = styled(SContainer)`
+const STable = styled(SContainer as any)`
   flex-direction: column;
   text-align: left;
 `;
@@ -118,7 +118,7 @@ const STestButtonContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const STestButton = styled(Button)`
+const STestButton = styled(Button as any)`
   border-radius: 8px;
   font-size: ${fonts.size.medium};
   height: 44px;
@@ -165,7 +165,7 @@ class App extends React.Component<any, any> {
     const bridge = "https://bridge.walletconnect.org";
 
     // create new connector
-    const connector = new WalletConnect({ bridge });
+    const connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal });
 
     await this.setState({ connector });
 
@@ -173,18 +173,8 @@ class App extends React.Component<any, any> {
     if (!connector.connected) {
       // create new session
       await connector.createSession();
-
-      // get uri for QR Code modal
-      const uri = connector.uri;
-
-      // console log the uri for development
-      console.log(uri);
-
-      // display QR Code modal
-      QRCodeModal.open(uri, () => {
-        console.log("QR Code Modal closed");
-      });
     }
+
     // subscribe to events
     await this.subscribeToEvents();
   };
@@ -262,12 +252,10 @@ class App extends React.Component<any, any> {
       accounts,
       address,
     });
-    QRCodeModal.close();
     this.getAccountAssets();
   };
 
   public onDisconnect = async () => {
-    QRCodeModal.close();
     this.resetApp();
   };
 
@@ -395,8 +383,8 @@ class App extends React.Component<any, any> {
       const result = await connector.signPersonalMessage(msgParams);
 
       // verify signature
-      const data = encodePersonalMessage(message);
-      const valid = await isValidSignature(address, result, data, chainId);
+      const hash = hashPersonalMessage(message);
+      const valid = await verifySignature(address, result, hash, chainId);
 
       // format displayed result
       const formattedResult = {
@@ -441,8 +429,8 @@ class App extends React.Component<any, any> {
       const result = await connector.signTypedData(msgParams);
 
       // verify signature
-      const data = encodeTypedDataMessage(message);
-      const valid = await isValidSignature(address, result, data, chainId);
+      const hash = hashTypedDataMessage(message);
+      const valid = await verifySignature(address, result, hash, chainId);
 
       // format displayed result
       const formattedResult = {

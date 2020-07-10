@@ -24,7 +24,7 @@ const SActiveAccount = styled.div`
   font-weight: 500;
 `;
 
-const SActiveChain = styled(SActiveAccount)`
+const SActiveChain = styled(SActiveAccount as any)`
   flex-direction: column;
   text-align: left;
   align-items: flex-start;
@@ -38,7 +38,7 @@ const SActiveChain = styled(SActiveAccount)`
   }
 `;
 
-const SBlockie = styled(Blockie)`
+const SBlockie = styled(Blockie as any)`
   margin-right: 10px;
 `;
 

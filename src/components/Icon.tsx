@@ -15,14 +15,14 @@ const Icon = (props: any) => {
   const { src, fallback, size } = props;
   return (
     <SIcon
+      {...props}
       src={src}
       size={size}
       onError={(event: any) => {
         if (fallback) {
-          event.target.src = fallback
+          event.target.src = fallback;
         }
       }}
-      {...props}
     />
   );
 };
@@ -35,7 +35,7 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   src: null,
-  fallback: '',
+  fallback: "",
   size: 20,
 };
 

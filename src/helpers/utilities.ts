@@ -179,20 +179,19 @@ export function recoverTypedMessage(sig: string, msg: string): string {
   return signer;
 }
 
-export async function isValidSignature(
+export async function verifySignature(
   address: string,
   sig: string,
-  data: string,
+  hash: string,
   chainId: number,
 ): Promise<boolean> {
   const rpcUrl = getChainData(chainId).rpc_url;
   const provider = new providers.JsonRpcProvider(rpcUrl);
   const bytecode = await provider.getCode(address);
   if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
-    const hash = ethUtil.bufferToHex(ethUtil.keccak256(data));
     const signer = recoverPublicKey(sig, hash);
     return signer.toLowerCase() === address.toLowerCase();
   } else {
-    return eip1271.isValidSignature(address, sig, data, provider);
+    return eip1271.isValidSignature(address, sig, hash, provider);
   }
 }
