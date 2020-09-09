@@ -23,6 +23,7 @@ import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
 import { eip712 } from "./helpers/eip712";
+import {getChainData} from "./helpers/utilities"
 
 const SLayout = styled.div`
   position: relative;
@@ -193,6 +194,11 @@ class App extends React.Component<any, any> {
       }
 
       const { chainId, accounts } = payload.params[0];
+      if (getChainData(chainId).name === "ChainId not Supported") {
+        this.killSession();
+        await this.setState({ connected: false });
+        alert("ChainId missing or not supported");
+      }
       this.onSessionUpdate(accounts, chainId);
     });
 
@@ -246,6 +252,13 @@ class App extends React.Component<any, any> {
   public onConnect = async (payload: IInternalEvent) => {
     const { chainId, accounts } = payload.params[0];
     const address = accounts[0];
+    const chainData = getChainData(chainId);
+    if (chainData.name === "ChainId not Supported") {
+      await this.setState({ connected: false });
+      alert("ChainId missing or not supported");
+      this.killSession();
+      return;
+    }
     await this.setState({
       connected: true,
       chainId,
