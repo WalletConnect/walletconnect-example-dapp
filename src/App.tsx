@@ -17,12 +17,14 @@ import {
   verifySignature,
   hashTypedDataMessage,
   hashPersonalMessage,
+  getChainData,
 } from "./helpers/utilities";
 import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
 import { eip712 } from "./helpers/eip712";
+import Notification from "./components/Notification";
 
 const SLayout = styled.div`
   position: relative;
@@ -139,6 +141,7 @@ interface IAppState {
   address: string;
   result: any | null;
   assets: IAssetData[];
+  errorMessage: string;
 }
 
 const INITIAL_STATE: IAppState = {
@@ -153,6 +156,7 @@ const INITIAL_STATE: IAppState = {
   address: "",
   result: null,
   assets: [],
+  errorMessage: "",
 };
 
 class App extends React.Component<any, any> {
@@ -161,24 +165,28 @@ class App extends React.Component<any, any> {
   };
 
   public walletConnectInit = async () => {
-    // bridge url
-    const bridge = "https://bridge.walletconnect.org";
+    try {
+      // bridge url
+      const bridge = "https://bridge.walletconnect.org";
 
-    // create new connector
-    const connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal });
+      // create new connector
+      const connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal });
 
-    await this.setState({ connector });
+      this.setState({ connector });
 
-    // check if already connected
-    if (!connector.connected) {
-      // create new session
-      await connector.createSession();
+      // check if already connected
+      if (!connector.connected) {
+        // create new session
+        await connector.createSession();
+      }
+
+      // subscribe to events
+      await this.subscribeToEvents();
+    } catch (e) {
+      this.displayError(e.message);
     }
-
-    // subscribe to events
-    await this.subscribeToEvents();
   };
-  public subscribeToEvents = () => {
+  public subscribeToEvents = async () => {
     const { connector } = this.state;
 
     if (!connector) {
@@ -219,6 +227,12 @@ class App extends React.Component<any, any> {
     if (connector.connected) {
       const { chainId, accounts } = connector;
       const address = accounts[0];
+      try {
+        getChainData(chainId);
+      } catch (e) {
+        this.displayError(e.message);
+        await this.killSession(e.message);
+      }
       this.setState({
         connected: true,
         chainId,
@@ -231,22 +245,29 @@ class App extends React.Component<any, any> {
     this.setState({ connector });
   };
 
-  public killSession = async () => {
+  public killSession = async (message?: string) => {
     const { connector } = this.state;
     if (connector) {
-      connector.killSession();
+      connector.killSession(message ? { message } : undefined);
     }
     this.resetApp();
   };
 
   public resetApp = async () => {
-    await this.setState({ ...INITIAL_STATE });
+    const persistedState = { errorMessage: this.state.errorMessage };
+    this.setState({ ...INITIAL_STATE, ...persistedState });
   };
 
   public onConnect = async (payload: IInternalEvent) => {
     const { chainId, accounts } = payload.params[0];
     const address = accounts[0];
-    await this.setState({
+    try {
+      getChainData(chainId);
+    } catch (e) {
+      this.displayError(e.message);
+      await this.killSession(e.message);
+    }
+    this.setState({
       connected: true,
       chainId,
       accounts,
@@ -261,7 +282,7 @@ class App extends React.Component<any, any> {
 
   public onSessionUpdate = async (accounts: string[], chainId: number) => {
     const address = accounts[0];
-    await this.setState({ chainId, accounts, address });
+    this.setState({ chainId, accounts, address });
     await this.getAccountAssets();
   };
 
@@ -272,10 +293,10 @@ class App extends React.Component<any, any> {
       // get account balances
       const assets = await apiGetAccountAssets(address, chainId);
 
-      await this.setState({ fetching: false, address, assets });
+      this.setState({ fetching: false, address, assets });
     } catch (error) {
       console.error(error);
-      await this.setState({ fetching: false });
+      this.setState({ fetching: false });
     }
   };
 
@@ -452,6 +473,15 @@ class App extends React.Component<any, any> {
     }
   };
 
+  public displayError(errorMessage: string) {
+    this.setState({ errorMessage });
+    setTimeout(() => this.hideError(), 8_000);
+  }
+
+  public hideError() {
+    this.setState({ errorMessage: "" });
+  }
+
   public render = () => {
     const {
       assets,
@@ -546,6 +576,11 @@ class App extends React.Component<any, any> {
             </SModalContainer>
           )}
         </Modal>
+        <Notification
+          show={!!this.state.errorMessage}
+          error={true}
+          message={this.state.errorMessage}
+        />
       </SLayout>
     );
   };
