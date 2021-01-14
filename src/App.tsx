@@ -452,6 +452,56 @@ class App extends React.Component<any, any> {
     }
   };
 
+  public testSignMessage = async () => {
+    const { connector, address, chainId } = this.state;
+
+    if (!connector) {
+      return;
+    }
+
+    // test message
+    const message = "My email is john@doe.com - 1537836206101";
+
+    // encode message (hex)
+    const hexMsg = convertUtf8ToHex(message);
+
+    // eth_sign params
+    const msgParams = [address, hexMsg];
+
+    try {
+      // open modal
+      this.toggleModal();
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true });
+
+      // send message
+      const result = await connector.signMessage(msgParams);
+
+      // verify signature
+      const hash = hashPersonalMessage(message);
+      const valid = await verifySignature(address, result, hash, chainId);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_sign",
+        address,
+        valid,
+        result,
+      };
+
+      // display result
+      this.setState({
+        connector,
+        pendingRequest: false,
+        result: formattedResult || null,
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ connector, pendingRequest: false, result: null });
+    }
+  };
+
   public render = () => {
     const {
       assets,
@@ -502,6 +552,10 @@ class App extends React.Component<any, any> {
 
                     <STestButton left onClick={this.testSignTypedData}>
                       {"eth_signTypedData"}
+                    </STestButton>
+
+                    <STestButton left onClick={this.testSignMessage}>
+                      {"eth_sign"}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>
