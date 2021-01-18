@@ -160,7 +160,7 @@ export function hashTypedDataMessage(msg: string): string {
   return ethUtil.bufferToHex(hash);
 }
 
-export function recoverPublicKey(sig: string, hash: string): string {
+export function recoverAddress(sig: string, hash: string): string {
   const params = ethUtil.fromRpcSig(sig);
   const result = ethUtil.ecrecover(ethUtil.toBuffer(hash), params.v, params.r, params.s);
   const signer = ethUtil.bufferToHex(ethUtil.publicToAddress(result));
@@ -169,13 +169,13 @@ export function recoverPublicKey(sig: string, hash: string): string {
 
 export function recoverPersonalSignature(sig: string, msg: string): string {
   const hash = hashPersonalMessage(msg);
-  const signer = recoverPublicKey(sig, hash);
+  const signer = recoverAddress(sig, hash);
   return signer;
 }
 
 export function recoverTypedMessage(sig: string, msg: string): string {
   const hash = hashTypedDataMessage(msg);
-  const signer = recoverPublicKey(sig, hash);
+  const signer = recoverAddress(sig, hash);
   return signer;
 }
 
@@ -189,7 +189,7 @@ export async function verifySignature(
   const provider = new providers.JsonRpcProvider(rpcUrl);
   const bytecode = await provider.getCode(address);
   if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
-    const signer = recoverPublicKey(sig, hash);
+    const signer = recoverAddress(sig, hash);
     return signer.toLowerCase() === address.toLowerCase();
   } else {
     return eip1271.isValidSignature(address, sig, hash, provider);
