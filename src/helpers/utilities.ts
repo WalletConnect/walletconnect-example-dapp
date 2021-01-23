@@ -135,7 +135,7 @@ export function encodePersonalMessage(msg: string): string {
   return ethUtil.bufferToHex(buf);
 }
 
-export function hashPersonalMessage(msg: string): string {
+export function hashMessage(msg: string): string {
   const data = encodePersonalMessage(msg);
   const buf = ethUtil.toBuffer(data);
   const hash = ethUtil.keccak256(buf);
@@ -167,8 +167,8 @@ export function recoverAddress(sig: string, hash: string): string {
   return signer;
 }
 
-export function recoverPersonalSignature(sig: string, msg: string): string {
-  const hash = hashPersonalMessage(msg);
+export function recoverMessageSignature(sig: string, msg: string): string {
+  const hash = hashMessage(msg);
   const signer = recoverAddress(sig, hash);
   return signer;
 }
