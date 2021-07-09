@@ -105,7 +105,22 @@ export function getChainData(chainId: number): IChainData {
   const chainData = SUPPORTED_CHAINS.filter((chain: any) => chain.chain_id === chainId)[0];
 
   if (!chainData) {
-    throw new Error("ChainId missing or not supported");
+    console.log("ChainId missing or not supported");
+    return {
+      name: "ChainId not Supported",
+      short_name: "UnSupported chainId",
+      chain: "",
+      network: "",
+      chain_id: chainId,
+      network_id: 0,
+      rpc_url: "",
+      native_currency: {
+        symbol: "",
+        name: "",
+        decimals: "",
+        contractAddress: "",
+      },
+    };
   }
 
   const API_KEY = process.env.REACT_APP_INFURA_PROJECT_ID;
