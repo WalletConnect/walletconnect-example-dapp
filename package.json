@@ -1,6 +1,6 @@
 {
   "name": "walletconnect-example-dapp",
-  "version": "1.5.0-rc.7",
+  "version": "1.5.0-rc.9",
   "private": true,
   "keywords": [
     "walletconnect",
@@ -26,8 +26,8 @@
     "url": "https://github.com/walletconnect/walletconnect-example-dapp/issues"
   },
   "dependencies": {
-    "@walletconnect/client": "^1.5.0-rc.7",
-    "@walletconnect/qrcode-modal": "^1.5.0-rc.7",
+    "@walletconnect/client": "^1.5.0-rc.9",
+    "@walletconnect/qrcode-modal": "^1.5.0-rc.9",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
     "blockies-ts": "^1.0.0",
