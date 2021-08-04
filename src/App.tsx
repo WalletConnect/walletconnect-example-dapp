@@ -15,14 +15,14 @@ import { apiGetAccountAssets, apiGetGasPrices, apiGetAccountNonce } from "./help
 import {
   sanitizeHex,
   verifySignature,
-  hashTypedDataMessage,
   hashMessage,
+  // hashTypedDataMessage,
 } from "./helpers/utilities";
 import { convertAmountToRawNumber, convertStringToHex } from "./helpers/bignumber";
 import { IAssetData } from "./helpers/types";
-import Banner from "./components/Banner";
-import AccountAssets from "./components/AccountAssets";
-import { eip712 } from "./helpers/eip712";
+// import Banner from "./components/Banner";
+// import AccountAssets from "./components/AccountAssets";
+import { formatEIP712Data } from "./helpers/eip712";
 
 const SLayout = styled.div`
   position: relative;
@@ -89,26 +89,26 @@ const SBalances = styled(SLanding as any)`
   }
 `;
 
-const STable = styled(SContainer as any)`
-  flex-direction: column;
-  text-align: left;
-`;
+// const STable = styled(SContainer as any)`
+//   flex-direction: column;
+//   text-align: left;
+// `;
 
-const SRow = styled.div`
-  width: 100%;
-  display: flex;
-  margin: 6px 0;
-`;
+// const SRow = styled.div`
+//   width: 100%;
+//   display: flex;
+//   margin: 6px 0;
+// `;
 
-const SKey = styled.div`
-  width: 30%;
-  font-weight: 700;
-`;
+// const SKey = styled.div`
+//   width: 30%;
+//   font-weight: 700;
+// `;
 
-const SValue = styled.div`
-  width: 70%;
-  font-family: monospace;
-`;
+// const SValue = styled.div`
+//   width: 70%;
+//   font-family: monospace;
+// `;
 
 const STestButtonContainer = styled.div`
   width: 100%;
@@ -139,6 +139,7 @@ interface IAppState {
   address: string;
   result: any | null;
   assets: IAssetData[];
+  autoFlow: boolean;
 }
 
 const INITIAL_STATE: IAppState = {
@@ -153,6 +154,7 @@ const INITIAL_STATE: IAppState = {
   address: "",
   result: null,
   assets: [],
+  autoFlow: true,
 };
 
 class App extends React.Component<any, any> {
@@ -252,7 +254,6 @@ class App extends React.Component<any, any> {
       accounts,
       address,
     });
-    this.getAccountAssets();
   };
 
   public onDisconnect = async () => {
@@ -330,7 +331,13 @@ class App extends React.Component<any, any> {
       this.toggleModal();
 
       // toggle pending request indicator
-      this.setState({ pendingRequest: true });
+      this.setState({
+        pendingRequest: true,
+        result: {
+          title: "Pending Signature Request",
+          message: "Approve or reject request using your wallet",
+        },
+      });
 
       // send transaction
       const result = await connector.sendTransaction(tx);
@@ -413,7 +420,14 @@ class App extends React.Component<any, any> {
       return;
     }
 
-    const message = JSON.stringify(eip712.example);
+    const getMessageToSign = formatEIP712Data(
+      {
+        from: address,
+      },
+      chainId,
+    );
+    // const message = JSON.stringify(eip712.example);
+    const message = JSON.stringify(getMessageToSign);
 
     // eth_signTypedData params
     const msgParams = [address, message];
@@ -423,34 +437,83 @@ class App extends React.Component<any, any> {
       this.toggleModal();
 
       // toggle pending request indicator
-      this.setState({ pendingRequest: true });
+      // this.setState({ pendingRequest: true });
+      this.setState({
+        pendingRequest: true,
+        result: {
+          title: "Pending Signature Request",
+          message: "Approve or reject request using your wallet",
+        },
+      });
 
       // sign typed data
       const result = await connector.signTypedData(msgParams);
 
       // verify signature
-      const hash = hashTypedDataMessage(message);
-      const valid = await verifySignature(address, result, hash, chainId);
+      // const hash = hashTypedDataMessage(message);
+      // const valid = await verifySignature(address, result, hash, chainId);
 
       // format displayed result
-      const formattedResult = {
-        method: "eth_signTypedData",
-        address,
-        valid,
-        result,
-      };
+      // const formattedResult = {
+      //   method: "eth_signTypedData",
+      //   address,
+      //   valid,
+      //   result,
+      // };
 
       // display result
+      // this.setState({
+      //   connector,
+      //   pendingRequest: false,
+      //   result: formattedResult || null,
+      // });
       this.setState({
-        connector,
-        pendingRequest: false,
-        result: formattedResult || null,
+        pendingRequest: true,
+        result: {
+          title: "Please Wait",
+          message: "Connecting...",
+        },
       });
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+      const callbackURL: string | any = urlParams.get("callbackURL");
+      const data = {
+        id,
+        signature: result,
+        account: address,
+        chainId,
+        signatureType: "EIP7211",
+        result,
+      };
+      try {
+        const response = await fetch(callbackURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const responseData = await response.json();
+        this.setState({
+          pendingRequest: false,
+          result: {
+            title: "Message",
+            message: responseData.status,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.error(error);
       this.setState({ connector, pendingRequest: false, result: null });
     }
   };
+
+  public componentDidMount(): void {
+    const { autoFlow } = this.state;
+    if (autoFlow) {
+      this.walletConnectInit();
+    }
+  }
 
   public render = () => {
     const {
@@ -476,9 +539,9 @@ class App extends React.Component<any, any> {
             {!address && !assets.length ? (
               <SLanding center>
                 <h3>
-                  {`Try out WalletConnect`}
+                  {`CollabLand WalletConnect`}
                   <br />
-                  <span>{`v${process.env.REACT_APP_VERSION}`}</span>
+                  {/* <span>{`v${process.env.REACT_APP_VERSION}`}</span> */}
                 </h3>
                 <SButtonContainer>
                   <SConnectButton left onClick={this.connect} fetching={fetching}>
@@ -488,24 +551,29 @@ class App extends React.Component<any, any> {
               </SLanding>
             ) : (
               <SBalances>
-                <Banner />
-                <h3>Actions</h3>
+                <br />
+                <br />
+                {/* <Banner /> */}
+                {/* <h3>Actions</h3> */}
+                <span>{`To complete this process please sign a message.`}</span>
+                <br />
+                <br />
                 <Column center>
                   <STestButtonContainer>
-                    <STestButton left onClick={this.testSendTransaction}>
+                    {/* <STestButton left onClick={this.testSendTransaction}>
                       {"eth_sendTransaction"}
                     </STestButton>
 
-                    <STestButton left onClick={this.testSignMessage}>
-                      {"eth_sign"}
-                    </STestButton>
+                    <STestButton left onClick={this.testSignPersonalMessage}>
+                      {"personal_sign"}
+                    </STestButton> */}
 
                     <STestButton left onClick={this.testSignTypedData}>
-                      {"eth_signTypedData"}
+                      {"Sign Message"}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>
-                <h3>Balances</h3>
+                {/* <h3>Balances</h3>
                 {!fetching ? (
                   <AccountAssets chainId={chainId} assets={assets} />
                 ) : (
@@ -514,7 +582,7 @@ class App extends React.Component<any, any> {
                       <Loader />
                     </SContainer>
                   </Column>
-                )}
+                )} */}
               </SBalances>
             )}
           </SContent>
@@ -522,23 +590,27 @@ class App extends React.Component<any, any> {
         <Modal show={showModal} toggleModal={this.toggleModal}>
           {pendingRequest ? (
             <SModalContainer>
-              <SModalTitle>{"Pending Call Request"}</SModalTitle>
+              <SModalTitle>{result.title}</SModalTitle>
               <SContainer>
                 <Loader />
-                <SModalParagraph>{"Approve or reject request using your wallet"}</SModalParagraph>
+                <SModalParagraph>{result.message}</SModalParagraph>
               </SContainer>
             </SModalContainer>
           ) : result ? (
             <SModalContainer>
-              <SModalTitle>{"Call Request Approved"}</SModalTitle>
-              <STable>
+              <SModalTitle>{result.title}</SModalTitle>
+              {/* <STable>
                 {Object.keys(result).map(key => (
                   <SRow key={key}>
                     <SKey>{key}</SKey>
                     <SValue>{result[key].toString()}</SValue>
                   </SRow>
                 ))}
-              </STable>
+              </STable> */}
+
+              <SContainer>
+                <SModalParagraph>{result.message}</SModalParagraph>
+              </SContainer>
             </SModalContainer>
           ) : (
             <SModalContainer>

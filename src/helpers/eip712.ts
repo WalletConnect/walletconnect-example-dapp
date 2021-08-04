@@ -48,3 +48,25 @@ const example = {
 export const eip712 = {
   example,
 };
+
+export function formatEIP712Data(message: any, chainId: number) {
+  return {
+    domain: {
+      chainId,
+      name: "Collab.land",
+      verifyingContract: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+      version: "1",
+    },
+    primaryType: "Verify",
+    message,
+    types: {
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+        { name: "chainId", type: "uint256" },
+        { name: "verifyingContract", type: "address" },
+      ],
+      Verify: [{ name: "from", type: "address" }],
+    },
+  };
+}

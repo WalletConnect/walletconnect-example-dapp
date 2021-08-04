@@ -194,3 +194,7 @@ export async function verifySignature(
     return eip1271.isValidSignature(address, sig, hash, provider);
   }
 }
+
+export async function postDataToServer(): Promise<string> {
+  return "Hello World";
+}
