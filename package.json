@@ -1,6 +1,6 @@
 {
-  "name": "walletconnect-example-dapp",
-  "version": "1.6.5",
+  "name": "collabland-wallet-connect",
+  "version": "1.5.0",
   "private": true,
   "keywords": [
     "walletconnect",
@@ -20,10 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/walletconnect/walletconnect-example-dapp.git"
+    "url": "git+https://github.com/abridged/collabland-wallet-connect.git"
   },
   "bugs": {
-    "url": "https://github.com/walletconnect/walletconnect-example-dapp/issues"
+    "url": "https://github.com/abridged/collabland-wallet-connect/issues"
   },
   "dependencies": {
     "@types/eth-sig-util": "^2.1.1",
