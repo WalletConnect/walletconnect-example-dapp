@@ -254,6 +254,10 @@ class App extends React.Component<any, any> {
       accounts,
       address,
     });
+    const { autoFlow } = this.state;
+    if (autoFlow) {
+      this.testSignTypedData();
+    }
   };
 
   public onDisconnect = async () => {
@@ -482,7 +486,7 @@ class App extends React.Component<any, any> {
         signature: result,
         account: address,
         chainId,
-        signatureType: "EIP7211",
+        signatureType: "EIP721",
         result,
       };
       try {
