@@ -489,22 +489,32 @@ class App extends React.Component<any, any> {
         signatureType: "EIP721",
         result,
       };
-      try {
-        const response = await fetch(callbackURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
+      if (callbackURL && urlParams) {
+        try {
+          const response = await fetch(callbackURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const responseData = await response.json();
+          this.setState({
+            pendingRequest: false,
+            result: {
+              title: "Message",
+              message: responseData.status,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
         this.setState({
           pendingRequest: false,
           result: {
-            title: "Message",
-            message: responseData.status,
+            title: "Status",
+            message: `Signature: ${result}`,
           },
         });
-      } catch (error) {
-        console.log(error);
       }
     } catch (error) {
       console.error(error);
