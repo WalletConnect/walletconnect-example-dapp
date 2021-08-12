@@ -143,12 +143,11 @@ export function hashMessage(msg: string): string {
 }
 
 export function encodeTypedDataMessage(msg: string): string {
-  const useV4 = true;
   const data = TypedDataUtils.sanitizeData(JSON.parse(msg));
   const buf = Buffer.concat([
     Buffer.from("1901", "hex"),
-    TypedDataUtils.hashStruct("EIP712Domain", data.domain, data.types, useV4),
-    TypedDataUtils.hashStruct(data.primaryType as string, data.message, data.types, useV4),
+    TypedDataUtils.hashStruct("EIP712Domain", data.domain, data.types),
+    TypedDataUtils.hashStruct(data.primaryType as string, data.message, data.types),
   ]);
   return ethUtil.bufferToHex(buf);
 }
