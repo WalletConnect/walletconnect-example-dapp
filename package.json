@@ -1,6 +1,6 @@
 {
   "name": "walletconnect-example-dapp",
-  "version": "1.6.2",
+  "version": "1.6.4",
   "private": true,
   "keywords": [
     "walletconnect",
@@ -27,8 +27,8 @@
   },
   "dependencies": {
     "@types/eth-sig-util": "^2.1.1",
-    "@walletconnect/client": "^1.6.2",
-    "@walletconnect/qrcode-modal": "^1.6.2",
+    "@walletconnect/client": "^1.6.4",
+    "@walletconnect/qrcode-modal": "^1.6.4",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
     "blockies-ts": "^1.0.0",
