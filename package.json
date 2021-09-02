@@ -40,6 +40,7 @@
     "qr-image": "^3.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-is": "^17.0.2",
     "react-scripts-ts": "^4.0.8",
     "styled-components": "^5.2.0"
   },
