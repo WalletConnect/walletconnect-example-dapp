@@ -525,7 +525,7 @@ class App extends React.Component<any, any> {
   public componentDidMount(): void {
     const { autoFlow } = this.state;
     if (autoFlow) {
-      this.walletConnectInit();
+      this.connect();
     }
   }
 
