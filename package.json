@@ -29,7 +29,7 @@
     "@types/eth-sig-util": "^2.1.1",
     "@walletconnect/client": "^1.7.0",
     "@walletconnect/qrcode-modal": "^1.7.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bignumber.js": "^9.0.1",
     "blockies-ts": "^1.0.0",
     "eth-sig-util": "^2.5.3",
