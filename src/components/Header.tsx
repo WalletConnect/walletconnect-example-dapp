@@ -1,8 +1,6 @@
-import * as React from "react";
+import React from "react";
 import styled from "styled-components";
-import * as PropTypes from "prop-types";
 import Blockie from "./Blockie";
-import Banner from "./Banner";
 import { ellipseAddress, getChainData } from "../helpers/utilities";
 import { transitions } from "../styles";
 
@@ -52,6 +50,12 @@ const SAddress = styled.p<IHeaderStyle>`
   margin: ${({ connected }) => (connected ? "-2px auto 0.7em" : "0")};
 `;
 
+const SUnsupportedChain = styled.div`
+  transition: ${transitions.base};
+  font-weight: bold;
+  color: red;
+`;
+
 const SDisconnect = styled.div<IHeaderStyle>`
   transition: ${transitions.button};
   font-size: 12px;
@@ -79,18 +83,31 @@ interface IHeaderProps {
   chainId: number;
 }
 
-const Header = (props: IHeaderProps) => {
-  const { connected, address, chainId, killSession } = props;
-  const activeChain = chainId ? getChainData(chainId).name : null;
+const Header = ({ connected, address, chainId, killSession }: IHeaderProps) => {
+  let activeChain = null;
+
+  try {
+    activeChain = chainId ? getChainData(chainId).name : null;
+  } catch (error) {
+    console.error(error);
+  }
+
   return (
-    <SHeader {...props}>
-      {connected && activeChain ? (
+    <SHeader>
+      {connected && (
         <SActiveChain>
-          <p>{`Connected to`}</p>
-          <p>{activeChain}</p>
+          {activeChain ? (
+            <>
+              <p>Connected to</p>
+              <p>{activeChain}</p>
+            </>
+          ) : (
+            <SUnsupportedChain>
+              <p>Chain not supported.</p>
+              <p>Please switch to a supported chain in your wallet.</p>
+            </SUnsupportedChain>
+          )}
         </SActiveChain>
-      ) : (
-        <Banner />
       )}
       {address && (
         <SActiveAccount>
@@ -103,11 +120,6 @@ const Header = (props: IHeaderProps) => {
       )}
     </SHeader>
   );
-};
-
-Header.propTypes = {
-  killSession: PropTypes.func.isRequired,
-  address: PropTypes.string,
 };
 
 export default Header;
