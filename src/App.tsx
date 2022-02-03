@@ -341,7 +341,7 @@ class App extends React.Component<any, any> {
         txHash: result,
         from: address,
         to: address,
-        value: "0 ETH",
+        value: `${_value} ETH`,
       };
 
       // display result
@@ -408,15 +408,15 @@ class App extends React.Component<any, any> {
       this.setState({ pendingRequest: true });
 
       // send transaction
-      const result = await connector.sendTransaction(tx);
+      const result = await connector.signTransaction(tx);
 
       // format displayed result
       const formattedResult = {
         method: "eth_signTransaction",
-        txHash: result,
         from: address,
         to: address,
-        value: "0 ETH",
+        value: `${_value} ETH`,
+        result,
       };
 
       // display result
@@ -441,11 +441,11 @@ class App extends React.Component<any, any> {
     // test message
     const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
 
-    // encode message (hex)
-    const hexMsg = convertUtf8ToHex(message);
+    // hash message
+    const hash = hashMessage(message);
 
     // eth_sign params
-    const msgParams = [address, hexMsg];
+    const msgParams = [address, hash];
 
     try {
       // open modal
@@ -458,7 +458,6 @@ class App extends React.Component<any, any> {
       const result = await connector.signMessage(msgParams);
 
       // verify signature
-      const hash = hashMessage(message);
       const valid = await verifySignature(address, result, hash, chainId);
 
       // format displayed result
@@ -545,7 +544,7 @@ class App extends React.Component<any, any> {
     const hexMsg = convertUtf8ToHex(message);
 
     // eth_sign params
-    const msgParams = [address, hexMsg];
+    const msgParams = [hexMsg, address];
 
     try {
       // open modal
@@ -555,7 +554,7 @@ class App extends React.Component<any, any> {
       this.setState({ pendingRequest: true });
 
       // send message
-      const result = await connector.signMessage(msgParams);
+      const result = await connector.signPersonalMessage(msgParams);
 
       // verify signature
       const hash = hashMessage(message);
