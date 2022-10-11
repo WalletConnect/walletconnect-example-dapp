@@ -39,6 +39,13 @@ async function isValidSignature(
 ): Promise<boolean> {
   let returnValue;
   try {
+
+    console.log("address")
+    console.log(address)
+    console.log("utils.arrayify(data)")
+    console.log(utils.arrayify(data))
+    console.log("sig")
+    console.log(sig)
     returnValue = await new Contract(address, abi, provider).isValidSignature(
       utils.arrayify(data),
       sig,

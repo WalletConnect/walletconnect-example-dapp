@@ -23,6 +23,7 @@ import { IAssetData } from "./helpers/types";
 import Banner from "./components/Banner";
 import AccountAssets from "./components/AccountAssets";
 import { eip712 } from "./helpers/eip712";
+import { formatAuthMessage } from "./helpers/siwe";
 
 const SLayout = styled.div`
   position: relative;
@@ -538,7 +539,8 @@ class App extends React.Component<any, any> {
     }
 
     // test message
-    const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
+    const message = formatAuthMessage(address, chainId);
+
 
     // encode message (hex)
     const hexMsg = convertUtf8ToHex(message);
@@ -555,9 +557,13 @@ class App extends React.Component<any, any> {
 
       // send message
       const result = await connector.signPersonalMessage(msgParams);
-
       // verify signature
       const hash = hashMessage(message);
+
+      console.log("mes")
+      console.log(message)
+      console.log("res")
+      console.log(result)
       const valid = await verifySignature(address, result, hash, chainId);
 
       // format displayed result
