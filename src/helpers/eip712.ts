@@ -27,7 +27,7 @@ const example = {
   domain: {
     name: "GSN Relayed Transaction",
     version: "1",
-    chainId: 42,
+    chainId: 1,
     verifyingContract: "0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B",
   },
   primaryType: "RelayRequest",
