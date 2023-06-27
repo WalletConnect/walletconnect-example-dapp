@@ -123,7 +123,7 @@ const STestButton = styled(Button as any)`
   font-size: ${fonts.size.medium};
   height: 44px;
   width: 100%;
-  max-width: 175px;
+  max-width: 200px;
   margin: 12px;
 `;
 
@@ -673,7 +673,7 @@ class App extends React.Component<any, any> {
                       {"eth_signTransaction"}
                     </STestButton>
                     <STestButton left onClick={this.testSignTypedData}>
-                      {"eth_signTypedData"}
+                      {"eth_signTypedData_v4"}
                     </STestButton>
                     <STestButton left onClick={this.testLegacySignMessage}>
                       {"eth_sign (legacy)"}
