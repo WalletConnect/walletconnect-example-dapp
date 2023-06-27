@@ -26,7 +26,7 @@ export function isZero(value: string | number): boolean {
 }
 
 export function countDecimalPlaces(value: string | number): number {
-  return new BigNumber(`${value}`).dp();
+  return new BigNumber(`${value}`).dp() || 0;
 }
 
 export function convertNumberToString(value: string | number): string {
@@ -115,7 +115,7 @@ export function handleSignificantDecimals(
   }
   let result = new BigNumber(`${value}`).toFixed(decimals);
   result = new BigNumber(`${result}`).toString();
-  return new BigNumber(`${result}`).dp() <= 2
+  return (new BigNumber(`${result}`).dp() || 0) <= 2
     ? new BigNumber(`${result}`).toFormat(2)
     : new BigNumber(`${result}`).toFormat();
 }

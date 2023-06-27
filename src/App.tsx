@@ -608,7 +608,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: "eth_signTypedData",
+        method: "eth_signTypedData_v4",
         address,
         valid,
         result,
