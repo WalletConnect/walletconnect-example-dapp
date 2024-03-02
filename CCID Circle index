@@ -1,0 +1,82 @@
+//SPDX-License-Identifier:MIT
+pragma solidity ^0.8.24;
+
+contract CCIDtoken {
+    mapping(address => uint)public balances;
+    mapping(address => mapping(address => uint)) public allowance;
+    uint public totalSupply = 21000000 * 10 ** 18; 
+    string public name = "circle index";
+    string public symbol = "CCID";
+//  (HTML) public  tokenImage = "https://photos.pinksale.finance/file/pinksale-logo-upload/1708970892728-c4efcdb2646034f03abdde9ac1b1a112.png";
+    uint public decimals = 18;
+//    uint public address owner = "0x47eac4603ccdaf05b86a423b4590586ee01feb91";
+
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(address indexed owner, address indexed spender, uint value);
+    
+    constructor() {
+        balances[msg.sender] = totalSupply;
+    }
+    
+    function balanceOf(address owner) view public returns(uint) {
+        return balances[owner];
+    }
+    
+    function transfer(address to, uint value) public returns(bool) {
+        require(balanceOf(msg.sender) >= value, 'balance too low');
+        balances[to] += value;
+        balances[msg.sender] -= value;
+       emit Transfer(msg.sender, to, value);
+        return true;
+    }
+    
+    function transferFrom(address from, address to, uint value) public returns(bool) {
+        require(balanceOf(from) >= value, 'balance too low');
+        require(allowance[from][msg.sender] >= value, 'allowance too low');
+        balances[to] += value;
+        balances[from] -= value;
+        emit Transfer(from, to, value);
+        return true;   
+    }
+//abstract contract Context {
+    function _msgSender() internal view virtual returns (address payable) {
+//        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes memory) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/14902
+        return msg.data;
+    }
+
+}
+
+{
+"name": "Circle index",
+"website": "https://comunity-crypto.id/",
+"description": "We are a large community in Indonesia with the name Community Crypto ID. Decentralized finance utilizes the community and collective capacity of all of us, without interference. Join us on the CCID chain now.",
+"explorer": "https://bscscan.com/token/0xa9279a1c36093185671676695eedb22f3330fb84",
+"type": "Circle Index",
+"symbol": "CCID",
+"decimals": 18,
+"status": "active",
+"id": "9279a1c36093185671676695eedb22f3330fb84",
+"owner" : "0x47eac4603ccdaf05b86a423b4590586ee01feb91"
+"links": [
+{
+"name": "telegram",
+"url": "https://t.me/circleindex"
+},
+{
+"name": "twitter",
+"url": "https://twitter.com/Ccidtoken"
+},
+{
+"name": "Dexview",
+"url": "https://www.dexview.com/bsc/0xA9279A1C36093185671676695EEDb22F3330fb84"
+},
+{
+"name": "coinmarcetcap",
+"url": "https://coinmarketcap.com/dexscan/id/bsc/0x33275499305f555cab599aafb308b040f6c6d1ab/"
+}
+]
+}
